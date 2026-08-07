@@ -17,18 +17,37 @@
   .b:hover{background:rgba(255,255,255,1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
   .b:active{transform:translateY(0)}
   .b.on{background:#1a1a2e;color:#fff}
+  #dl-bar{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:10;pointer-events:auto;flex-wrap:wrap;justify-content:center}
+  .dl-label{font-size:12px;font-weight:600;color:#888;letter-spacing:0.3px}
+  .b.sm{padding:7px 16px;font-size:13px;border-radius:10px}
+  .b.sm:disabled{opacity:0.5;cursor:wait}
+  .b.sm.h{background:#1a1a2e;color:#fff}
+  .b.sm.h:hover{background:#2a2a4e}
+  #labels{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:8}
+  .lbl{position:absolute;transform:translate(-50%,50%);font-weight:800;font-size:14px;letter-spacing:1.5px;color:#1a1a2e;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);padding:5px 16px;border-radius:20px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 2px 12px rgba(0,0,0,0.08);white-space:nowrap;transition:opacity .25s}
   #ld{position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f0f3;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .5s ease}
   #ld .s{width:48px;height:48px;border:4px solid #ddd;border-top-color:#1a1a2e;border-radius:50%;animation:sp .8s linear infinite}
   #ld p{margin-top:16px;color:#555;font-size:14px;font-weight:600}
   #ld .err{color:#c33;font-size:12px;max-width:400px;text-align:center;margin-top:8px;word-break:break-word}
   @keyframes sp{to{transform:rotate(360deg)}}
   #ht{position:fixed;top:50%;right:16px;transform:translateY(-50%);font-size:11px;color:#aaa;text-align:right;z-index:5;line-height:1.6;pointer-events:none}
-  @media(max-width:600px){#ht{display:none}}
+  @media(max-width:600px){#ht{display:none} .lbl{font-size:11px;padding:4px 10px}}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="ui"><div id="hd"><h1>JC Dream — Funko Pop Collection</h1><p>Interactive 3D Vinyl Figures</p></div></div>
+<div id="ui"><div id="hd"><h1>JC Dream — Funko Pop Collection</h1><p>Interactive 3D Vinyl Figures · 3D-Print Ready</p></div></div>
+<div id="labels">
+  <div class="lbl" id="lbl-0">JEREMY</div>
+  <div class="lbl" id="lbl-1">RAY</div>
+  <div class="lbl" id="lbl-2">GLENN</div>
+</div>
+<div id="dl-bar">
+  <span class="dl-label">📥 Download STL:</span>
+  <button class="b sm h dl-btn" data-fig="0">Jeremy</button>
+  <button class="b sm h dl-btn" data-fig="1">Ray</button>
+  <button class="b sm h dl-btn" data-fig="2">Glenn</button>
+</div>
 <div id="ct">
   <button class="b" id="br">🔄 Reset View</button>
   <button class="b on" id="ba">🔁 Auto-Rotate</button>
@@ -48,6 +67,8 @@
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
 try {
 
@@ -84,7 +105,6 @@ grad.addColorStop(0.6, '#9090a8');
 grad.addColorStop(1, '#606078');
 ectx.fillStyle = grad;
 ectx.fillRect(0, 0, 256, 128);
-// Light streaks for reflections
 ectx.fillStyle = 'rgba(255,255,255,0.4)';
 ectx.fillRect(40, 0, 8, 128);
 ectx.fillRect(200, 0, 6, 128);
@@ -111,9 +131,9 @@ function addDirLight(color, intensity, x, y, z, shadow) {
   scene.add(l);
   return l;
 }
-addDirLight(0xffffff, 2.2, 6, 10, 6, true);   // Key
-addDirLight(0xb0c4de, 0.9, -8, 5, 3, false);  // Fill
-addDirLight(0xffffff, 1.5, 0, 6, -8, false);  // Rim
+addDirLight(0xffffff, 2.2, 6, 10, 6, true);
+addDirLight(0xb0c4de, 0.9, -8, 5, 3, false);
+addDirLight(0xffffff, 1.5, 0, 6, -8, false);
 scene.add(new THREE.AmbientLight(0x404050, 0.35));
 
 // Ground shadow
@@ -139,6 +159,12 @@ var matWhite    = V(0xf5f5f5, 0.2, 0.0);
 var matSilver   = V(0xc0c0c8, 0.1, 0.8);
 var matSmile    = V(0x8a5040, 0.4, 0.0);
 
+// Helper: tag meshes as non-printable (for STL export)
+function tagNoPrint(group) {
+  group.traverse(function(c) { if (c.isMesh) c.userData.noPrint = true; });
+  return group;
+}
+
 // ===== FUNKO BUILDERS =====
 
 function makeBase() {
@@ -149,6 +175,7 @@ function makeBase() {
   b2.position.y = 0.15; b2.castShadow = true;
   var ring = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.015, 8, 48), matSilver);
   ring.rotation.x = Math.PI / 2; ring.position.y = 0.18;
+  ring.userData.noPrint = true; // Too thin to print
   g.add(b1, b2, ring);
   return g;
 }
@@ -275,6 +302,7 @@ function makeBald() {
     new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.05 })
   );
   shine.position.set(-0.25, 4.0, 0.7);
+  shine.userData.noPrint = true;
   g.add(shine);
   return g;
 }
@@ -323,6 +351,7 @@ function makeGlasses(frameColor, thick, lensR) {
       new THREE.MeshBasicMaterial({ color: 0x88aaff, transparent: true, opacity: 0.12 })
     );
     lens.position.set(sx * (r + 0.04), 3.5, 0.93);
+    lens.userData.noPrint = true; // Flat 2D, not printable
     g.add(lens);
   }
   var bridge = new THREE.Mesh(new THREE.CylinderGeometry(t, t, 0.12, 8), fm);
@@ -334,6 +363,7 @@ function makeGlasses(frameColor, thick, lensR) {
     var arm = new THREE.Mesh(new THREE.CylinderGeometry(t * 0.8, t * 0.8, 0.5, 8), fm);
     arm.rotation.z = Math.PI / 2;
     arm.position.set(sx2 * (r * 2 + 0.28), 3.5, 0.7);
+    arm.userData.noPrint = true; // Thin, would need supports
     g.add(arm);
   }
   return g;
@@ -369,9 +399,11 @@ function makeScarf() {
   tail.position.set(0.3, 1.75, 0.45);
   tail.rotation.z = -0.2;
   g.add(tail);
+  // Fringe - tagged noPrint (too thin)
   for (var i = 0; i < 5; i++) {
     var f = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.1, 0.04), matGreen);
     f.position.set(0.3 + (i - 2) * 0.04, 1.4, 0.45);
+    f.userData.noPrint = true;
     g.add(f);
   }
   return g;
@@ -409,6 +441,7 @@ function makeWatch() {
   screen.position.set(-0.713, 0.98, 0);
   screen.rotation.y = -Math.PI / 2;
   g.add(screen);
+  tagNoPrint(g); // Entire watch is too small/thin to print
   return g;
 }
 
@@ -432,6 +465,7 @@ function makeHoodieCollar() {
   g.add(collar);
   var zip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.7, 0.02), matSilver);
   zip.position.set(0, 1.7, 0.42);
+  zip.userData.noPrint = true; // Too thin
   g.add(zip);
   return g;
 }
@@ -448,38 +482,9 @@ function makeBomberCollar() {
   var vee = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.12, 0.02), matWhite);
   vee.position.set(0, 2.15, 0.43);
   vee.rotation.z = Math.PI / 4;
+  vee.userData.noPrint = true; // Too thin
   g.add(vee);
   return g;
-}
-
-// Name plate
-function makeNamePlate(name, x) {
-  var cv = document.createElement('canvas');
-  cv.width = 256; cv.height = 64;
-  var ctx = cv.getContext('2d');
-  ctx.fillStyle = 'rgba(255,255,255,0.92)';
-  var rr = 12;
-  ctx.beginPath();
-  ctx.moveTo(rr, 0); ctx.lineTo(256-rr, 0);
-  ctx.quadraticCurveTo(256, 0, 256, rr); ctx.lineTo(256, 64-rr);
-  ctx.quadraticCurveTo(256, 64, 256-rr, 64); ctx.lineTo(rr, 64);
-  ctx.quadraticCurveTo(0, 64, 0, 64-rr); ctx.lineTo(0, rr);
-  ctx.quadraticCurveTo(0, 0, rr, 0); ctx.closePath();
-  ctx.fill();
-  ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 2; ctx.stroke();
-  ctx.fillStyle = '#1a1a2e';
-  ctx.font = 'bold 28px Segoe UI, sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(name, 128, 32);
-  var tex = new THREE.CanvasTexture(cv);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  var plate = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.4, 0.35),
-    new THREE.MeshBasicMaterial({ map: tex, transparent: true })
-  );
-  plate.position.set(x, -0.05, 0);
-  plate.rotation.x = -Math.PI / 2 + 0.3;
-  scene.add(plate);
 }
 
 // ===== BUILD FIGURES =====
@@ -537,9 +542,122 @@ glenn.position.x = spacing;
 scene.add(jeremy, ray, glenn);
 figures.push(jeremy, ray, glenn);
 
-makeNamePlate('JEREMY', -spacing);
-makeNamePlate('RAY', 0);
-makeNamePlate('GLENN', spacing);
+// ===== HTML OVERLAY LABELS (billboard, always visible) =====
+var labelData = [
+  { el: document.getElementById('lbl-0'), x: -spacing, y: -0.12 },
+  { el: document.getElementById('lbl-1'), x: 0,        y: -0.12 },
+  { el: document.getElementById('lbl-2'), x: spacing,  y: -0.12 }
+];
+var _labelVec = new THREE.Vector3();
+
+function updateLabels() {
+  for (var i = 0; i < labelData.length; i++) {
+    var ld = labelData[i];
+    _labelVec.set(ld.x, ld.y, 0);
+    _labelVec.project(camera);
+    var sx = (_labelVec.x * 0.5 + 0.5) * W;
+    var sy = (-_labelVec.y * 0.5 + 0.5) * H;
+    ld.el.style.left = sx + 'px';
+    ld.el.style.top = sy + 'px';
+    ld.el.style.opacity = (_labelVec.z < 1) ? '1' : '0';
+  }
+}
+
+// ===== STL EXPORT =====
+function exportFigureSTL(figIdx) {
+  var figNames = ['Jeremy', 'Ray', 'Glenn'];
+  var name = figNames[figIdx];
+  var btn = document.querySelectorAll('.dl-btn')[figIdx];
+  if (btn) { btn.textContent = '⏳ Exporting…'; btn.disabled = true; }
+
+  setTimeout(function() {
+    try {
+      var figure = figures[figIdx];
+      var geometries = [];
+      figure.updateMatrixWorld(true);
+
+      var worldOffset = new THREE.Vector3();
+      figure.getWorldPosition(worldOffset);
+
+      // Add a neck connector cone for support-free printing
+      // (bridges gap between torso top ~y=2.1 and head bottom ~y=2.48)
+      var neckGeo = new THREE.CylinderGeometry(0.38, 0.44, 0.55, 16);
+      neckGeo.translate(0, 2.25, 0);
+      geometries.push(neckGeo);
+
+      // Add a brim/base extension for better bed adhesion
+      var brimGeo = new THREE.CylinderGeometry(1.28, 1.28, 0.04, 48);
+      brimGeo.translate(0, 0.00, 0); // Flush with print bed
+      geometries.push(brimGeo);
+
+      // Collect all printable mesh geometries
+      figure.traverse(function(obj) {
+        if (obj.isMesh && obj.geometry && obj.geometry.attributes.position && !obj.userData.noPrint) {
+          var geo = obj.geometry.clone();
+          // Convert to non-indexed for clean merging
+          if (geo.index) geo = geo.toNonIndexed();
+          // Strip all non-position attributes for uniform merging
+          var keys = Object.keys(geo.attributes);
+          for (var k = 0; k < keys.length; k++) {
+            if (keys[k] !== 'position') geo.deleteAttribute(keys[k]);
+          }
+          // Apply world transform
+          geo.applyMatrix4(obj.matrixWorld);
+          // Center the figure at origin (remove X offset from scene placement)
+          geo.translate(-worldOffset.x, 0, 0);
+          geometries.push(geo);
+        }
+      });
+
+      if (geometries.length < 2) {
+        throw new Error('No printable geometry collected');
+      }
+
+      // Merge all geometries into one watertight-ish mesh
+      var merged = BufferGeometryUtils.mergeGeometries(geometries, false);
+      if (!merged) {
+        throw new Error('Geometry merge returned null (incompatible attributes)');
+      }
+
+      // Build a temporary mesh and export as binary STL
+      var mesh = new THREE.Mesh(merged, new THREE.MeshStandardMaterial());
+      var exporter = new STLExporter();
+      var result = exporter.parse(mesh, { binary: true });
+
+      // Handle both DataView (binary) and string (ascii) outputs
+      var blob;
+      if (result && result.buffer instanceof ArrayBuffer) {
+        blob = new Blob([result.buffer], { type: 'model/stl' });
+      } else if (result instanceof ArrayBuffer) {
+        blob = new Blob([result], { type: 'model/stl' });
+      } else {
+        blob = new Blob([result], { type: 'model/stl' });
+      }
+
+      // Trigger download
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = name + '-funko.stl';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch(e) {
+      console.error('STL export error:', e);
+      alert('STL export failed: ' + e.message);
+    } finally {
+      if (btn) { btn.textContent = name; btn.disabled = false; }
+    }
+  }, 60);
+}
+
+// Wire up download buttons
+document.querySelectorAll('.dl-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    exportFigureSTL(parseInt(btn.dataset.fig, 10));
+  });
+});
 
 // ===== CONTROLS =====
 var controls = new OrbitControls(camera, canvas);
@@ -630,6 +748,7 @@ window.addEventListener('resize', function() {
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
+  updateLabels();
   renderer.render(scene, camera);
 }
 animate();
@@ -641,7 +760,7 @@ setTimeout(function() { loader.style.display = 'none'; }, 500);
 
 } catch(err) {
   var errEl = document.getElementById('err');
-  errEl.textContent = err.message + ' (line ' + err.lineNumber + ')';
+  errEl.textContent = err.message + ' (line ' + (err.lineNumber || err.line || '?') + ')';
   console.error(err);
 }
 </script>
