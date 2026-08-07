@@ -5,474 +5,548 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>JC Dream — Funko Pop Collection</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:100%;height:100%;overflow:hidden;background:#080812;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
-  #c{position:fixed;top:0;left:0;width:100%;height:100%}
-
-  /* Header */
-  #hd{position:fixed;top:0;left:0;width:100%;text-align:center;padding:24px 20px 14px;background:linear-gradient(180deg,rgba(8,8,18,0.92) 0%,rgba(8,8,18,0) 100%);z-index:10;pointer-events:none}
-  #hd h1{font-size:clamp(22px,4vw,36px);font-weight:800;background:linear-gradient(135deg,#fff 0%,#a0b0e0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
-  #hd p{font-size:clamp(11px,2vw,14px);color:#606080;margin-top:6px;font-weight:500}
-
-  /* Labels */
-  .lbl{position:fixed;transform:translate(-50%,50%);font-weight:800;font-size:15px;letter-spacing:2px;color:#fff;background:rgba(16,16,32,0.88);backdrop-filter:blur(12px);padding:6px 22px;border-radius:24px;border:1px solid rgba(80,80,160,0.25);box-shadow:0 4px 24px rgba(0,0,0,0.4);white-space:nowrap;z-index:8;pointer-events:none;transition:opacity .3s}
-
-  /* Controls */
-  #ct{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:10}
-  .b{background:rgba(16,16,32,0.88);backdrop-filter:blur(12px);border:1px solid rgba(80,80,160,0.25);border-radius:14px;padding:10px 22px;font-size:14px;font-weight:600;color:#fff;cursor:pointer;transition:all .2s ease;user-select:none}
-  .b:hover{background:rgba(32,32,64,0.92);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.3)}
-  .b:active{transform:translateY(0)}
-  .b.on{background:linear-gradient(135deg,#3060ff 0%,#1a30a0 100%);border-color:rgba(100,100,255,0.4)}
-
-  /* STL bar */
-  #stl{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:10;flex-wrap:wrap;justify-content:center}
-  .stl-lbl{font-size:12px;font-weight:600;color:#505070;letter-spacing:.5px}
-  .b.sm{padding:7px 16px;font-size:13px;border-radius:10px;background:rgba(24,24,48,0.88)}
-  .b.sm:disabled{opacity:.5;cursor:wait}
-
-  /* Hint */
-  #ht{position:fixed;top:50%;right:16px;transform:translateY(-50%);font-size:11px;color:#404060;text-align:right;z-index:5;line-height:1.6;pointer-events:none}
-
-  /* Loader */
-  #ld{position:fixed;inset:0;background:#080812;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .5s}
-  #ld .sp{width:56px;height:56px;border:4px solid #1a1a2e;border-top-color:#3060ff;border-radius:50%;animation:spin .8s linear infinite}
-  #ld p{margin-top:20px;color:#606080;font-size:14px;font-weight:600}
-  #ld .err{color:#ff5050;font-size:12px;max-width:400px;text-align:center;margin-top:8px;word-break:break-word}
-  @keyframes spin{to{transform:rotate(360deg)}}
-
-  @media(max-width:600px){#ht{display:none}.lbl{font-size:12px;padding:4px 14px}#hd{padding:16px 20px 10px}}
+* { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-family:'Helvetica Neue',Arial,sans-serif; }
+#scene { position:fixed; top:0; left:0; width:100%; height:100%; display:block; }
+#ui-overlay {
+  position:fixed; top:0; left:0; width:100%; pointer-events:none; z-index:10;
+  padding:20px; text-align:center;
+}
+#title {
+  font-size:clamp(20px,4vw,36px); font-weight:700; letter-spacing:2px;
+  color:#e8d5b5; text-shadow:0 0 20px rgba(232,213,181,0.4);
+  text-transform:uppercase;
+}
+#subtitle {
+  font-size:clamp(11px,2vw,14px); color:#8a8a9a; letter-spacing:3px;
+  margin-top:4px; text-transform:uppercase;
+}
+#controls {
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+  display:flex; gap:10px; z-index:10; pointer-events:auto;
+}
+.btn {
+  background:rgba(20,20,35,0.85); border:1px solid rgba(232,213,181,0.3);
+  color:#e8d5b5; padding:8px 18px; border-radius:20px; cursor:pointer;
+  font-size:12px; letter-spacing:1px; text-transform:uppercase;
+  transition:all 0.3s; backdrop-filter:blur(8px);
+}
+.btn:hover { background:rgba(40,40,65,0.9); border-color:rgba(232,213,181,0.6); }
+.btn.active { background:rgba(232,213,181,0.15); border-color:rgba(232,213,181,0.7); }
+#name-labels {
+  position:fixed; bottom:70px; left:0; width:100%; display:flex;
+  justify-content:center; gap:40px; z-index:5; pointer-events:none;
+}
+.name-label {
+  font-size:13px; font-weight:700; letter-spacing:4px; color:#e8d5b5;
+  text-shadow:0 0 12px rgba(0,0,0,0.9); text-transform:uppercase;
+  opacity:0.9;
+}
+#loading {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  color:#e8d5b5; font-size:18px; letter-spacing:2px; z-index:20;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+.fade-out { opacity:0; transition:opacity 0.6s; }
 </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div id="hd"><h1>JC Dream — Funko Pop Collection</h1><p>Interactive 3D Vinyl Showcase</p></div>
-<div class="lbl" id="lbl0" style="opacity:0">JEREMY</div>
-<div class="lbl" id="lbl1" style="opacity:0">RAY</div>
-<div class="lbl" id="lbl2" style="opacity:0">GLENN</div>
-<div id="stl">
-  <span class="stl-lbl">📥 Download STL:</span>
-  <button class="b sm" data-fig="0">Jeremy</button>
-  <button class="b sm" data-fig="1">Ray</button>
-  <button class="b sm" data-fig="2">Glenn</button>
+
+<canvas id="scene"></canvas>
+
+<div id="ui-overlay">
+  <div id="title">JC Dream — Funko Pop Collection</div>
+  <div id="subtitle">Interactive Display</div>
 </div>
-<div id="ct">
-  <button class="b" id="btnReset">🔄 Reset View</button>
-  <button class="b on" id="btnAuto">🔁 Auto-Rotate</button>
+
+<div id="name-labels">
+  <div class="name-label" id="label-jeremy">JEREMY</div>
+  <div class="name-label" id="label-ray">RAY</div>
+  <div class="name-label" id="label-glenn">GLENN</div>
 </div>
-<div id="ht">Drag to rotate<br>Scroll to zoom<br>Click figure to focus<br>Right-drag to pan</div>
-<div id="ld"><div class="sp"></div><p>Loading Funko Pop Collection…</p><div class="err" id="ldErr"></div></div>
+
+<div id="controls">
+  <button class="btn" id="btn-reset">Reset View</button>
+  <button class="btn" id="btn-premium">Premium Mode</button>
+  <button class="btn" id="btn-spin">Auto-Rotate</button>
+</div>
+
+<div id="loading">Loading Collection…</div>
 
 <script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-}}
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
 </script>
 
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
-const FIGS = [
-  { name:'Jeremy', tex:'textures/jeremy.png', x:-4.2 },
-  { name:'Ray',    tex:'textures/ray.png',    x:0 },
-  { name:'Glenn',  tex:'textures/glenn.png',  x:4.2 }
-];
-const FIG_H = 5.2;
-
-// ===== SCENE =====
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x080812);
-scene.fog = new THREE.Fog(0x080812, 16, 42);
-
-const camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 100);
-const defaultCam = new THREE.Vector3(0, 3.5, 16);
-camera.position.copy(defaultCam);
-
-const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
-renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// ===== SCENE SETUP =====
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.15;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-// ===== ENVIRONMENT =====
-function makeEnv() {
-  const c = document.createElement('canvas');
-  c.width = 256; c.height = 128;
-  const x = c.getContext('2d');
-  const g = x.createLinearGradient(0,0,0,128);
-  g.addColorStop(0,'#303048'); g.addColorStop(0.35,'#181828');
-  g.addColorStop(0.55,'#0a0a14'); g.addColorStop(0.75,'#121220');
-  g.addColorStop(1,'#060610');
-  x.fillStyle = g; x.fillRect(0,0,256,128);
-  x.fillStyle='rgba(140,140,255,0.25)'; x.fillRect(38,0,3,128);
-  x.fillStyle='rgba(255,200,140,0.15)'; x.fillRect(200,0,2,128);
-  x.fillStyle='rgba(255,255,255,0.1)'; x.fillRect(128,0,1,128);
-  return new THREE.CanvasTexture(c);
-}
-const envTex = makeEnv();
-envTex.mapping = THREE.EquirectangularReflectionMapping;
-envTex.colorSpace = THREE.SRGBColorSpace;
-scene.environment = envTex;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a12);
+scene.fog = new THREE.FogExp2(0x0a0a12, 0.035);
 
-// ===== LIGHTS =====
-function dirLight(col,int,x,y,z,shadow){
-  const l = new THREE.DirectionalLight(col,int);
-  l.position.set(x,y,z);
-  if(shadow){
-    l.castShadow=true; l.shadow.mapSize.set(2048,2048);
-    l.shadow.camera.near=0.5; l.shadow.camera.far=35;
-    l.shadow.camera.left=-14; l.shadow.camera.right=14;
-    l.shadow.camera.top=10; l.shadow.camera.bottom=-5;
-    l.shadow.bias=-0.0003;
-  }
-  scene.add(l); return l;
-}
-dirLight(0xffffff, 2.5, 5, 10, 6, true);
-dirLight(0x6088ff, 0.7, -8, 5, 3, false);
-dirLight(0xffaa60, 1.0, 0, 6, -8, false);
-scene.add(new THREE.AmbientLight(0x202030, 0.35));
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 2.2, 7);
 
-// Per-figure spotlights
-FIGS.forEach(d=>{
-  const s = new THREE.SpotLight(0xffffff, 2.0, 14, Math.PI/5, 0.4, 1.2);
-  s.position.set(d.x, 9, 2);
-  s.target.position.set(d.x, 2.5, 0);
-  scene.add(s); scene.add(s.target);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 3;
+controls.maxDistance = 14;
+controls.maxPolarAngle = Math.PI * 0.52;
+controls.minPolarAngle = Math.PI * 0.15;
+controls.target.set(0, 1.8, 0);
+
+// ===== LIGHTING =====
+const ambient = new THREE.AmbientLight(0x404060, 0.35);
+scene.add(ambient);
+
+// Rim/hemisphere light
+const hemi = new THREE.HemisphereLight(0x2a2a45, 0x0a0a08, 0.2);
+scene.add(hemi);
+
+// Figure spotlights (top-down)
+const figureData = [
+  { name:'jeremy', x:-2.6, label:'JEREMY' },
+  { name:'ray',    x: 0,   label:'RAY' },
+  { name:'glenn',  x: 2.6, label:'GLENN' }
+];
+
+const spotlights = [];
+const premiumStates = []; // track per-figure premium
+
+figureData.forEach((fig, i) => {
+  const spot = new THREE.SpotLight(0xfff0d8, 2.8, 10, 0.5, 0.6, 1.2);
+  spot.position.set(fig.x, 5.5, 1.2);
+  spot.target.position.set(fig.x, 1.5, 0);
+  spot.castShadow = true;
+  spot.shadow.mapSize.set(1024, 1024);
+  spot.shadow.bias = -0.0005;
+  spot.shadow.camera.near = 1;
+  spot.shadow.camera.far = 12;
+  scene.add(spot);
+  scene.add(spot.target);
+  spotlights.push(spot);
+  premiumStates.push(false);
 });
 
+// Cool fill light from front
+const fill = new THREE.DirectionalLight(0x6080ff, 0.15);
+fill.position.set(0, 3, 8);
+scene.add(fill);
+
 // ===== FLOOR =====
-const floor = new THREE.Mesh(
-  new THREE.CircleGeometry(18, 64),
-  new THREE.MeshStandardMaterial({color:0x0a0a16, roughness:0.12, metalness:0.6, envMapIntensity:0.7})
-);
-floor.rotation.x = -Math.PI/2;
+const floorGeo = new THREE.PlaneGeometry(40, 40);
+const floorMat = new THREE.MeshStandardMaterial({
+  color: 0x111120,
+  metalness: 0.75,
+  roughness: 0.25,
+});
+const floor = new THREE.Mesh(floorGeo, floorMat);
+floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 scene.add(floor);
 
-const shadowCatcher = new THREE.Mesh(
-  new THREE.PlaneGeometry(34, 34),
-  new THREE.ShadowMaterial({opacity:0.35})
-);
-shadowCatcher.rotation.x = -Math.PI/2;
-shadowCatcher.position.y = 0.015;
-shadowCatcher.receiveShadow = true;
-scene.add(shadowCatcher);
+// Subtle floor grid glow
+const gridGeo = new THREE.PlaneGeometry(40, 40, 1, 1);
+const gridMat = new THREE.MeshBasicMaterial({
+  color: 0x1a1a2e,
+  transparent: true,
+  opacity: 0.0,
+});
+const grid = new THREE.Mesh(gridGeo, gridMat);
+grid.rotation.x = -Math.PI / 2;
+grid.position.y = 0.001;
+scene.add(grid);
 
-// ===== IMAGE LOADING & PROCESSING =====
-function loadImage(url){
-  return new Promise((res,rej)=>{
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = ()=>res(img);
-    img.onerror = ()=>rej(new Error('Failed: '+url));
-    img.src = url;
+// ===== BACKGROUND GRADIENT GLOW =====
+const glowGeo = new THREE.PlaneGeometry(30, 14);
+const glowCanvas = document.createElement('canvas');
+glowCanvas.width = 512; glowCanvas.height = 256;
+const gctx = glowCanvas.getContext('2d');
+const grad = gctx.createRadialGradient(256, 128, 20, 256, 128, 240);
+grad.addColorStop(0, 'rgba(80,60,120,0.35)');
+grad.addColorStop(1, 'rgba(0,0,0,0)');
+gctx.fillStyle = grad;
+gctx.fillRect(0,0,512,256);
+const glowTex = new THREE.CanvasTexture(glowCanvas);
+const glowMat = new THREE.MeshBasicMaterial({ map: glowTex, transparent:true, depthWrite:false });
+const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+glowMesh.position.set(0, 4, -6);
+scene.add(glowMesh);
+
+// ===== TEXTURE LOADER =====
+const texLoader = new THREE.TextureLoader();
+texLoader.crossOrigin = 'anonymous';
+
+const figures = []; // store figure group refs
+
+function loadFigure(name, x) {
+  return new Promise((resolve, reject) => {
+    texLoader.load(
+      `textures/${name}.png`,
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        texture.minFilter = THREE.LinearMipmapLinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.generateMipmaps = true;
+        texture.premultiplyAlpha = true;
+
+        // Compute aspect ratio from image
+        const img = texture.image;
+        const maxH = 3.0;
+        const aspect = img.width / img.height;
+        const h = maxH;
+        const w = h * aspect;
+
+        // === FIGURE GROUP ===
+        const group = new THREE.Group();
+        group.position.set(x, 0, 0);
+        group.userData = { baseY: 0, phase: Math.random() * Math.PI * 2, name };
+
+        // --- BASE (cylinder) ---
+        const baseGeo = new THREE.CylinderGeometry(0.68, 0.72, 0.18, 64);
+        const baseMat = new THREE.MeshStandardMaterial({
+          color: 0x0d0d12,
+          metalness: 0.5,
+          roughness: 0.35,
+        });
+        const base = new THREE.Mesh(baseGeo, baseMat);
+        base.position.y = 0.09;
+        base.castShadow = true;
+        base.receiveShadow = true;
+        group.add(base);
+
+        // Base top ring glow
+        const ringGeo = new THREE.TorusGeometry(0.62, 0.025, 16, 64);
+        const ringMat = new THREE.MeshStandardMaterial({
+          color: 0xe8d5b5,
+          emissive: 0xe8d5b5,
+          emissiveIntensity: 0.6,
+          metalness: 0.8,
+          roughness: 0.2,
+        });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.y = 0.185;
+        ring.rotation.x = Math.PI / 2;
+        group.add(ring);
+
+        // --- STAND ROD (clear acrylic behind figure) ---
+        const rodGeo = new THREE.CylinderGeometry(0.022, 0.022, 3.6, 12);
+        const rodMat = new THREE.MeshPhysicalMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.12,
+          metalness: 0,
+          roughness: 0,
+          transmission: 0.92,
+          thickness: 0.05,
+        });
+        const rod = new THREE.Mesh(rodGeo, rodMat);
+        rod.position.set(0.0, 1.8, -0.08);
+        group.add(rod);
+
+        // Rod base connector
+        const rodBaseGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.1, 16);
+        const rodBase = new THREE.Mesh(rodBaseGeo, rodMat);
+        rodBase.position.set(0, 0.2, -0.08);
+        group.add(rodBase);
+
+        // --- FIGURE PLANE (front) ---
+        const planeGeo = new THREE.PlaneGeometry(w, h);
+        const planeMat = new THREE.MeshStandardMaterial({
+          map: texture,
+          transparent: true,
+          alphaTest: 0.02,
+          side: THREE.DoubleSide,
+          roughness: 0.85,
+          metalness: 0.0,
+          depthWrite: false,
+        });
+        const frontPlane = new THREE.Mesh(planeGeo, planeMat);
+        frontPlane.position.set(0, 0.18 + h/2, 0.0);
+        frontPlane.castShadow = true;
+        frontPlane.userData.isFigure = true;
+        group.add(frontPlane);
+
+        // --- FIGURE PLANE (back — reversed) ---
+        const backPlane = new THREE.Mesh(planeGeo.clone(), planeMat.clone());
+        backPlane.material.map = texture;
+        backPlane.position.set(0, 0.18 + h/2, -0.008);
+        backPlane.rotation.y = Math.PI;
+        group.add(backPlane);
+
+        // --- DARK EDGE LAYER (thin slice between front & back) ---
+        // A very thin box to give the figure "body" when viewed at angle
+        const edgeGeo = new THREE.BoxGeometry(w * 0.96, h * 0.96, 0.012);
+        const edgeMat = new THREE.MeshStandardMaterial({
+          color: 0x1a1a22,
+          roughness: 0.9,
+          metalness: 0.1,
+        });
+        const edge = new THREE.Mesh(edgeGeo, edgeMat);
+        edge.position.set(0, 0.18 + h/2, -0.004);
+        group.add(edge);
+
+        // --- NAME LABEL (floating text below base) ---
+        const labelCanvas = document.createElement('canvas');
+        labelCanvas.width = 512; labelCanvas.height = 128;
+        const lctx = labelCanvas.getContext('2d');
+        lctx.fillStyle = 'rgba(0,0,0,0)';
+        lctx.fillRect(0, 0, 512, 128);
+        lctx.font = 'bold 52px Helvetica Neue, Arial, sans-serif';
+        lctx.fillStyle = '#e8d5b5';
+        lctx.textAlign = 'center';
+        lctx.textBaseline = 'middle';
+        lctx.shadowColor = 'rgba(232,213,181,0.5)';
+        lctx.shadowBlur = 12;
+        lctx.fillText(name.toUpperCase(), 256, 64);
+        const labelTex = new THREE.CanvasTexture(labelCanvas);
+        labelTex.colorSpace = THREE.SRGBColorSpace;
+        const labelMat = new THREE.MeshBasicMaterial({
+          map: labelTex,
+          transparent: true,
+          depthWrite: false,
+        });
+        const labelGeo = new THREE.PlaneGeometry(1.6, 0.4);
+        const labelMesh = new THREE.Mesh(labelGeo, labelMat);
+        labelMesh.position.set(0, -0.02, 0.35);
+        labelMesh.rotation.x = -Math.PI / 2.2;
+        group.add(labelMesh);
+
+        // Store reference
+        group.userData.frontPlane = frontPlane;
+        group.userData.spotlight = spotlights[figures.length];
+        group.userData.index = figures.length;
+
+        figures.push(group);
+        scene.add(group);
+
+        resolve(group);
+      },
+      undefined,
+      (err) => reject(err)
+    );
   });
 }
 
-function removeWhiteBG(canvas, ctx){
-  const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
-  const d = imgData.data;
-  for(let i=0;i<d.length;i+=4){
-    const r=d[i], g=d[i+1], b=d[i+2];
-    const maxv=Math.max(r,g,b), minv=Math.min(r,g,b);
-    const lum=(r+g+b)/3, range=maxv-minv;
-    // Pure background white: very high luminance, near-zero color variation
-    if(lum>238 && range<14){
-      d[i+3]=0;
-    } else if(lum>220 && range<22){
-      // Feather anti-aliased edges
-      d[i+3]=Math.min(d[i+3], Math.max(0,(255-lum)*10));
-    }
-  }
-  ctx.putImageData(imgData,0,0);
-}
-
-function processImage(img){
-  const c = document.createElement('canvas');
-  c.width = img.naturalWidth;
-  c.height = img.naturalHeight;
-  const ctx = c.getContext('2d');
-  ctx.drawImage(img,0,0);
-  removeWhiteBG(c, ctx);
-  return c;
-}
-
-// ===== FIGURE BUILDER =====
-const figures = [];
-
-function buildFigure(data, processedCanvas){
-  const group = new THREE.Group();
-  group.position.x = data.x;
-
-  const aspect = processedCanvas.width / processedCanvas.height;
-  const fw = FIG_H * aspect;
-
-  // --- 3D BASE ---
-  const baseMat = new THREE.MeshStandardMaterial({
-    color:0x08080e, roughness:0.1, metalness:0.25, envMapIntensity:0.9
+// ===== PARTICLES =====
+const particleCount = 80;
+const particleGeo = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const velocities = [];
+for (let i = 0; i < particleCount; i++) {
+  positions[i*3]     = (Math.random() - 0.5) * 16;
+  positions[i*3 + 1] = Math.random() * 6;
+  positions[i*3 + 2] = (Math.random() - 0.5) * 8;
+  velocities.push({
+    vx: (Math.random() - 0.5) * 0.003,
+    vy: Math.random() * 0.005 + 0.001,
+    vz: (Math.random() - 0.5) * 0.003,
   });
-  const baseBot = new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.3,0.14,48), baseMat);
-  baseBot.position.y = 0.07; baseBot.castShadow=true; baseBot.receiveShadow=true;
-  group.add(baseBot);
-
-  const baseTop = new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.15,0.06,48), baseMat);
-  baseTop.position.y = 0.17; baseTop.castShadow=true;
-  group.add(baseTop);
-
-  // Glowing rim
-  const rim = new THREE.Mesh(
-    new THREE.TorusGeometry(1.0, 0.018, 10, 48),
-    new THREE.MeshStandardMaterial({color:0x4070ff, emissive:0x2040ff, emissiveIntensity:0.6, roughness:0.1, metalness:0.8})
-  );
-  rim.rotation.x = Math.PI/2; rim.position.y = 0.2;
-  rim.userData.noPrint = true;
-  group.add(rim);
-
-  // Ground glow
-  const glow = new THREE.Mesh(
-    new THREE.CircleGeometry(1.7, 32),
-    new THREE.MeshBasicMaterial({color:0x1830a0, transparent:true, opacity:0.12, depthWrite:false})
-  );
-  glow.rotation.x = -Math.PI/2; glow.position.y = 0.02;
-  glow.userData.noPrint = true;
-  group.add(glow);
-
-  // --- FIGURE IMAGE PLANE (front) ---
-  const texture = new THREE.CanvasTexture(processedCanvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-
-  const figGeo = new THREE.PlaneGeometry(fw, FIG_H);
-  const figMat = new THREE.MeshStandardMaterial({
-    map: texture,
-    transparent: true,
-    alphaTest: 0.02,
-    roughness: 0.45,
-    metalness: 0.0,
-    side: THREE.FrontSide,
-    envMapIntensity: 0.25
-  });
-  const figure = new THREE.Mesh(figGeo, figMat);
-  figure.position.y = 0.2 + FIG_H/2;
-  figure.castShadow = true;
-  figure.userData.isFigure = true;
-  group.add(figure);
-
-  // --- BACKING (dark, for depth and back-side) ---
-  const backTex = texture.clone();
-  backTex.wrapS = THREE.RepeatWrapping;
-  backTex.repeat.x = -1; // Mirror horizontally
-  backTex.needsUpdate = true;
-
-  const backMat = new THREE.MeshStandardMaterial({
-    map: backTex,
-    transparent: true,
-    alphaTest: 0.02,
-    color: 0x404050, // Darker tint for back
-    roughness: 0.5,
-    metalness: 0.0,
-    side: THREE.FrontSide,
-    envMapIntensity: 0.15
-  });
-  const backing = new THREE.Mesh(new THREE.PlaneGeometry(fw, FIG_H), backMat);
-  backing.position.y = 0.2 + FIG_H/2;
-  backing.position.z = -0.06;
-  backing.rotation.y = Math.PI; // Face backward
-  backing.castShadow = true;
-  backing.userData.noPrint = true;
-  group.add(backing);
-
-  // --- EDGE FILL (thin frame between front and back for physical depth) ---
-  const edgeMat = new THREE.MeshStandardMaterial({color:0x060610, roughness:0.3, metalness:0.1});
-  // Left edge
-  const edgeL = new THREE.Mesh(new THREE.BoxGeometry(0.06, FIG_H*0.95, 0.06), edgeMat);
-  edgeL.position.set(-fw/2, 0.2+FIG_H/2, -0.03);
-  edgeL.castShadow = true; edgeL.userData.noPrint = true;
-  group.add(edgeL);
-  // Right edge
-  const edgeR = edgeL.clone();
-  edgeR.position.x = fw/2;
-  group.add(edgeR);
-
-  group.userData = {name:data.name, figure:figure, fw:fw, aspect:aspect};
-  return group;
 }
+particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-// ===== LOAD & BUILD =====
-try {
-  const imgs = await Promise.all(FIGS.map(d=>loadImage(d.tex)));
-  imgs.forEach((img,i)=>{
-    const processed = processImage(img);
-    const fig = buildFigure(FIGS[i], processed);
-    scene.add(fig);
-    figures.push(fig);
-    const lbl = document.getElementById('lbl'+i);
-    if(lbl) lbl.style.opacity = '1';
-  });
+const particleCanvas = document.createElement('canvas');
+particleCanvas.width = 32; particleCanvas.height = 32;
+const pctx = particleCanvas.getContext('2d');
+const pgrad = pctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+pgrad.addColorStop(0, 'rgba(255,230,180,1)');
+pgrad.addColorStop(1, 'rgba(255,230,180,0)');
+pctx.fillStyle = pgrad;
+pctx.fillRect(0, 0, 32, 32);
+const particleTex = new THREE.CanvasTexture(particleCanvas);
 
-  // Hide loader
-  const ld = document.getElementById('ld');
-  ld.style.opacity = '0';
-  setTimeout(()=>{ld.style.display='none';}, 500);
-} catch(err){
-  document.getElementById('ldErr').textContent = err.message;
-  console.error(err);
-}
+const particleMat = new THREE.PointsMaterial({
+  size: 0.06,
+  map: particleTex,
+  transparent: true,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  opacity: 0.6,
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+scene.add(particles);
 
-// ===== LABELS =====
-const labelEls = [document.getElementById('lbl0'),document.getElementById('lbl1'),document.getElementById('lbl2')];
-const lv = new THREE.Vector3();
-function updateLabels(){
-  for(let i=0;i<FIGS.length;i++){
-    lv.set(FIGS[i].x, -0.15, 0).project(camera);
-    const sx = (lv.x*0.5+0.5)*innerWidth;
-    const sy = (-lv.y*0.5+0.5)*innerHeight;
-    labelEls[i].style.left = sx+'px';
-    labelEls[i].style.top = sy+'px';
-    labelEls[i].style.opacity = lv.z < 1 ? '1' : '0';
-  }
-}
-
-// ===== CONTROLS =====
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.06;
-controls.minDistance = 4;
-controls.maxDistance = 25;
-controls.maxPolarAngle = Math.PI * 0.52;
-controls.target.set(0, 2.5, 0);
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.5;
-
-// Click to focus
+// ===== RAYCAST (click to focus) =====
 const raycaster = new THREE.Raycaster();
-const mv = new THREE.Vector2();
-let downPos = null;
+const mouse = new THREE.Vector2();
+let focusedFigure = null;
 
-renderer.domElement.addEventListener('pointerdown', e=>{
-  if(e.button!==0) return;
-  downPos = {x:e.clientX, y:e.clientY};
+canvas.addEventListener('click', (e) => {
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+
+  const meshes = figures.map(g => g.userData.frontPlane);
+  const hits = raycaster.intersectObjects(meshes);
+  if (hits.length > 0) {
+    const idx = meshes.indexOf(hits[0].object);
+    focusFigure(idx);
+  }
 });
-renderer.domElement.addEventListener('pointerup', e=>{
-  if(e.button!==0 || !downPos) return;
-  const dx=e.clientX-downPos.x, dy=e.clientY-downPos.y;
-  if(Math.hypot(dx,dy)>6){downPos=null; return;}
-  mv.x = (e.clientX/innerWidth)*2-1;
-  mv.y = -(e.clientY/innerHeight)*2+1;
-  raycaster.setFromCamera(mv, camera);
-  const hits = raycaster.intersectObjects(figures, true);
-  if(hits.length>0){
-    let o = hits[0].object;
-    while(o.parent && figures.indexOf(o)===-1) o = o.parent;
-    if(figures.indexOf(o)!==-1){
-      camTween(o.position.x, 3, 7, o.position.x, 2.5, 0);
-      controls.autoRotate = false;
-      document.getElementById('btnAuto').classList.remove('on');
+
+function focusFigure(idx) {
+  focusedFigure = idx;
+  const fig = figures[idx];
+  const tx = fig.position.x;
+  controls.target.set(tx, 1.8, 0);
+  // smooth tween camera
+  animateCameraTo(tx * 0.6 + 0.5, 2.5, 4.5, tx, 1.8, 0);
+}
+
+function animateCameraTo(x, y, z, tx, ty, tz) {
+  const startPos = camera.position.clone();
+  const endPos = new THREE.Vector3(x, y, z);
+  const startTarget = controls.target.clone();
+  const endTarget = new THREE.Vector3(tx, ty, tz);
+  let t = 0;
+  function step() {
+    t += 0.04;
+    if (t > 1) t = 1;
+    const ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+    camera.position.lerpVectors(startPos, endPos, ease);
+    controls.target.lerpVectors(startTarget, endTarget, ease);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  step();
+}
+
+// ===== BUTTONS =====
+let autoRotate = false;
+let premiumMode = false;
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  focusedFigure = null;
+  animateCameraTo(0, 2.2, 7, 0, 1.8, 0);
+  // reset premium per-figure
+  premiumStates.forEach((_, i) => setFigurePremium(i, false));
+});
+
+document.getElementById('btn-premium').addEventListener('click', (e) => {
+  premiumMode = !premiumMode;
+  e.target.classList.toggle('active', premiumMode);
+  if (premiumMode) {
+    scene.background = new THREE.Color(0x050508);
+    scene.fog.density = 0.05;
+    ambient.intensity = 0.1;
+    spotlights.forEach((s, i) => {
+      s.intensity = 5.0;
+    });
+  } else {
+    scene.background = new THREE.Color(0x0a0a12);
+    scene.fog.density = 0.035;
+    ambient.intensity = 0.35;
+    spotlights.forEach(s => { s.intensity = 2.8; });
+  }
+});
+
+document.getElementById('btn-spin').addEventListener('click', (e) => {
+  autoRotate = !autoRotate;
+  e.target.classList.toggle('active', autoRotate);
+  controls.autoRotate = autoRotate;
+  controls.autoRotateSpeed = 0.8;
+});
+
+function setFigurePremium(idx, on) {
+  premiumStates[idx] = on;
+  // Dim others, spotlight this one
+  spotlights.forEach((s, i) => {
+    if (on) {
+      s.intensity = i === idx ? 5.5 : 0.4;
+    } else {
+      s.intensity = 2.8;
+    }
+  });
+}
+
+// ===== LOAD ALL & INIT =====
+Promise.all([
+  loadFigure('jeremy', -2.6),
+  loadFigure('ray', 0),
+  loadFigure('glenn', 2.6),
+]).then(() => {
+  const loading = document.getElementById('loading');
+  loading.classList.add('fade-out');
+  setTimeout(() => loading.style.display = 'none', 600);
+}).catch(err => {
+  document.getElementById('loading').textContent = 'Error loading figures: ' + err.message;
+  console.error(err);
+});
+
+// ===== ANIMATION LOOP =====
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+
+  // Gentle bob
+  figures.forEach((fig) => {
+    fig.position.y = Math.sin(t * 0.8 + fig.userData.phase) * 0.025;
+  });
+
+  // Particles drift up
+  const posArr = particleGeo.attributes.position.array;
+  for (let i = 0; i < particleCount; i++) {
+    posArr[i*3]     += velocities[i].vx;
+    posArr[i*3 + 1] += velocities[i].vy;
+    posArr[i*3 + 2] += velocities[i].vz;
+    if (posArr[i*3 + 1] > 7) {
+      posArr[i*3 + 1] = 0;
+      posArr[i*3]     = (Math.random() - 0.5) * 16;
+      posArr[i*3 + 2] = (Math.random() - 0.5) * 8;
     }
   }
-  downPos = null;
-});
+  particleGeo.attributes.position.needsUpdate = true;
 
-function camTween(px,py,pz,tx,ty,tz){
-  const sp = camera.position.clone(), st = controls.target.clone();
-  const tp = new THREE.Vector3(px,py,pz), tt = new THREE.Vector3(tx,ty,tz);
-  const t0 = performance.now();
-  (function step(){
-    const t = Math.min(1,(performance.now()-t0)/800);
-    const e = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
-    camera.position.lerpVectors(sp,tp,e);
-    controls.target.lerpVectors(st,tt,e);
-    if(t<1) requestAnimationFrame(step);
-  })();
-}
+  // Glow mesh subtle pulse
+  glowMat.opacity = 0.7 + Math.sin(t * 0.5) * 0.15;
 
-document.getElementById('btnReset').addEventListener('click',()=>{
-  camTween(defaultCam.x, defaultCam.y, defaultCam.z, 0, 2.5, 0);
-});
-
-const btnA = document.getElementById('btnAuto');
-btnA.addEventListener('click',()=>{
-  controls.autoRotate = !controls.autoRotate;
-  btnA.classList.toggle('on', controls.autoRotate);
-});
-
-// ===== STL EXPORT =====
-function exportSTL(idx){
-  const name = FIGS[idx].name;
-  const btn = document.querySelectorAll('[data-fig]')[idx];
-  if(btn){btn.textContent='⏳';btn.disabled=true;}
-
-  setTimeout(()=>{
-    try {
-      // Build a simple 3D-printable blank Funko approximation
-      const g = new THREE.Group();
-      const base = new THREE.CylinderGeometry(1.15,1.3,0.14,48); base.translate(0,0.07,0);
-      g.add(new THREE.Mesh(base));
-      const base2 = new THREE.CylinderGeometry(1.0,1.15,0.06,48); base2.translate(0,0.17,0);
-      g.add(new THREE.Mesh(base2));
-      const neck = new THREE.CylinderGeometry(0.36,0.42,0.5,16); neck.translate(0,2.3,0);
-      g.add(new THREE.Mesh(neck));
-      const body = new THREE.CapsuleGeometry(0.7,1.2,8,20); body.translate(0,1.7,0);
-      g.add(new THREE.Mesh(body));
-      const head = new THREE.SphereGeometry(1.0,32,28); head.scale(0.92,1.0,0.92); head.translate(0,3.4,0);
-      g.add(new THREE.Mesh(head));
-
-      const exporter = new STLExporter();
-      const result = exporter.parse(g, {binary:true});
-      let blob;
-      if(result && result.buffer instanceof ArrayBuffer) blob = new Blob([result.buffer],{type:'model/stl'});
-      else if(result instanceof ArrayBuffer) blob = new Blob([result],{type:'model/stl'});
-      else blob = new Blob([result],{type:'model/stl'});
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = name+'-funko.stl';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch(e){
-      console.error('STL error:',e);
-      alert('STL export failed: '+e.message);
-    } finally {
-      if(btn){btn.textContent=name;btn.disabled=false;}
-    }
-  },60);
-}
-document.querySelectorAll('[data-fig]').forEach(b=>{
-  b.addEventListener('click',()=>exportSTL(parseInt(b.dataset.fig,10)));
-});
-
-// ===== RESIZE =====
-addEventListener('resize',()=>{
-  camera.aspect = innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
-
-// ===== RENDER LOOP =====
-const clock = new THREE.Clock();
-function animate(){
-  requestAnimationFrame(animate);
-  const t = clock.getElapsedTime();
-  // Billboard: rotate figures to face camera (Y-axis only, keep upright)
-  // 3D bases are radially symmetric so they look fine rotating
-  figures.forEach((f,i)=>{
-    const dx = camera.position.x - f.position.x;
-    const dz = camera.position.z - f.position.z;
-    f.rotation.y = Math.atan2(dx, dz);
-    // Subtle floating bob on the figure plane
-    if(f.userData.figure)
-      f.userData.figure.position.y = 0.2 + FIG_H/2 + Math.sin(t*0.8 + i*1.7)*0.025;
+  // Ring emissive pulse
+  figures.forEach((fig, i) => {
+    // rings pulse is handled by materials; subtle
   });
+
   controls.update();
-  updateLabels();
   renderer.render(scene, camera);
 }
 animate();
+
+// ===== RESIZE =====
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ===== MOBILE: update name labels position =====
+function updateLabelPositions() {
+  // Hide HTML labels since we have 3D labels now, but keep for accessibility
+  document.getElementById('name-labels').style.opacity = '0';
+}
+// Wait for load
+setTimeout(updateLabelPositions, 2000);
 </script>
 </body>
 </html>
