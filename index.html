@@ -10,7 +10,7 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-f
 #scene { position:fixed; top:0; left:0; width:100%; height:100%; display:block; }
 #ui-overlay {
   position:fixed; top:0; left:0; width:100%; pointer-events:none; z-index:10;
-  padding:20px; text-align:center;
+  padding:16px 20px; text-align:center;
 }
 #title {
   font-size:clamp(20px,4vw,36px); font-weight:700; letter-spacing:2px;
@@ -21,6 +21,19 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-f
   font-size:clamp(11px,2vw,14px); color:#8a8a9a; letter-spacing:3px;
   margin-top:4px; text-transform:uppercase;
 }
+#version-bar {
+  position:fixed; top:64px; left:50%; transform:translateX(-50%);
+  display:flex; gap:8px; z-index:15; pointer-events:auto;
+  flex-wrap:wrap; justify-content:center;
+}
+.vbtn {
+  background:rgba(20,20,35,0.85); border:1px solid rgba(232,213,181,0.25);
+  color:#8a8a9a; padding:6px 14px; border-radius:16px; cursor:pointer;
+  font-size:11px; letter-spacing:1px; text-transform:uppercase;
+  transition:all 0.3s; backdrop-filter:blur(8px); white-space:nowrap;
+}
+.vbtn:hover { background:rgba(40,40,65,0.9); color:#e8d5b5; border-color:rgba(232,213,181,0.5); }
+.vbtn.active { background:rgba(232,213,181,0.15); border-color:rgba(232,213,181,0.7); color:#e8d5b5; }
 #controls {
   position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
   display:flex; gap:10px; z-index:10; pointer-events:auto;
@@ -33,15 +46,6 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-f
 }
 .btn:hover { background:rgba(40,40,65,0.9); border-color:rgba(232,213,181,0.6); }
 .btn.active { background:rgba(232,213,181,0.15); border-color:rgba(232,213,181,0.7); }
-#name-labels {
-  position:fixed; bottom:70px; left:0; width:100%; display:flex;
-  justify-content:center; gap:40px; z-index:5; pointer-events:none;
-}
-.name-label {
-  font-size:13px; font-weight:700; letter-spacing:4px; color:#e8d5b5;
-  text-shadow:0 0 12px rgba(0,0,0,0.9); text-transform:uppercase;
-  opacity:0.9;
-}
 #loading {
   position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
   color:#e8d5b5; font-size:18px; letter-spacing:2px; z-index:20;
@@ -57,18 +61,18 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-f
 
 <div id="ui-overlay">
   <div id="title">JC Dream — Funko Pop Collection</div>
-  <div id="subtitle">Interactive Display</div>
+  <div id="subtitle">V4: Standee</div>
 </div>
 
-<div id="name-labels">
-  <div class="name-label" id="label-jeremy">JEREMY</div>
-  <div class="name-label" id="label-ray">RAY</div>
-  <div class="name-label" id="label-glenn">GLENN</div>
+<div id="version-bar">
+  <button class="vbtn" data-version="1">V1 Procedural</button>
+  <button class="vbtn" data-version="2">V2 Labeled</button>
+  <button class="vbtn" data-version="3">V3 Face Textures</button>
+  <button class="vbtn active" data-version="4">V4 Standee</button>
 </div>
 
 <div id="controls">
   <button class="btn" id="btn-reset">Reset View</button>
-  <button class="btn" id="btn-premium">Premium Mode</button>
   <button class="btn" id="btn-spin">Auto-Rotate</button>
 </div>
 
@@ -86,9 +90,8 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-f
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
 
-// ===== SCENE SETUP =====
+// ===== RENDERER / SCENE / CAMERA =====
 const canvas = document.getElementById('scene');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -118,22 +121,17 @@ controls.target.set(0, 1.8, 0);
 // ===== LIGHTING =====
 const ambient = new THREE.AmbientLight(0x404060, 0.35);
 scene.add(ambient);
-
-// Rim/hemisphere light
 const hemi = new THREE.HemisphereLight(0x2a2a45, 0x0a0a08, 0.2);
 scene.add(hemi);
 
-// Figure spotlights (top-down)
 const figureData = [
-  { name:'jeremy', x:-2.6, label:'JEREMY' },
-  { name:'ray',    x: 0,   label:'RAY' },
-  { name:'glenn',  x: 2.6, label:'GLENN' }
+  { name:'jeremy', x:-2.6, label:'JEREMY', coat:0x1a2238, accent:0x2a3a5a },
+  { name:'ray',    x: 0,   label:'RAY',    coat:0x1a1a1a, accent:0x333333 },
+  { name:'glenn',  x: 2.6, label:'GLENN',  coat:0x0a0a0a, accent:0x1a1a1a },
 ];
 
 const spotlights = [];
-const premiumStates = []; // track per-figure premium
-
-figureData.forEach((fig, i) => {
+figureData.forEach((fig) => {
   const spot = new THREE.SpotLight(0xfff0d8, 2.8, 10, 0.5, 0.6, 1.2);
   spot.position.set(fig.x, 5.5, 1.2);
   spot.target.position.set(fig.x, 1.5, 0);
@@ -145,319 +143,360 @@ figureData.forEach((fig, i) => {
   scene.add(spot);
   scene.add(spot.target);
   spotlights.push(spot);
-  premiumStates.push(false);
 });
 
-// Cool fill light from front
 const fill = new THREE.DirectionalLight(0x6080ff, 0.15);
 fill.position.set(0, 3, 8);
 scene.add(fill);
 
 // ===== FLOOR =====
-const floorGeo = new THREE.PlaneGeometry(40, 40);
-const floorMat = new THREE.MeshStandardMaterial({
-  color: 0x111120,
-  metalness: 0.75,
-  roughness: 0.25,
-});
-const floor = new THREE.Mesh(floorGeo, floorMat);
-floor.rotation.x = -Math.PI / 2;
-floor.receiveShadow = true;
+const floorMat = new THREE.MeshStandardMaterial({ color:0x111120, metalness:0.75, roughness:0.25 });
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(40,40), floorMat);
+floor.rotation.x = -Math.PI/2; floor.receiveShadow = true;
 scene.add(floor);
 
-// Subtle floor grid glow
-const gridGeo = new THREE.PlaneGeometry(40, 40, 1, 1);
-const gridMat = new THREE.MeshBasicMaterial({
-  color: 0x1a1a2e,
-  transparent: true,
-  opacity: 0.0,
-});
-const grid = new THREE.Mesh(gridGeo, gridMat);
-grid.rotation.x = -Math.PI / 2;
-grid.position.y = 0.001;
-scene.add(grid);
-
-// ===== BACKGROUND GRADIENT GLOW =====
-const glowGeo = new THREE.PlaneGeometry(30, 14);
+// ===== BACKGROUND GLOW =====
 const glowCanvas = document.createElement('canvas');
-glowCanvas.width = 512; glowCanvas.height = 256;
+glowCanvas.width=512; glowCanvas.height=256;
 const gctx = glowCanvas.getContext('2d');
-const grad = gctx.createRadialGradient(256, 128, 20, 256, 128, 240);
-grad.addColorStop(0, 'rgba(80,60,120,0.35)');
-grad.addColorStop(1, 'rgba(0,0,0,0)');
-gctx.fillStyle = grad;
-gctx.fillRect(0,0,512,256);
+const grad = gctx.createRadialGradient(256,128,20,256,128,240);
+grad.addColorStop(0,'rgba(80,60,120,0.35)'); grad.addColorStop(1,'rgba(0,0,0,0)');
+gctx.fillStyle=grad; gctx.fillRect(0,0,512,256);
 const glowTex = new THREE.CanvasTexture(glowCanvas);
-const glowMat = new THREE.MeshBasicMaterial({ map: glowTex, transparent:true, depthWrite:false });
-const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-glowMesh.position.set(0, 4, -6);
-scene.add(glowMesh);
+const glowMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(30,14),
+  new THREE.MeshBasicMaterial({ map:glowTex, transparent:true, depthWrite:false })
+);
+glowMesh.position.set(0,4,-6); scene.add(glowMesh);
+
+// ===== PARTICLES =====
+const particleCount=80, particleGeo=new THREE.BufferGeometry();
+const positions=new Float32Array(particleCount*3), velocities=[];
+for(let i=0;i<particleCount;i++){
+  positions[i*3]=(Math.random()-0.5)*16; positions[i*3+1]=Math.random()*6; positions[i*3+2]=(Math.random()-0.5)*8;
+  velocities.push({vx:(Math.random()-0.5)*0.003,vy:Math.random()*0.005+0.001,vz:(Math.random()-0.5)*0.003});
+}
+particleGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));
+const pCanvas=document.createElement('canvas'); pCanvas.width=32; pCanvas.height=32;
+const pctx=pCanvas.getContext('2d');
+const pg=pctx.createRadialGradient(16,16,0,16,16,16);
+pg.addColorStop(0,'rgba(255,230,180,1)'); pg.addColorStop(1,'rgba(255,230,180,0)');
+pctx.fillStyle=pg; pctx.fillRect(0,0,32,32);
+const particles=new THREE.Points(particleGeo,new THREE.PointsMaterial({
+  size:0.06,map:new THREE.CanvasTexture(pCanvas),transparent:true,
+  blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.6
+}));
+scene.add(particles);
 
 // ===== TEXTURE LOADER =====
 const texLoader = new THREE.TextureLoader();
 texLoader.crossOrigin = 'anonymous';
 
-const figures = []; // store figure group refs
+// ===== STATE =====
+let currentVersion = 4;
+let figureGroups = []; // active groups in scene
+let autoRotate = false;
 
-function loadFigure(name, x) {
-  return new Promise((resolve, reject) => {
-    texLoader.load(
-      `textures/${name}.png`,
-      (texture) => {
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        texture.minFilter = THREE.LinearMipmapLinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.generateMipmaps = true;
-        texture.premultiplyAlpha = true;
+// ===== NAME LABEL TEXTURE HELPER =====
+function makeLabelTexture(name) {
+  const c = document.createElement('canvas');
+  c.width=512; c.height=128;
+  const ctx=c.getContext('2d');
+  ctx.font='bold 52px Helvetica Neue, Arial, sans-serif';
+  ctx.fillStyle='#e8d5b5'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.shadowColor='rgba(232,213,181,0.5)'; ctx.shadowBlur=12;
+  ctx.fillText(name.toUpperCase(),256,64);
+  const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace;
+  return tex;
+}
 
-        // Compute aspect ratio from image
-        const img = texture.image;
-        const maxH = 3.0;
-        const aspect = img.width / img.height;
-        const h = maxH;
-        const w = h * aspect;
+// ===== BASE (shared) =====
+function makeBase() {
+  const g = new THREE.Group();
+  const baseGeo = new THREE.CylinderGeometry(0.68,0.72,0.18,64);
+  const baseMat = new THREE.MeshStandardMaterial({ color:0x0d0d12, metalness:0.5, roughness:0.35 });
+  const base = new THREE.Mesh(baseGeo, baseMat);
+  base.position.y=0.09; base.castShadow=true; base.receiveShadow=true;
+  g.add(base);
+  const ringGeo = new THREE.TorusGeometry(0.62,0.025,16,64);
+  const ringMat = new THREE.MeshStandardMaterial({ color:0xe8d5b5, emissive:0xe8d5b5, emissiveIntensity:0.6, metalness:0.8, roughness:0.2 });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.y=0.185; ring.rotation.x=Math.PI/2;
+  g.add(ring);
+  return g;
+}
 
-        // === FIGURE GROUP ===
-        const group = new THREE.Group();
-        group.position.set(x, 0, 0);
-        group.userData = { baseY: 0, phase: Math.random() * Math.PI * 2, name };
+function makeLabel3D(name) {
+  const tex = makeLabelTexture(name);
+  const mat = new THREE.MeshBasicMaterial({ map:tex, transparent:true, depthWrite:false });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1.6,0.4), mat);
+  mesh.position.set(0,-0.02,0.35); mesh.rotation.x=-Math.PI/2.2;
+  return mesh;
+}
 
-        // --- BASE (cylinder) ---
-        const baseGeo = new THREE.CylinderGeometry(0.68, 0.72, 0.18, 64);
-        const baseMat = new THREE.MeshStandardMaterial({
-          color: 0x0d0d12,
-          metalness: 0.5,
-          roughness: 0.35,
-        });
-        const base = new THREE.Mesh(baseGeo, baseMat);
-        base.position.y = 0.09;
-        base.castShadow = true;
-        base.receiveShadow = true;
-        group.add(base);
+// ===== CLEAR FIGURES =====
+function clearFigures() {
+  figureGroups.forEach(g => {
+    scene.remove(g);
+    g.traverse(obj => {
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material) {
+        if (Array.isArray(obj.material)) obj.material.forEach(m=>m.dispose());
+        else obj.material.dispose();
+      }
+    });
+  });
+  figureGroups = [];
+}
 
-        // Base top ring glow
-        const ringGeo = new THREE.TorusGeometry(0.62, 0.025, 16, 64);
-        const ringMat = new THREE.MeshStandardMaterial({
-          color: 0xe8d5b5,
-          emissive: 0xe8d5b5,
-          emissiveIntensity: 0.6,
-          metalness: 0.8,
-          roughness: 0.2,
-        });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.position.y = 0.185;
-        ring.rotation.x = Math.PI / 2;
-        group.add(ring);
+// ===== V1: PROCEDURAL (no labels) =====
+function buildV1() {
+  clearFigures();
+  figureData.forEach((fig) => {
+    const group = makeBase();
+    group.position.set(fig.x, 0, 0);
+    group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
 
-        // --- STAND ROD (clear acrylic behind figure) ---
-        const rodGeo = new THREE.CylinderGeometry(0.022, 0.022, 3.6, 12);
-        const rodMat = new THREE.MeshPhysicalMaterial({
-          color: 0xffffff,
-          transparent: true,
-          opacity: 0.12,
-          metalness: 0,
-          roughness: 0,
-          transmission: 0.92,
-          thickness: 0.05,
-        });
-        const rod = new THREE.Mesh(rodGeo, rodMat);
-        rod.position.set(0.0, 1.8, -0.08);
-        group.add(rod);
+    // Body — cylinder (vinyl body)
+    const bodyGeo = new THREE.CylinderGeometry(0.42, 0.48, 1.3, 24);
+    const bodyMat = new THREE.MeshStandardMaterial({ color:fig.coat, roughness:0.6, metalness:0.1 });
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 0.18 + 0.65;
+    body.castShadow = true;
+    group.add(body);
 
-        // Rod base connector
-        const rodBaseGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.1, 16);
-        const rodBase = new THREE.Mesh(rodBaseGeo, rodMat);
-        rodBase.position.set(0, 0.2, -0.08);
-        group.add(rodBase);
+    // Head — sphere
+    const headGeo = new THREE.SphereGeometry(0.38, 32, 32);
+    const headMat = new THREE.MeshStandardMaterial({ color:0xc4a884, roughness:0.5 });
+    const head = new THREE.Mesh(headGeo, headMat);
+    head.position.y = 0.18 + 1.3 + 0.38;
+    head.castShadow = true;
+    group.add(head);
 
-        // --- FIGURE PLANE (front) ---
-        const planeGeo = new THREE.PlaneGeometry(w, h);
-        const planeMat = new THREE.MeshStandardMaterial({
-          map: texture,
-          transparent: true,
-          alphaTest: 0.02,
-          side: THREE.DoubleSide,
-          roughness: 0.85,
-          metalness: 0.0,
-          depthWrite: false,
-        });
-        const frontPlane = new THREE.Mesh(planeGeo, planeMat);
-        frontPlane.position.set(0, 0.18 + h/2, 0.0);
-        frontPlane.castShadow = true;
-        frontPlane.userData.isFigure = true;
-        group.add(frontPlane);
+    // Beard — dark blob on lower face
+    const beardGeo = new THREE.SphereGeometry(0.26, 16, 16);
+    const beardMat = new THREE.MeshStandardMaterial({ color:0x1a1a1a, roughness:0.9 });
+    const beard = new THREE.Mesh(beardGeo, beardMat);
+    beard.position.set(0, 0.18+1.3+0.24, 0.18);
+    beard.scale.set(1, 0.8, 0.6);
+    group.add(beard);
 
-        // --- FIGURE PLANE (back — reversed) ---
-        const backPlane = new THREE.Mesh(planeGeo.clone(), planeMat.clone());
-        backPlane.material.map = texture;
-        backPlane.position.set(0, 0.18 + h/2, -0.008);
-        backPlane.rotation.y = Math.PI;
-        group.add(backPlane);
-
-        // --- DARK EDGE LAYER (thin slice between front & back) ---
-        // A very thin box to give the figure "body" when viewed at angle
-        const edgeGeo = new THREE.BoxGeometry(w * 0.96, h * 0.96, 0.012);
-        const edgeMat = new THREE.MeshStandardMaterial({
-          color: 0x1a1a22,
-          roughness: 0.9,
-          metalness: 0.1,
-        });
-        const edge = new THREE.Mesh(edgeGeo, edgeMat);
-        edge.position.set(0, 0.18 + h/2, -0.004);
-        group.add(edge);
-
-        // --- NAME LABEL (floating text below base) ---
-        const labelCanvas = document.createElement('canvas');
-        labelCanvas.width = 512; labelCanvas.height = 128;
-        const lctx = labelCanvas.getContext('2d');
-        lctx.fillStyle = 'rgba(0,0,0,0)';
-        lctx.fillRect(0, 0, 512, 128);
-        lctx.font = 'bold 52px Helvetica Neue, Arial, sans-serif';
-        lctx.fillStyle = '#e8d5b5';
-        lctx.textAlign = 'center';
-        lctx.textBaseline = 'middle';
-        lctx.shadowColor = 'rgba(232,213,181,0.5)';
-        lctx.shadowBlur = 12;
-        lctx.fillText(name.toUpperCase(), 256, 64);
-        const labelTex = new THREE.CanvasTexture(labelCanvas);
-        labelTex.colorSpace = THREE.SRGBColorSpace;
-        const labelMat = new THREE.MeshBasicMaterial({
-          map: labelTex,
-          transparent: true,
-          depthWrite: false,
-        });
-        const labelGeo = new THREE.PlaneGeometry(1.6, 0.4);
-        const labelMesh = new THREE.Mesh(labelGeo, labelMat);
-        labelMesh.position.set(0, -0.02, 0.35);
-        labelMesh.rotation.x = -Math.PI / 2.2;
-        group.add(labelMesh);
-
-        // Store reference
-        group.userData.frontPlane = frontPlane;
-        group.userData.spotlight = spotlights[figures.length];
-        group.userData.index = figures.length;
-
-        figures.push(group);
-        scene.add(group);
-
-        resolve(group);
-      },
-      undefined,
-      (err) => reject(err)
-    );
+    group.userData.frontPlane = head;
+    figureGroups.push(group);
+    scene.add(group);
   });
 }
 
-// ===== PARTICLES =====
-const particleCount = 80;
-const particleGeo = new THREE.BufferGeometry();
-const positions = new Float32Array(particleCount * 3);
-const velocities = [];
-for (let i = 0; i < particleCount; i++) {
-  positions[i*3]     = (Math.random() - 0.5) * 16;
-  positions[i*3 + 1] = Math.random() * 6;
-  positions[i*3 + 2] = (Math.random() - 0.5) * 8;
-  velocities.push({
-    vx: (Math.random() - 0.5) * 0.003,
-    vy: Math.random() * 0.005 + 0.001,
-    vz: (Math.random() - 0.5) * 0.003,
+// ===== V2: PROCEDURAL + LABELS =====
+function buildV2() {
+  clearFigures();
+  figureData.forEach((fig) => {
+    const group = makeBase();
+    group.position.set(fig.x, 0, 0);
+    group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
+
+    // Same procedural body
+    const bodyGeo = new THREE.CylinderGeometry(0.42, 0.48, 1.3, 24);
+    const bodyMat = new THREE.MeshStandardMaterial({ color:fig.coat, roughness:0.6, metalness:0.1 });
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 0.18 + 0.65;
+    body.castShadow = true;
+    group.add(body);
+
+    const headGeo = new THREE.SphereGeometry(0.38, 32, 32);
+    const headMat = new THREE.MeshStandardMaterial({ color:0xc4a884, roughness:0.5 });
+    const head = new THREE.Mesh(headGeo, headMat);
+    head.position.y = 0.18 + 1.3 + 0.38;
+    head.castShadow = true;
+    group.add(head);
+
+    const beardGeo = new THREE.SphereGeometry(0.26, 16, 16);
+    const beardMat = new THREE.MeshStandardMaterial({ color:0x1a1a1a, roughness:0.9 });
+    const beard = new THREE.Mesh(beardGeo, beardMat);
+    beard.position.set(0, 0.18+1.3+0.24, 0.18);
+    beard.scale.set(1, 0.8, 0.6);
+    group.add(beard);
+
+    // Name label
+    group.add(makeLabel3D(fig.name));
+
+    group.userData.frontPlane = head;
+    figureGroups.push(group);
+    scene.add(group);
   });
 }
-particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-const particleCanvas = document.createElement('canvas');
-particleCanvas.width = 32; particleCanvas.height = 32;
-const pctx = particleCanvas.getContext('2d');
-const pgrad = pctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-pgrad.addColorStop(0, 'rgba(255,230,180,1)');
-pgrad.addColorStop(1, 'rgba(255,230,180,0)');
-pctx.fillStyle = pgrad;
-pctx.fillRect(0, 0, 32, 32);
-const particleTex = new THREE.CanvasTexture(particleCanvas);
+// ===== V3: FACE TEXTURES =====
+function buildV3() {
+  clearFigures();
+  let loaded = 0;
+  const total = figureData.length;
 
-const particleMat = new THREE.PointsMaterial({
-  size: 0.06,
-  map: particleTex,
-  transparent: true,
-  blending: THREE.AdditiveBlending,
-  depthWrite: false,
-  opacity: 0.6,
-});
-const particles = new THREE.Points(particleGeo, particleMat);
-scene.add(particles);
+  figureData.forEach((fig) => {
+    const group = makeBase();
+    group.position.set(fig.x, 0, 0);
+    group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
 
-// ===== RAYCAST (click to focus) =====
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-let focusedFigure = null;
+    // Procedural body
+    const bodyGeo = new THREE.CylinderGeometry(0.42, 0.48, 1.3, 24);
+    const bodyMat = new THREE.MeshStandardMaterial({ color:fig.coat, roughness:0.6, metalness:0.1 });
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.position.y = 0.18 + 0.65;
+    body.castShadow = true;
+    group.add(body);
 
-canvas.addEventListener('click', (e) => {
-  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
+    // Head sphere (will get texture)
+    const headGeo = new THREE.SphereGeometry(0.42, 32, 32);
+    const headMat = new THREE.MeshStandardMaterial({ color:0xc4a884, roughness:0.5 });
+    const head = new THREE.Mesh(headGeo, headMat);
+    head.position.y = 0.18 + 1.3 + 0.38;
+    head.castShadow = true;
+    group.add(head);
 
-  const meshes = figures.map(g => g.userData.frontPlane);
-  const hits = raycaster.intersectObjects(meshes);
-  if (hits.length > 0) {
-    const idx = meshes.indexOf(hits[0].object);
-    focusFigure(idx);
-  }
-});
+    // Beard
+    const beardGeo = new THREE.SphereGeometry(0.26, 16, 16);
+    const beardMat = new THREE.MeshStandardMaterial({ color:0x1a1a1a, roughness:0.9 });
+    const beard = new THREE.Mesh(beardGeo, beardMat);
+    beard.position.set(0, 0.18+1.3+0.24, 0.22);
+    beard.scale.set(1, 0.8, 0.6);
+    group.add(beard);
 
-function focusFigure(idx) {
-  focusedFigure = idx;
-  const fig = figures[idx];
-  const tx = fig.position.x;
-  controls.target.set(tx, 1.8, 0);
-  // smooth tween camera
-  animateCameraTo(tx * 0.6 + 0.5, 2.5, 4.5, tx, 1.8, 0);
+    // Name label
+    group.add(makeLabel3D(fig.name));
+
+    group.userData.frontPlane = head;
+
+    // Load face texture and map onto a plane on front of head
+    texLoader.load(`textures/${fig.name}.png`, (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+      // Billboard plane showing face, positioned on front of head
+      const faceGeo = new THREE.PlaneGeometry(0.6, 0.6);
+      const faceMat = new THREE.MeshStandardMaterial({
+        map: texture, transparent:true, alphaTest:0.02,
+        side: THREE.DoubleSide, roughness:0.8, metalness:0.0, depthWrite:false
+      });
+      const facePlane = new THREE.Mesh(faceGeo, faceMat);
+      facePlane.position.set(0, 0.18+1.3+0.36, 0.40);
+      group.add(facePlane);
+
+      loaded++;
+      if (loaded === total) hideLoading();
+    }, undefined, () => { loaded++; if(loaded===total) hideLoading(); });
+
+    figureGroups.push(group);
+    scene.add(group);
+  });
 }
 
-function animateCameraTo(x, y, z, tx, ty, tz) {
-  const startPos = camera.position.clone();
-  const endPos = new THREE.Vector3(x, y, z);
-  const startTarget = controls.target.clone();
-  const endTarget = new THREE.Vector3(tx, ty, tz);
-  let t = 0;
-  function step() {
-    t += 0.04;
-    if (t > 1) t = 1;
-    const ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
-    camera.position.lerpVectors(startPos, endPos, ease);
-    controls.target.lerpVectors(startTarget, endTarget, ease);
-    if (t < 1) requestAnimationFrame(step);
-  }
-  step();
+// ===== V4: STANDEE =====
+function buildV4() {
+  clearFigures();
+  let loaded = 0;
+  const total = figureData.length;
+
+  figureData.forEach((fig) => {
+    texLoader.load(`textures/${fig.name}.png`, (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.premultiplyAlpha = true;
+
+      const img = texture.image;
+      const maxH = 3.0;
+      const aspect = img.width / img.height;
+      const h = maxH, w = h * aspect;
+
+      const group = makeBase();
+      group.position.set(fig.x, 0, 0);
+      group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
+
+      // Stand rod
+      const rodMat = new THREE.MeshPhysicalMaterial({
+        color:0xffffff, transparent:true, opacity:0.12, metalness:0, roughness:0,
+        transmission:0.92, thickness:0.05
+      });
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.022,3.6,12), rodMat);
+      rod.position.set(0,1.8,-0.08); group.add(rod);
+      const rodBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.1,16), rodMat);
+      rodBase.position.set(0,0.2,-0.08); group.add(rodBase);
+
+      // Front plane
+      const planeMat = new THREE.MeshStandardMaterial({
+        map:texture, transparent:true, alphaTest:0.02,
+        side:THREE.DoubleSide, roughness:0.85, metalness:0.0, depthWrite:false
+      });
+      const frontPlane = new THREE.Mesh(new THREE.PlaneGeometry(w,h), planeMat);
+      frontPlane.position.set(0, 0.18+h/2, 0);
+      frontPlane.castShadow = true;
+      group.add(frontPlane);
+
+      // Back plane
+      const backPlane = new THREE.Mesh(new THREE.PlaneGeometry(w,h), planeMat.clone());
+      backPlane.material.map = texture;
+      backPlane.position.set(0, 0.18+h/2, -0.008);
+      backPlane.rotation.y = Math.PI;
+      group.add(backPlane);
+
+      // Edge slice
+      const edgeMat = new THREE.MeshStandardMaterial({ color:0x1a1a22, roughness:0.9, metalness:0.1 });
+      const edge = new THREE.Mesh(new THREE.BoxGeometry(w*0.96,h*0.96,0.012), edgeMat);
+      edge.position.set(0, 0.18+h/2, -0.004);
+      group.add(edge);
+
+      // Label
+      group.add(makeLabel3D(fig.name));
+
+      group.userData.frontPlane = frontPlane;
+      figureGroups.push(group);
+      scene.add(group);
+
+      loaded++;
+      if (loaded === total) hideLoading();
+    }, undefined, (err) => {
+      console.error('Load error for', fig.name, err);
+      loaded++; if (loaded===total) hideLoading();
+    });
+  });
 }
+
+// ===== LOADING =====
+function hideLoading() {
+  const loading = document.getElementById('loading');
+  loading.classList.add('fade-out');
+  setTimeout(() => loading.style.display='none', 600);
+}
+
+// ===== VERSION SWITCH =====
+function switchVersion(v) {
+  currentVersion = v;
+  document.querySelectorAll('.vbtn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.version) === v);
+  });
+  const labels = { 1:'V1: Procedural 3D', 2:'V2: Labeled', 3:'V3: Face Textures', 4:'V4: Standee' };
+  document.getElementById('subtitle').textContent = labels[v];
+
+  // Show loading for async versions
+  if (v >= 3) {
+    const loading = document.getElementById('loading');
+    loading.style.display=''; loading.classList.remove('fade-out');
+    loading.textContent = 'Loading…';
+  }
+
+  if (v === 1) { buildV1(); hideLoading(); }
+  else if (v === 2) { buildV2(); hideLoading(); }
+  else if (v === 3) { buildV3(); }
+  else if (v === 4) { buildV4(); }
+}
+
+document.querySelectorAll('.vbtn').forEach(b => {
+  b.addEventListener('click', () => switchVersion(parseInt(b.dataset.version)));
+});
 
 // ===== BUTTONS =====
-let autoRotate = false;
-let premiumMode = false;
-
 document.getElementById('btn-reset').addEventListener('click', () => {
-  focusedFigure = null;
   animateCameraTo(0, 2.2, 7, 0, 1.8, 0);
-  // reset premium per-figure
-  premiumStates.forEach((_, i) => setFigurePremium(i, false));
-});
-
-document.getElementById('btn-premium').addEventListener('click', (e) => {
-  premiumMode = !premiumMode;
-  e.target.classList.toggle('active', premiumMode);
-  if (premiumMode) {
-    scene.background = new THREE.Color(0x050508);
-    scene.fog.density = 0.05;
-    ambient.intensity = 0.1;
-    spotlights.forEach((s, i) => {
-      s.intensity = 5.0;
-    });
-  } else {
-    scene.background = new THREE.Color(0x0a0a12);
-    scene.fog.density = 0.035;
-    ambient.intensity = 0.35;
-    spotlights.forEach(s => { s.intensity = 2.8; });
-  }
 });
 
 document.getElementById('btn-spin').addEventListener('click', (e) => {
@@ -467,71 +506,41 @@ document.getElementById('btn-spin').addEventListener('click', (e) => {
   controls.autoRotateSpeed = 0.8;
 });
 
-function setFigurePremium(idx, on) {
-  premiumStates[idx] = on;
-  // Dim others, spotlight this one
-  spotlights.forEach((s, i) => {
-    if (on) {
-      s.intensity = i === idx ? 5.5 : 0.4;
-    } else {
-      s.intensity = 2.8;
-    }
-  });
+// ===== CAMERA ANIMATION =====
+function animateCameraTo(x, y, z, tx, ty, tz) {
+  const startPos = camera.position.clone();
+  const endPos = new THREE.Vector3(x, y, z);
+  const startTarget = controls.target.clone();
+  const endTarget = new THREE.Vector3(tx, ty, tz);
+  let t = 0;
+  function step() {
+    t += 0.04; if (t>1) t=1;
+    const ease = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+    camera.position.lerpVectors(startPos, endPos, ease);
+    controls.target.lerpVectors(startTarget, endTarget, ease);
+    if (t<1) requestAnimationFrame(step);
+  }
+  step();
 }
-
-// ===== LOAD ALL & INIT =====
-Promise.all([
-  loadFigure('jeremy', -2.6),
-  loadFigure('ray', 0),
-  loadFigure('glenn', 2.6),
-]).then(() => {
-  const loading = document.getElementById('loading');
-  loading.classList.add('fade-out');
-  setTimeout(() => loading.style.display = 'none', 600);
-}).catch(err => {
-  document.getElementById('loading').textContent = 'Error loading figures: ' + err.message;
-  console.error(err);
-});
 
 // ===== ANIMATION LOOP =====
 const clock = new THREE.Clock();
-
 function animate() {
   requestAnimationFrame(animate);
-  const dt = clock.getDelta();
   const t = clock.getElapsedTime();
-
-  // Gentle bob
-  figures.forEach((fig) => {
-    fig.position.y = Math.sin(t * 0.8 + fig.userData.phase) * 0.025;
+  figureGroups.forEach((fig) => {
+    fig.position.y = Math.sin(t*0.8 + (fig.userData.phase||0)) * 0.025;
   });
-
-  // Particles drift up
   const posArr = particleGeo.attributes.position.array;
-  for (let i = 0; i < particleCount; i++) {
-    posArr[i*3]     += velocities[i].vx;
-    posArr[i*3 + 1] += velocities[i].vy;
-    posArr[i*3 + 2] += velocities[i].vz;
-    if (posArr[i*3 + 1] > 7) {
-      posArr[i*3 + 1] = 0;
-      posArr[i*3]     = (Math.random() - 0.5) * 16;
-      posArr[i*3 + 2] = (Math.random() - 0.5) * 8;
-    }
+  for (let i=0; i<particleCount; i++) {
+    posArr[i*3]+=velocities[i].vx; posArr[i*3+1]+=velocities[i].vy; posArr[i*3+2]+=velocities[i].vz;
+    if (posArr[i*3+1]>7) { posArr[i*3+1]=0; posArr[i*3]=(Math.random()-0.5)*16; posArr[i*3+2]=(Math.random()-0.5)*8; }
   }
   particleGeo.attributes.position.needsUpdate = true;
-
-  // Glow mesh subtle pulse
-  glowMat.opacity = 0.7 + Math.sin(t * 0.5) * 0.15;
-
-  // Ring emissive pulse
-  figures.forEach((fig, i) => {
-    // rings pulse is handled by materials; subtle
-  });
-
+  glowMesh.material.opacity = 0.7 + Math.sin(t*0.5)*0.15;
   controls.update();
   renderer.render(scene, camera);
 }
-animate();
 
 // ===== RESIZE =====
 window.addEventListener('resize', () => {
@@ -540,13 +549,9 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// ===== MOBILE: update name labels position =====
-function updateLabelPositions() {
-  // Hide HTML labels since we have 3D labels now, but keep for accessibility
-  document.getElementById('name-labels').style.opacity = '0';
-}
-// Wait for load
-setTimeout(updateLabelPositions, 2000);
+// ===== INIT =====
+switchVersion(4);
+animate();
 </script>
 </body>
 </html>
