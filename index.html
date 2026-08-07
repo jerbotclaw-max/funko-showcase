@@ -12,14 +12,15 @@
   #hd{text-align:center;padding:20px 20px 10px;background:linear-gradient(180deg,rgba(240,240,243,0.95) 0%,rgba(240,240,243,0) 100%)}
   #hd h1{font-size:clamp(20px,3.5vw,32px);font-weight:800;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
   #hd p{font-size:clamp(11px,1.8vw,14px);color:#666;margin-top:4px;font-weight:500}
-  #ct{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:10;pointer-events:auto}
-  .b{background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:10px 22px;font-size:14px;font-weight:600;color:#1a1a2e;cursor:pointer;transition:all .2s ease;box-shadow:0 4px 16px rgba(0,0,0,0.06);user-select:none}
+  #ct{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:10;pointer-events:auto;flex-wrap:wrap;justify-content:center}
+  .b{background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:10px 22px;font-size:14px;font-weight:600;color:#1a1a2e;cursor:pointer;transition:all .2s ease;box-shadow:0 4px 16px rgba(0,0,0,0.06);user-select:none;border:none}
   .b:hover{background:rgba(255,255,255,1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
   .b:active{transform:translateY(0)}
   .b.on{background:#1a1a2e;color:#fff}
   #ld{position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f0f3;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .5s ease}
   #ld .s{width:48px;height:48px;border:4px solid #ddd;border-top-color:#1a1a2e;border-radius:50%;animation:sp .8s linear infinite}
   #ld p{margin-top:16px;color:#555;font-size:14px;font-weight:600}
+  #ld .err{color:#c33;font-size:12px;max-width:400px;text-align:center;margin-top:8px;word-break:break-word}
   @keyframes sp{to{transform:rotate(360deg)}}
   #ht{position:fixed;top:50%;right:16px;transform:translateY(-50%);font-size:11px;color:#aaa;text-align:right;z-index:5;line-height:1.6;pointer-events:none}
   @media(max-width:600px){#ht{display:none}}
@@ -33,23 +34,27 @@
   <button class="b on" id="ba">🔁 Auto-Rotate</button>
 </div>
 <div id="ht">Drag to rotate<br>Scroll to zoom<br>Click figure to focus<br>Right-drag to pan</div>
-<div id="ld"><div class="s"></div><p>Building Funko Pop figures…</p></div>
+<div id="ld"><div class="s"></div><p>Building Funko Pop figures…</p><div class="err" id="err"></div></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
-<script>
-// Check Three loaded
-console.log('THREE loaded:', typeof THREE !== 'undefined');
-(function(){
-if (typeof THREE === 'undefined') {
-  document.querySelector('#ld p').textContent = 'Error: Three.js failed to load';
-  return;
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
 }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+try {
 
 var canvas = document.getElementById('c');
 var W = window.innerWidth, H = window.innerHeight;
 
-// Scene
+// ===== SCENE =====
 var scene = new THREE.Scene();
 scene.background = new THREE.Color(0xeaeaef);
 scene.fog = new THREE.Fog(0xeaeaef, 20, 45);
@@ -67,10 +72,29 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-console.log('Renderer created');
+// Simple studio environment for vinyl reflections
+var envCanvas = document.createElement('canvas');
+envCanvas.width = 256; envCanvas.height = 128;
+var ectx = envCanvas.getContext('2d');
+var grad = ectx.createLinearGradient(0, 0, 0, 128);
+grad.addColorStop(0, '#ffffff');
+grad.addColorStop(0.4, '#d0d0e0');
+grad.addColorStop(0.5, '#b0b0c8');
+grad.addColorStop(0.6, '#9090a8');
+grad.addColorStop(1, '#606078');
+ectx.fillStyle = grad;
+ectx.fillRect(0, 0, 256, 128);
+// Light streaks for reflections
+ectx.fillStyle = 'rgba(255,255,255,0.4)';
+ectx.fillRect(40, 0, 8, 128);
+ectx.fillRect(200, 0, 6, 128);
+var envTex = new THREE.CanvasTexture(envCanvas);
+envTex.mapping = THREE.EquirectangularReflectionMapping;
+envTex.colorSpace = THREE.SRGBColorSpace;
+scene.environment = envTex;
 
-// Lights — 3-point studio
-function dLight(color, intensity, x, y, z, shadow) {
+// ===== LIGHTING =====
+function addDirLight(color, intensity, x, y, z, shadow) {
   var l = new THREE.DirectionalLight(color, intensity);
   l.position.set(x, y, z);
   if (shadow) {
@@ -87,9 +111,9 @@ function dLight(color, intensity, x, y, z, shadow) {
   scene.add(l);
   return l;
 }
-dLight(0xffffff, 2.2, 6, 10, 6, true);
-dLight(0xb0c4de, 0.9, -8, 5, 3, false);
-dLight(0xffffff, 1.5, 0, 6, -8, false);
+addDirLight(0xffffff, 2.2, 6, 10, 6, true);   // Key
+addDirLight(0xb0c4de, 0.9, -8, 5, 3, false);  // Fill
+addDirLight(0xffffff, 1.5, 0, 6, -8, false);  // Rim
 scene.add(new THREE.AmbientLight(0x404050, 0.35));
 
 // Ground shadow
@@ -104,20 +128,18 @@ scene.add(ground);
 
 // ===== MATERIALS =====
 function V(color, rough, metal) {
-  return new THREE.MeshStandardMaterial({ color: color, roughness: rough || 0.18, metalness: metal || 0.05 });
+  return new THREE.MeshStandardMaterial({ color: color, roughness: rough || 0.18, metalness: metal || 0.05, envMapIntensity: 0.5 });
 }
 var matSkin     = V(0xf0c8a0, 0.3, 0.0);
-var matSkinDark = V(0xe0b890, 0.3, 0.0);
 var matBlack    = V(0x111114, 0.15, 0.1);
 var matNavy     = V(0x1a2840, 0.2, 0.05);
 var matCharcoal = V(0x2a2a2e, 0.2, 0.05);
-var matBrown    = V(0x2a1a0a, 0.28, 0.0);
 var matGreen    = V(0x0a7a3a, 0.2, 0.05);
-var matWhite    = V(0xf0f0f0, 0.2, 0.0);
+var matWhite    = V(0xf5f5f5, 0.2, 0.0);
 var matSilver   = V(0xc0c0c8, 0.1, 0.8);
 var matSmile    = V(0x8a5040, 0.4, 0.0);
 
-// ===== BUILD HELPERS =====
+// ===== FUNKO BUILDERS =====
 
 function makeBase() {
   var g = new THREE.Group();
@@ -126,7 +148,7 @@ function makeBase() {
   var b2 = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.15, 0.06, 48), matBlack);
   b2.position.y = 0.15; b2.castShadow = true;
   var ring = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.015, 8, 48), matSilver);
-  ring.rotation.x = Math.PI/2; ring.position.y = 0.18;
+  ring.rotation.x = Math.PI / 2; ring.position.y = 0.18;
   g.add(b1, b2, ring);
   return g;
 }
@@ -139,7 +161,6 @@ function makeBody(torsoMat) {
   var hip = new THREE.Mesh(new THREE.CapsuleGeometry(0.38, 0.2, 6, 16), matBlack);
   hip.position.y = 1.05; hip.castShadow = true;
   g.add(hip);
-  // Legs
   for (var si = 0; si < 2; si++) {
     var sx = si === 0 ? -1 : 1;
     var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.85, 16), matBlack);
@@ -149,7 +170,6 @@ function makeBody(torsoMat) {
     shoe.position.set(sx * 0.2, 0.10, 0.06); shoe.castShadow = true;
     g.add(shoe);
   }
-  // Arms
   for (var ai = 0; ai < 2; ai++) {
     var sx2 = ai === 0 ? -1 : 1;
     var ua = new THREE.Mesh(new THREE.CapsuleGeometry(0.13, 0.35, 6, 14), torsoMat);
@@ -174,7 +194,7 @@ function makeHead() {
   head.position.y = 3.4; head.castShadow = true;
   g.add(head);
 
-  // Eyes — classic Funko big whites
+  // Funko eyes
   for (var ei = 0; ei < 2; ei++) {
     var ex = ei === 0 ? -0.28 : 0.28;
     var ew = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 16), matWhite);
@@ -185,7 +205,6 @@ function makeHead() {
     pup.position.set(ex, 3.48, 0.94);
     g.add(pup);
   }
-  // Nose
   var nose = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), matSkin);
   nose.position.set(0, 3.32, 0.95);
   nose.scale.set(1, 0.7, 0.8);
@@ -211,7 +230,6 @@ function makeHairTousled(color) {
     cl.position.set(c[0], c[1], c[2]); cl.castShadow = true;
     g.add(cl);
   }
-  // Front fringe
   for (var fi = 0; fi < 8; fi++) {
     var a = -0.6 + (fi / 7) * 1.2;
     var bang = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), mat);
@@ -219,7 +237,6 @@ function makeHairTousled(color) {
     bang.scale.set(1, 0.6, 0.8);
     g.add(bang);
   }
-  // Side ear coverage
   for (var ssi = 0; ssi < 2; ssi++) {
     var sx3 = ssi === 0 ? -1 : 1;
     var side = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 10), mat);
@@ -266,20 +283,17 @@ function makeBeard(color, thickness) {
   var t = thickness || 1.0;
   var g = new THREE.Group();
   var mat = V(color, 0.3, 0.0);
-  // Beard mass — lower face
   var beardGeo = new THREE.SphereGeometry(0.85 * t, 28, 22, Math.PI*0.15, Math.PI*1.2, Math.PI*0.35, Math.PI*0.5);
   var beard = new THREE.Mesh(beardGeo, mat);
   beard.position.y = 2.95;
   beard.scale.set(1.0, 0.75, 0.9);
   beard.castShadow = true;
   g.add(beard);
-  // Mustache
   var mustache = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.09 * t, 8, 16, Math.PI), mat);
   mustache.position.set(0, 3.18, 0.6);
   mustache.rotation.x = Math.PI * 0.55;
   mustache.scale.set(1.0, 0.6, 1.0);
   g.add(mustache);
-  // Bumps
   for (var i = 0; i < 20; i++) {
     var a = Math.PI*0.3 + (i / 19) * Math.PI * 0.9;
     var r = 0.8 * t;
@@ -287,7 +301,6 @@ function makeBeard(color, thickness) {
     b.position.set(Math.cos(a)*r*0.7, 2.7 + Math.sin(a)*r*0.35, 0.4 + Math.cos(a)*0.5);
     g.add(b);
   }
-  // Chin point
   var chin = new THREE.Mesh(new THREE.ConeGeometry(0.18 * t, 0.3, 10), mat);
   chin.position.set(0, 2.6, 0.6);
   chin.rotation.x = Math.PI;
@@ -307,7 +320,7 @@ function makeGlasses(frameColor, thick, lensR) {
     g.add(ring);
     var lens = new THREE.Mesh(
       new THREE.CircleGeometry(r - 0.01, 24),
-      new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.08, roughness: 0.05, metalness: 0.0, transmission: 0.9 })
+      new THREE.MeshBasicMaterial({ color: 0x88aaff, transparent: true, opacity: 0.12 })
     );
     lens.position.set(sx * (r + 0.04), 3.5, 0.93);
     g.add(lens);
@@ -445,7 +458,6 @@ function makeNamePlate(name, x) {
   cv.width = 256; cv.height = 64;
   var ctx = cv.getContext('2d');
   ctx.fillStyle = 'rgba(255,255,255,0.92)';
-  // rounded rect
   var rr = 12;
   ctx.beginPath();
   ctx.moveTo(rr, 0); ctx.lineTo(256-rr, 0);
@@ -470,7 +482,7 @@ function makeNamePlate(name, x) {
   scene.add(plate);
 }
 
-// ===== ASSEMBLE FIGURES =====
+// ===== BUILD FIGURES =====
 var figures = [];
 
 function buildFigure(name, hairFn, beardFn, glassesFn, accessories, torsoMat, scale) {
@@ -491,7 +503,7 @@ function buildFigure(name, hairFn, beardFn, glassesFn, accessories, torsoMat, sc
   return g;
 }
 
-// Jeremy — tousled brown hair, brown beard, glasses, navy coat + green scarf + turtleneck + watch
+// Jeremy
 var jeremy = buildFigure('Jeremy',
   function() { return makeHairTousled(0x2a1a0a); },
   function() { return makeBeard(0x2a1a0a, 1.0); },
@@ -500,7 +512,7 @@ var jeremy = buildFigure('Jeremy',
   matNavy, 1.0
 );
 
-// Ray — bald, thick beard, thick glasses, charcoal hoodie
+// Ray
 var ray = buildFigure('Ray',
   function() { return makeBald(); },
   function() { return makeBeard(0x1a1008, 1.15); },
@@ -509,7 +521,7 @@ var ray = buildFigure('Ray',
   matCharcoal, 1.0
 );
 
-// Glenn — short dark hair, clean shaven, smile, bomber jacket, taller
+// Glenn
 var glenn = buildFigure('Glenn',
   function() { return makeHairShort(0x1a1208); },
   null, null,
@@ -529,10 +541,8 @@ makeNamePlate('JEREMY', -spacing);
 makeNamePlate('RAY', 0);
 makeNamePlate('GLENN', spacing);
 
-console.log('Figures built:', figures.length);
-
 // ===== CONTROLS =====
-var controls = new THREE.OrbitControls(camera, canvas);
+var controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.06;
 controls.minDistance = 5;
@@ -556,8 +566,7 @@ canvas.addEventListener('pointerup', function(e) {
   if (e.button !== 0 || !mouseDownPos) return;
   var dx = e.clientX - mouseDownPos.x;
   var dy = e.clientY - mouseDownPos.y;
-  if (Math.sqrt(dx*dx + dy*dy) > 5) { mouseDownPos = null; return; } // drag, not click
-
+  if (Math.sqrt(dx*dx + dy*dy) > 5) { mouseDownPos = null; return; }
   mouseV.x = (e.clientX / window.innerWidth) * 2 - 1;
   mouseV.y = -(e.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouseV, camera);
@@ -590,7 +599,6 @@ function animateCameraTo(figX) {
   tween();
 }
 
-// Buttons
 document.getElementById('br').addEventListener('click', function() {
   var startPos = camera.position.clone();
   var startTarget = controls.target.clone();
@@ -611,15 +619,12 @@ btnAuto.addEventListener('click', function() {
   btnAuto.classList.toggle('on', controls.autoRotate);
 });
 
-// Resize
 window.addEventListener('resize', function() {
   W = window.innerWidth; H = window.innerHeight;
   camera.aspect = W / H;
   camera.updateProjectionMatrix();
   renderer.setSize(W, H);
 });
-
-console.log('Starting render loop');
 
 // Render loop
 function animate() {
@@ -630,15 +635,15 @@ function animate() {
 animate();
 
 // Hide loader
-setTimeout(function() {
-  var loader = document.getElementById('ld');
-  loader.style.opacity = '0';
-  setTimeout(function() { loader.style.display = 'none'; }, 500);
-}, 500);
+var loader = document.getElementById('ld');
+loader.style.opacity = '0';
+setTimeout(function() { loader.style.display = 'none'; }, 500);
 
-console.log('Init complete');
-
-})();
+} catch(err) {
+  var errEl = document.getElementById('err');
+  errEl.textContent = err.message + ' (line ' + err.lineNumber + ')';
+  console.error(err);
+}
 </script>
 </body>
 </html>
