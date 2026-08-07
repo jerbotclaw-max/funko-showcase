@@ -6,763 +6,468 @@
 <title>JC Dream — Funko Pop Collection</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:100%;height:100%;overflow:hidden;background:#f0f0f3;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+  html,body{width:100%;height:100%;overflow:hidden;background:#080812;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
   #c{position:fixed;top:0;left:0;width:100%;height:100%}
-  #ui{position:fixed;top:0;left:0;width:100%;pointer-events:none;z-index:10}
-  #hd{text-align:center;padding:20px 20px 10px;background:linear-gradient(180deg,rgba(240,240,243,0.95) 0%,rgba(240,240,243,0) 100%)}
-  #hd h1{font-size:clamp(20px,3.5vw,32px);font-weight:800;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
-  #hd p{font-size:clamp(11px,1.8vw,14px);color:#666;margin-top:4px;font-weight:500}
-  #ct{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:10;pointer-events:auto;flex-wrap:wrap;justify-content:center}
-  .b{background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:10px 22px;font-size:14px;font-weight:600;color:#1a1a2e;cursor:pointer;transition:all .2s ease;box-shadow:0 4px 16px rgba(0,0,0,0.06);user-select:none;border:none}
-  .b:hover{background:rgba(255,255,255,1);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+
+  /* Header */
+  #hd{position:fixed;top:0;left:0;width:100%;text-align:center;padding:24px 20px 14px;background:linear-gradient(180deg,rgba(8,8,18,0.92) 0%,rgba(8,8,18,0) 100%);z-index:10;pointer-events:none}
+  #hd h1{font-size:clamp(22px,4vw,36px);font-weight:800;background:linear-gradient(135deg,#fff 0%,#a0b0e0 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
+  #hd p{font-size:clamp(11px,2vw,14px);color:#606080;margin-top:6px;font-weight:500}
+
+  /* Labels */
+  .lbl{position:fixed;transform:translate(-50%,50%);font-weight:800;font-size:15px;letter-spacing:2px;color:#fff;background:rgba(16,16,32,0.88);backdrop-filter:blur(12px);padding:6px 22px;border-radius:24px;border:1px solid rgba(80,80,160,0.25);box-shadow:0 4px 24px rgba(0,0,0,0.4);white-space:nowrap;z-index:8;pointer-events:none;transition:opacity .3s}
+
+  /* Controls */
+  #ct{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:10}
+  .b{background:rgba(16,16,32,0.88);backdrop-filter:blur(12px);border:1px solid rgba(80,80,160,0.25);border-radius:14px;padding:10px 22px;font-size:14px;font-weight:600;color:#fff;cursor:pointer;transition:all .2s ease;user-select:none}
+  .b:hover{background:rgba(32,32,64,0.92);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.3)}
   .b:active{transform:translateY(0)}
-  .b.on{background:#1a1a2e;color:#fff}
-  #dl-bar{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:10;pointer-events:auto;flex-wrap:wrap;justify-content:center}
-  .dl-label{font-size:12px;font-weight:600;color:#888;letter-spacing:0.3px}
-  .b.sm{padding:7px 16px;font-size:13px;border-radius:10px}
-  .b.sm:disabled{opacity:0.5;cursor:wait}
-  .b.sm.h{background:#1a1a2e;color:#fff}
-  .b.sm.h:hover{background:#2a2a4e}
-  #labels{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:8}
-  .lbl{position:absolute;transform:translate(-50%,50%);font-weight:800;font-size:14px;letter-spacing:1.5px;color:#1a1a2e;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);padding:5px 16px;border-radius:20px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 2px 12px rgba(0,0,0,0.08);white-space:nowrap;transition:opacity .25s}
-  #ld{position:fixed;top:0;left:0;width:100%;height:100%;background:#f0f0f3;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .5s ease}
-  #ld .s{width:48px;height:48px;border:4px solid #ddd;border-top-color:#1a1a2e;border-radius:50%;animation:sp .8s linear infinite}
-  #ld p{margin-top:16px;color:#555;font-size:14px;font-weight:600}
-  #ld .err{color:#c33;font-size:12px;max-width:400px;text-align:center;margin-top:8px;word-break:break-word}
-  @keyframes sp{to{transform:rotate(360deg)}}
-  #ht{position:fixed;top:50%;right:16px;transform:translateY(-50%);font-size:11px;color:#aaa;text-align:right;z-index:5;line-height:1.6;pointer-events:none}
-  @media(max-width:600px){#ht{display:none} .lbl{font-size:11px;padding:4px 10px}}
+  .b.on{background:linear-gradient(135deg,#3060ff 0%,#1a30a0 100%);border-color:rgba(100,100,255,0.4)}
+
+  /* STL bar */
+  #stl{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;z-index:10;flex-wrap:wrap;justify-content:center}
+  .stl-lbl{font-size:12px;font-weight:600;color:#505070;letter-spacing:.5px}
+  .b.sm{padding:7px 16px;font-size:13px;border-radius:10px;background:rgba(24,24,48,0.88)}
+  .b.sm:disabled{opacity:.5;cursor:wait}
+
+  /* Hint */
+  #ht{position:fixed;top:50%;right:16px;transform:translateY(-50%);font-size:11px;color:#404060;text-align:right;z-index:5;line-height:1.6;pointer-events:none}
+
+  /* Loader */
+  #ld{position:fixed;inset:0;background:#080812;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;transition:opacity .5s}
+  #ld .sp{width:56px;height:56px;border:4px solid #1a1a2e;border-top-color:#3060ff;border-radius:50%;animation:spin .8s linear infinite}
+  #ld p{margin-top:20px;color:#606080;font-size:14px;font-weight:600}
+  #ld .err{color:#ff5050;font-size:12px;max-width:400px;text-align:center;margin-top:8px;word-break:break-word}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  @media(max-width:600px){#ht{display:none}.lbl{font-size:12px;padding:4px 14px}#hd{padding:16px 20px 10px}}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="ui"><div id="hd"><h1>JC Dream — Funko Pop Collection</h1><p>Interactive 3D Vinyl Figures · 3D-Print Ready</p></div></div>
-<div id="labels">
-  <div class="lbl" id="lbl-0">JEREMY</div>
-  <div class="lbl" id="lbl-1">RAY</div>
-  <div class="lbl" id="lbl-2">GLENN</div>
-</div>
-<div id="dl-bar">
-  <span class="dl-label">📥 Download STL:</span>
-  <button class="b sm h dl-btn" data-fig="0">Jeremy</button>
-  <button class="b sm h dl-btn" data-fig="1">Ray</button>
-  <button class="b sm h dl-btn" data-fig="2">Glenn</button>
+<div id="hd"><h1>JC Dream — Funko Pop Collection</h1><p>Interactive 3D Vinyl Showcase</p></div>
+<div class="lbl" id="lbl0" style="opacity:0">JEREMY</div>
+<div class="lbl" id="lbl1" style="opacity:0">RAY</div>
+<div class="lbl" id="lbl2" style="opacity:0">GLENN</div>
+<div id="stl">
+  <span class="stl-lbl">📥 Download STL:</span>
+  <button class="b sm" data-fig="0">Jeremy</button>
+  <button class="b sm" data-fig="1">Ray</button>
+  <button class="b sm" data-fig="2">Glenn</button>
 </div>
 <div id="ct">
-  <button class="b" id="br">🔄 Reset View</button>
-  <button class="b on" id="ba">🔁 Auto-Rotate</button>
+  <button class="b" id="btnReset">🔄 Reset View</button>
+  <button class="b on" id="btnAuto">🔁 Auto-Rotate</button>
 </div>
 <div id="ht">Drag to rotate<br>Scroll to zoom<br>Click figure to focus<br>Right-drag to pan</div>
-<div id="ld"><div class="s"></div><p>Building Funko Pop figures…</p><div class="err" id="err"></div></div>
+<div id="ld"><div class="sp"></div><p>Loading Funko Pop Collection…</p><div class="err" id="ldErr"></div></div>
 
 <script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-  }
-}
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
 </script>
 
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { STLExporter } from 'three/addons/exporters/STLExporter.js';
-import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
-try {
-
-var canvas = document.getElementById('c');
-var W = window.innerWidth, H = window.innerHeight;
+const FIGS = [
+  { name:'Jeremy', tex:'textures/jeremy.png', x:-4.2 },
+  { name:'Ray',    tex:'textures/ray.png',    x:0 },
+  { name:'Glenn',  tex:'textures/glenn.png',  x:4.2 }
+];
+const FIG_H = 5.2;
 
 // ===== SCENE =====
-var scene = new THREE.Scene();
-scene.background = new THREE.Color(0xeaeaef);
-scene.fog = new THREE.Fog(0xeaeaef, 20, 45);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x080812);
+scene.fog = new THREE.Fog(0x080812, 16, 42);
 
-var camera = new THREE.PerspectiveCamera(40, W/H, 0.1, 100);
-var defaultCamPos = new THREE.Vector3(0, 4, 16);
-camera.position.copy(defaultCamPos);
+const camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 100);
+const defaultCam = new THREE.Vector3(0, 3.5, 16);
+camera.position.copy(defaultCam);
 
-var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-renderer.setSize(W, H);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.0;
+renderer.toneMappingExposure = 1.15;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-// Simple studio environment for vinyl reflections
-var envCanvas = document.createElement('canvas');
-envCanvas.width = 256; envCanvas.height = 128;
-var ectx = envCanvas.getContext('2d');
-var grad = ectx.createLinearGradient(0, 0, 0, 128);
-grad.addColorStop(0, '#ffffff');
-grad.addColorStop(0.4, '#d0d0e0');
-grad.addColorStop(0.5, '#b0b0c8');
-grad.addColorStop(0.6, '#9090a8');
-grad.addColorStop(1, '#606078');
-ectx.fillStyle = grad;
-ectx.fillRect(0, 0, 256, 128);
-ectx.fillStyle = 'rgba(255,255,255,0.4)';
-ectx.fillRect(40, 0, 8, 128);
-ectx.fillRect(200, 0, 6, 128);
-var envTex = new THREE.CanvasTexture(envCanvas);
+// ===== ENVIRONMENT =====
+function makeEnv() {
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 128;
+  const x = c.getContext('2d');
+  const g = x.createLinearGradient(0,0,0,128);
+  g.addColorStop(0,'#303048'); g.addColorStop(0.35,'#181828');
+  g.addColorStop(0.55,'#0a0a14'); g.addColorStop(0.75,'#121220');
+  g.addColorStop(1,'#060610');
+  x.fillStyle = g; x.fillRect(0,0,256,128);
+  x.fillStyle='rgba(140,140,255,0.25)'; x.fillRect(38,0,3,128);
+  x.fillStyle='rgba(255,200,140,0.15)'; x.fillRect(200,0,2,128);
+  x.fillStyle='rgba(255,255,255,0.1)'; x.fillRect(128,0,1,128);
+  return new THREE.CanvasTexture(c);
+}
+const envTex = makeEnv();
 envTex.mapping = THREE.EquirectangularReflectionMapping;
 envTex.colorSpace = THREE.SRGBColorSpace;
 scene.environment = envTex;
 
-// ===== LIGHTING =====
-function addDirLight(color, intensity, x, y, z, shadow) {
-  var l = new THREE.DirectionalLight(color, intensity);
-  l.position.set(x, y, z);
-  if (shadow) {
-    l.castShadow = true;
-    l.shadow.mapSize.set(2048, 2048);
-    l.shadow.camera.near = 0.5;
-    l.shadow.camera.far = 35;
-    l.shadow.camera.left = -10;
-    l.shadow.camera.right = 10;
-    l.shadow.camera.top = 10;
-    l.shadow.camera.bottom = -10;
-    l.shadow.bias = -0.0003;
+// ===== LIGHTS =====
+function dirLight(col,int,x,y,z,shadow){
+  const l = new THREE.DirectionalLight(col,int);
+  l.position.set(x,y,z);
+  if(shadow){
+    l.castShadow=true; l.shadow.mapSize.set(2048,2048);
+    l.shadow.camera.near=0.5; l.shadow.camera.far=35;
+    l.shadow.camera.left=-14; l.shadow.camera.right=14;
+    l.shadow.camera.top=10; l.shadow.camera.bottom=-5;
+    l.shadow.bias=-0.0003;
   }
-  scene.add(l);
-  return l;
+  scene.add(l); return l;
 }
-addDirLight(0xffffff, 2.2, 6, 10, 6, true);
-addDirLight(0xb0c4de, 0.9, -8, 5, 3, false);
-addDirLight(0xffffff, 1.5, 0, 6, -8, false);
-scene.add(new THREE.AmbientLight(0x404050, 0.35));
+dirLight(0xffffff, 2.5, 5, 10, 6, true);
+dirLight(0x6088ff, 0.7, -8, 5, 3, false);
+dirLight(0xffaa60, 1.0, 0, 6, -8, false);
+scene.add(new THREE.AmbientLight(0x202030, 0.35));
 
-// Ground shadow
-var ground = new THREE.Mesh(
-  new THREE.CircleGeometry(14, 64),
-  new THREE.ShadowMaterial({ opacity: 0.12 })
+// Per-figure spotlights
+FIGS.forEach(d=>{
+  const s = new THREE.SpotLight(0xffffff, 2.0, 14, Math.PI/5, 0.4, 1.2);
+  s.position.set(d.x, 9, 2);
+  s.target.position.set(d.x, 2.5, 0);
+  scene.add(s); scene.add(s.target);
+});
+
+// ===== FLOOR =====
+const floor = new THREE.Mesh(
+  new THREE.CircleGeometry(18, 64),
+  new THREE.MeshStandardMaterial({color:0x0a0a16, roughness:0.12, metalness:0.6, envMapIntensity:0.7})
 );
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = -0.01;
-ground.receiveShadow = true;
-scene.add(ground);
+floor.rotation.x = -Math.PI/2;
+floor.receiveShadow = true;
+scene.add(floor);
 
-// ===== MATERIALS =====
-function V(color, rough, metal) {
-  return new THREE.MeshStandardMaterial({ color: color, roughness: rough || 0.18, metalness: metal || 0.05, envMapIntensity: 0.5 });
+const shadowCatcher = new THREE.Mesh(
+  new THREE.PlaneGeometry(34, 34),
+  new THREE.ShadowMaterial({opacity:0.35})
+);
+shadowCatcher.rotation.x = -Math.PI/2;
+shadowCatcher.position.y = 0.015;
+shadowCatcher.receiveShadow = true;
+scene.add(shadowCatcher);
+
+// ===== IMAGE LOADING & PROCESSING =====
+function loadImage(url){
+  return new Promise((res,rej)=>{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = ()=>res(img);
+    img.onerror = ()=>rej(new Error('Failed: '+url));
+    img.src = url;
+  });
 }
-var matSkin     = V(0xf0c8a0, 0.3, 0.0);
-var matBlack    = V(0x111114, 0.15, 0.1);
-var matNavy     = V(0x1a2840, 0.2, 0.05);
-var matCharcoal = V(0x2a2a2e, 0.2, 0.05);
-var matGreen    = V(0x0a7a3a, 0.2, 0.05);
-var matWhite    = V(0xf5f5f5, 0.2, 0.0);
-var matSilver   = V(0xc0c0c8, 0.1, 0.8);
-var matSmile    = V(0x8a5040, 0.4, 0.0);
 
-// Helper: tag meshes as non-printable (for STL export)
-function tagNoPrint(group) {
-  group.traverse(function(c) { if (c.isMesh) c.userData.noPrint = true; });
+function removeWhiteBG(canvas, ctx){
+  const imgData = ctx.getImageData(0,0,canvas.width,canvas.height);
+  const d = imgData.data;
+  for(let i=0;i<d.length;i+=4){
+    const r=d[i], g=d[i+1], b=d[i+2];
+    const maxv=Math.max(r,g,b), minv=Math.min(r,g,b);
+    const lum=(r+g+b)/3, range=maxv-minv;
+    // Pure background white: very high luminance, near-zero color variation
+    if(lum>238 && range<14){
+      d[i+3]=0;
+    } else if(lum>220 && range<22){
+      // Feather anti-aliased edges
+      d[i+3]=Math.min(d[i+3], Math.max(0,(255-lum)*10));
+    }
+  }
+  ctx.putImageData(imgData,0,0);
+}
+
+function processImage(img){
+  const c = document.createElement('canvas');
+  c.width = img.naturalWidth;
+  c.height = img.naturalHeight;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img,0,0);
+  removeWhiteBG(c, ctx);
+  return c;
+}
+
+// ===== FIGURE BUILDER =====
+const figures = [];
+
+function buildFigure(data, processedCanvas){
+  const group = new THREE.Group();
+  group.position.x = data.x;
+
+  const aspect = processedCanvas.width / processedCanvas.height;
+  const fw = FIG_H * aspect;
+
+  // --- 3D BASE ---
+  const baseMat = new THREE.MeshStandardMaterial({
+    color:0x08080e, roughness:0.1, metalness:0.25, envMapIntensity:0.9
+  });
+  const baseBot = new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.3,0.14,48), baseMat);
+  baseBot.position.y = 0.07; baseBot.castShadow=true; baseBot.receiveShadow=true;
+  group.add(baseBot);
+
+  const baseTop = new THREE.Mesh(new THREE.CylinderGeometry(1.0,1.15,0.06,48), baseMat);
+  baseTop.position.y = 0.17; baseTop.castShadow=true;
+  group.add(baseTop);
+
+  // Glowing rim
+  const rim = new THREE.Mesh(
+    new THREE.TorusGeometry(1.0, 0.018, 10, 48),
+    new THREE.MeshStandardMaterial({color:0x4070ff, emissive:0x2040ff, emissiveIntensity:0.6, roughness:0.1, metalness:0.8})
+  );
+  rim.rotation.x = Math.PI/2; rim.position.y = 0.2;
+  rim.userData.noPrint = true;
+  group.add(rim);
+
+  // Ground glow
+  const glow = new THREE.Mesh(
+    new THREE.CircleGeometry(1.7, 32),
+    new THREE.MeshBasicMaterial({color:0x1830a0, transparent:true, opacity:0.12, depthWrite:false})
+  );
+  glow.rotation.x = -Math.PI/2; glow.position.y = 0.02;
+  glow.userData.noPrint = true;
+  group.add(glow);
+
+  // --- FIGURE IMAGE PLANE (front) ---
+  const texture = new THREE.CanvasTexture(processedCanvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+
+  const figGeo = new THREE.PlaneGeometry(fw, FIG_H);
+  const figMat = new THREE.MeshStandardMaterial({
+    map: texture,
+    transparent: true,
+    alphaTest: 0.02,
+    roughness: 0.45,
+    metalness: 0.0,
+    side: THREE.FrontSide,
+    envMapIntensity: 0.25
+  });
+  const figure = new THREE.Mesh(figGeo, figMat);
+  figure.position.y = 0.2 + FIG_H/2;
+  figure.castShadow = true;
+  figure.userData.isFigure = true;
+  group.add(figure);
+
+  // --- BACKING (dark, for depth and back-side) ---
+  const backTex = texture.clone();
+  backTex.wrapS = THREE.RepeatWrapping;
+  backTex.repeat.x = -1; // Mirror horizontally
+  backTex.needsUpdate = true;
+
+  const backMat = new THREE.MeshStandardMaterial({
+    map: backTex,
+    transparent: true,
+    alphaTest: 0.02,
+    color: 0x404050, // Darker tint for back
+    roughness: 0.5,
+    metalness: 0.0,
+    side: THREE.FrontSide,
+    envMapIntensity: 0.15
+  });
+  const backing = new THREE.Mesh(new THREE.PlaneGeometry(fw, FIG_H), backMat);
+  backing.position.y = 0.2 + FIG_H/2;
+  backing.position.z = -0.06;
+  backing.rotation.y = Math.PI; // Face backward
+  backing.castShadow = true;
+  backing.userData.noPrint = true;
+  group.add(backing);
+
+  // --- EDGE FILL (thin frame between front and back for physical depth) ---
+  const edgeMat = new THREE.MeshStandardMaterial({color:0x060610, roughness:0.3, metalness:0.1});
+  // Left edge
+  const edgeL = new THREE.Mesh(new THREE.BoxGeometry(0.06, FIG_H*0.95, 0.06), edgeMat);
+  edgeL.position.set(-fw/2, 0.2+FIG_H/2, -0.03);
+  edgeL.castShadow = true; edgeL.userData.noPrint = true;
+  group.add(edgeL);
+  // Right edge
+  const edgeR = edgeL.clone();
+  edgeR.position.x = fw/2;
+  group.add(edgeR);
+
+  group.userData = {name:data.name, figure:figure, fw:fw, aspect:aspect};
   return group;
 }
 
-// ===== FUNKO BUILDERS =====
-
-function makeBase() {
-  var g = new THREE.Group();
-  var b1 = new THREE.Mesh(new THREE.CylinderGeometry(1.15, 1.25, 0.12, 48), matBlack);
-  b1.position.y = 0.06; b1.castShadow = true; b1.receiveShadow = true;
-  var b2 = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.15, 0.06, 48), matBlack);
-  b2.position.y = 0.15; b2.castShadow = true;
-  var ring = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.015, 8, 48), matSilver);
-  ring.rotation.x = Math.PI / 2; ring.position.y = 0.18;
-  ring.userData.noPrint = true; // Too thin to print
-  g.add(b1, b2, ring);
-  return g;
-}
-
-function makeBody(torsoMat) {
-  var g = new THREE.Group();
-  var torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.42, 0.55, 8, 20), torsoMat);
-  torso.position.y = 1.55; torso.castShadow = true;
-  g.add(torso);
-  var hip = new THREE.Mesh(new THREE.CapsuleGeometry(0.38, 0.2, 6, 16), matBlack);
-  hip.position.y = 1.05; hip.castShadow = true;
-  g.add(hip);
-  for (var si = 0; si < 2; si++) {
-    var sx = si === 0 ? -1 : 1;
-    var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.15, 0.85, 16), matBlack);
-    leg.position.set(sx * 0.2, 0.55, 0); leg.castShadow = true;
-    g.add(leg);
-    var shoe = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.12, 0.36), matBlack);
-    shoe.position.set(sx * 0.2, 0.10, 0.06); shoe.castShadow = true;
-    g.add(shoe);
-  }
-  for (var ai = 0; ai < 2; ai++) {
-    var sx2 = ai === 0 ? -1 : 1;
-    var ua = new THREE.Mesh(new THREE.CapsuleGeometry(0.13, 0.35, 6, 14), torsoMat);
-    ua.position.set(sx2 * 0.52, 1.65, 0); ua.castShadow = true;
-    ua.rotation.z = sx2 * 0.15;
-    g.add(ua);
-    var fa = new THREE.Mesh(new THREE.CapsuleGeometry(0.11, 0.3, 6, 14), matSkin);
-    fa.position.set(sx2 * 0.6, 1.18, 0); fa.castShadow = true;
-    g.add(fa);
-    var hand = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 12), matSkin);
-    hand.position.set(sx2 * 0.62, 0.98, 0); hand.castShadow = true;
-    g.add(hand);
-  }
-  return g;
-}
-
-function makeHead() {
-  var g = new THREE.Group();
-  var headGeo = new THREE.SphereGeometry(1.0, 40, 36);
-  headGeo.scale(0.92, 1.0, 0.92);
-  var head = new THREE.Mesh(headGeo, matSkin);
-  head.position.y = 3.4; head.castShadow = true;
-  g.add(head);
-
-  // Funko eyes
-  for (var ei = 0; ei < 2; ei++) {
-    var ex = ei === 0 ? -0.28 : 0.28;
-    var ew = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 16), matWhite);
-    ew.position.set(ex, 3.5, 0.82);
-    ew.scale.set(1, 1.15, 0.5);
-    g.add(ew);
-    var pup = new THREE.Mesh(new THREE.SphereGeometry(0.07, 12, 10), matBlack);
-    pup.position.set(ex, 3.48, 0.94);
-    g.add(pup);
-  }
-  var nose = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 6), matSkin);
-  nose.position.set(0, 3.32, 0.95);
-  nose.scale.set(1, 0.7, 0.8);
-  g.add(nose);
-  return g;
-}
-
-function makeHairTousled(color) {
-  var g = new THREE.Group();
-  var mat = V(color, 0.28, 0.0);
-  var cap = new THREE.Mesh(new THREE.SphereGeometry(1.06, 36, 28, 0, Math.PI*2, 0, Math.PI*0.6), mat);
-  cap.position.y = 3.42; cap.castShadow = true;
-  g.add(cap);
-  var clumps = [
-    [0,4.25,0,0.18],[0.3,4.2,0.2,0.14],[-0.25,4.18,0.15,0.13],
-    [0.15,4.3,-0.25,0.12],[-0.35,4.12,-0.1,0.13],[0.4,4.1,-0.15,0.11],
-    [0,4.32,0.3,0.13],[0.2,4.05,0.45,0.1],[-0.45,4.0,0.25,0.1],
-    [0.5,4.0,0.1,0.09],[0.1,4.28,-0.4,0.11],[-0.2,4.15,0.5,0.1]
-  ];
-  for (var i = 0; i < clumps.length; i++) {
-    var c = clumps[i];
-    var cl = new THREE.Mesh(new THREE.SphereGeometry(c[3], 10, 8), mat);
-    cl.position.set(c[0], c[1], c[2]); cl.castShadow = true;
-    g.add(cl);
-  }
-  for (var fi = 0; fi < 8; fi++) {
-    var a = -0.6 + (fi / 7) * 1.2;
-    var bang = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), mat);
-    bang.position.set(Math.sin(a) * 0.85, 3.75 + Math.cos(a) * 0.1, Math.cos(a) * 0.85);
-    bang.scale.set(1, 0.6, 0.8);
-    g.add(bang);
-  }
-  for (var ssi = 0; ssi < 2; ssi++) {
-    var sx3 = ssi === 0 ? -1 : 1;
-    var side = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 10), mat);
-    side.position.set(sx3 * 0.88, 3.25, -0.1);
-    side.scale.set(0.6, 1.0, 0.9);
-    g.add(side);
-  }
-  return g;
-}
-
-function makeHairShort(color) {
-  var g = new THREE.Group();
-  var mat = V(color, 0.3, 0.0);
-  var cap = new THREE.Mesh(new THREE.SphereGeometry(1.04, 36, 28, 0, Math.PI*2, 0, Math.PI*0.52), mat);
-  cap.position.y = 3.45; cap.castShadow = true;
-  g.add(cap);
-  for (var i = 0; i < 24; i++) {
-    var a = (i / 24) * Math.PI * 2;
-    var bump = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), mat);
-    bump.position.set(Math.cos(a) * 0.75, 3.95 + Math.sin(i * 1.7) * 0.1, Math.sin(a) * 0.75);
-    g.add(bump);
-  }
-  return g;
-}
-
-function makeBald() {
-  var g = new THREE.Group();
-  var cap = new THREE.Mesh(
-    new THREE.SphereGeometry(1.02, 36, 28, 0, Math.PI*2, 0, Math.PI*0.42),
-    V(0xd0a888, 0.12, 0.0)
-  );
-  cap.position.y = 3.45; cap.castShadow = true;
-  g.add(cap);
-  var shine = new THREE.Mesh(
-    new THREE.SphereGeometry(0.25, 12, 10),
-    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.05 })
-  );
-  shine.position.set(-0.25, 4.0, 0.7);
-  shine.userData.noPrint = true;
-  g.add(shine);
-  return g;
-}
-
-function makeBeard(color, thickness) {
-  var t = thickness || 1.0;
-  var g = new THREE.Group();
-  var mat = V(color, 0.3, 0.0);
-  var beardGeo = new THREE.SphereGeometry(0.85 * t, 28, 22, Math.PI*0.15, Math.PI*1.2, Math.PI*0.35, Math.PI*0.5);
-  var beard = new THREE.Mesh(beardGeo, mat);
-  beard.position.y = 2.95;
-  beard.scale.set(1.0, 0.75, 0.9);
-  beard.castShadow = true;
-  g.add(beard);
-  var mustache = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.09 * t, 8, 16, Math.PI), mat);
-  mustache.position.set(0, 3.18, 0.6);
-  mustache.rotation.x = Math.PI * 0.55;
-  mustache.scale.set(1.0, 0.6, 1.0);
-  g.add(mustache);
-  for (var i = 0; i < 20; i++) {
-    var a = Math.PI*0.3 + (i / 19) * Math.PI * 0.9;
-    var r = 0.8 * t;
-    var b = new THREE.Mesh(new THREE.SphereGeometry(0.08 * t, 6, 5), mat);
-    b.position.set(Math.cos(a)*r*0.7, 2.7 + Math.sin(a)*r*0.35, 0.4 + Math.cos(a)*0.5);
-    g.add(b);
-  }
-  var chin = new THREE.Mesh(new THREE.ConeGeometry(0.18 * t, 0.3, 10), mat);
-  chin.position.set(0, 2.6, 0.6);
-  chin.rotation.x = Math.PI;
-  g.add(chin);
-  return g;
-}
-
-function makeGlasses(frameColor, thick, lensR) {
-  var t = thick || 0.035;
-  var r = lensR || 0.3;
-  var g = new THREE.Group();
-  var fm = V(frameColor, 0.1, 0.3);
-  for (var i = 0; i < 2; i++) {
-    var sx = i === 0 ? -1 : 1;
-    var ring = new THREE.Mesh(new THREE.TorusGeometry(r, t, 10, 24), fm);
-    ring.position.set(sx * (r + 0.04), 3.5, 0.92);
-    g.add(ring);
-    var lens = new THREE.Mesh(
-      new THREE.CircleGeometry(r - 0.01, 24),
-      new THREE.MeshBasicMaterial({ color: 0x88aaff, transparent: true, opacity: 0.12 })
-    );
-    lens.position.set(sx * (r + 0.04), 3.5, 0.93);
-    lens.userData.noPrint = true; // Flat 2D, not printable
-    g.add(lens);
-  }
-  var bridge = new THREE.Mesh(new THREE.CylinderGeometry(t, t, 0.12, 8), fm);
-  bridge.rotation.z = Math.PI / 2;
-  bridge.position.set(0, 3.5, 0.92);
-  g.add(bridge);
-  for (var ti = 0; ti < 2; ti++) {
-    var sx2 = ti === 0 ? -1 : 1;
-    var arm = new THREE.Mesh(new THREE.CylinderGeometry(t * 0.8, t * 0.8, 0.5, 8), fm);
-    arm.rotation.z = Math.PI / 2;
-    arm.position.set(sx2 * (r * 2 + 0.28), 3.5, 0.7);
-    arm.userData.noPrint = true; // Thin, would need supports
-    g.add(arm);
-  }
-  return g;
-}
-
-function makeSmile() {
-  var g = new THREE.Group();
-  var upper = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.035, 8, 16, Math.PI), matSmile);
-  upper.position.set(0, 3.12, 0.88);
-  upper.rotation.x = Math.PI * 0.4;
-  g.add(upper);
-  var lower = new THREE.Mesh(new THREE.SphereGeometry(0.14, 12, 8), matSmile);
-  lower.position.set(0, 3.06, 0.88);
-  lower.scale.set(1.5, 0.5, 0.6);
-  g.add(lower);
-  for (var i = 0; i < 2; i++) {
-    var sx = i === 0 ? -1 : 1;
-    var d = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 5), V(0xd0a090, 0.4, 0.0));
-    d.position.set(sx * 0.28, 3.09, 0.86);
-    g.add(d);
-  }
-  return g;
-}
-
-function makeScarf() {
-  var g = new THREE.Group();
-  var wrap = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.16, 12, 24), matGreen);
-  wrap.position.y = 2.15;
-  wrap.rotation.x = Math.PI / 2;
-  wrap.scale.y = 0.7;
-  g.add(wrap);
-  var tail = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.6, 0.08), matGreen);
-  tail.position.set(0.3, 1.75, 0.45);
-  tail.rotation.z = -0.2;
-  g.add(tail);
-  // Fringe - tagged noPrint (too thin)
-  for (var i = 0; i < 5; i++) {
-    var f = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.1, 0.04), matGreen);
-    f.position.set(0.3 + (i - 2) * 0.04, 1.4, 0.45);
-    f.userData.noPrint = true;
-    g.add(f);
-  }
-  return g;
-}
-
-function makeCoatCollar() {
-  var g = new THREE.Group();
-  for (var i = 0; i < 2; i++) {
-    var sx = i === 0 ? -1 : 1;
-    var lapel = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.35, 0.06), matNavy);
-    lapel.position.set(sx * 0.22, 2.2, 0.38);
-    lapel.rotation.z = sx * 0.25;
-    lapel.rotation.x = -0.1;
-    g.add(lapel);
-  }
-  var collar = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.08, 8, 16, Math.PI), matNavy);
-  collar.position.y = 2.35;
-  collar.rotation.x = Math.PI / 2;
-  collar.rotation.z = Math.PI;
-  g.add(collar);
-  return g;
-}
-
-function makeWatch() {
-  var g = new THREE.Group();
-  var band = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.03, 8, 16), matBlack);
-  band.position.set(-0.62, 0.98, 0);
-  band.rotation.y = Math.PI / 2;
-  g.add(band);
-  var face = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.025, 16), matSilver);
-  face.position.set(-0.7, 0.98, 0);
-  face.rotation.z = Math.PI / 2;
-  g.add(face);
-  var screen = new THREE.Mesh(new THREE.CircleGeometry(0.05, 12), new THREE.MeshBasicMaterial({ color: 0x111122 }));
-  screen.position.set(-0.713, 0.98, 0);
-  screen.rotation.y = -Math.PI / 2;
-  g.add(screen);
-  tagNoPrint(g); // Entire watch is too small/thin to print
-  return g;
-}
-
-function makeTurtleneck() {
-  var g = new THREE.Group();
-  var neck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.25, 0.25, 16), matBlack);
-  neck.position.y = 2.45;
-  g.add(neck);
-  var fold = new THREE.Mesh(new THREE.TorusGeometry(0.23, 0.04, 8, 16), matBlack);
-  fold.position.y = 2.58;
-  fold.rotation.x = Math.PI / 2;
-  g.add(fold);
-  return g;
-}
-
-function makeHoodieCollar() {
-  var g = new THREE.Group();
-  var collar = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.1, 8, 20, Math.PI*1.3), matCharcoal);
-  collar.position.set(0, 2.35, -0.05);
-  collar.rotation.x = Math.PI / 2 - 0.15;
-  g.add(collar);
-  var zip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.7, 0.02), matSilver);
-  zip.position.set(0, 1.7, 0.42);
-  zip.userData.noPrint = true; // Too thin
-  g.add(zip);
-  return g;
-}
-
-function makeBomberCollar() {
-  var g = new THREE.Group();
-  for (var i = 0; i < 2; i++) {
-    var sx = i === 0 ? -1 : 1;
-    var c = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.1, 0.05), matBlack);
-    c.position.set(sx * 0.2, 2.28, 0.38);
-    c.rotation.z = sx * 0.3;
-    g.add(c);
-  }
-  var vee = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.12, 0.02), matWhite);
-  vee.position.set(0, 2.15, 0.43);
-  vee.rotation.z = Math.PI / 4;
-  vee.userData.noPrint = true; // Too thin
-  g.add(vee);
-  return g;
-}
-
-// ===== BUILD FIGURES =====
-var figures = [];
-
-function buildFigure(name, hairFn, beardFn, glassesFn, accessories, torsoMat, scale) {
-  var g = new THREE.Group();
-  g.add(makeBase());
-  g.add(makeBody(torsoMat || matSkin));
-  g.add(makeHead());
-  if (hairFn) g.add(hairFn());
-  if (beardFn) g.add(beardFn());
-  if (glassesFn) g.add(glassesFn());
-  if (accessories) {
-    for (var i = 0; i < accessories.length; i++) {
-      g.add(accessories[i]());
-    }
-  }
-  g.scale.setScalar(scale || 1.0);
-  g.userData = { name: name };
-  return g;
-}
-
-// Jeremy
-var jeremy = buildFigure('Jeremy',
-  function() { return makeHairTousled(0x2a1a0a); },
-  function() { return makeBeard(0x2a1a0a, 1.0); },
-  function() { return makeGlasses(0x111111, 0.03, 0.3); },
-  [makeTurtleneck, makeScarf, makeCoatCollar, makeWatch],
-  matNavy, 1.0
-);
-
-// Ray
-var ray = buildFigure('Ray',
-  function() { return makeBald(); },
-  function() { return makeBeard(0x1a1008, 1.15); },
-  function() { return makeGlasses(0x111111, 0.045, 0.32); },
-  [makeHoodieCollar],
-  matCharcoal, 1.0
-);
-
-// Glenn
-var glenn = buildFigure('Glenn',
-  function() { return makeHairShort(0x1a1208); },
-  null, null,
-  [makeSmile, makeBomberCollar],
-  matBlack, 1.08
-);
-
-var spacing = 3.8;
-jeremy.position.x = -spacing;
-ray.position.x = 0;
-glenn.position.x = spacing;
-
-scene.add(jeremy, ray, glenn);
-figures.push(jeremy, ray, glenn);
-
-// ===== HTML OVERLAY LABELS (billboard, always visible) =====
-var labelData = [
-  { el: document.getElementById('lbl-0'), x: -spacing, y: -0.12 },
-  { el: document.getElementById('lbl-1'), x: 0,        y: -0.12 },
-  { el: document.getElementById('lbl-2'), x: spacing,  y: -0.12 }
-];
-var _labelVec = new THREE.Vector3();
-
-function updateLabels() {
-  for (var i = 0; i < labelData.length; i++) {
-    var ld = labelData[i];
-    _labelVec.set(ld.x, ld.y, 0);
-    _labelVec.project(camera);
-    var sx = (_labelVec.x * 0.5 + 0.5) * W;
-    var sy = (-_labelVec.y * 0.5 + 0.5) * H;
-    ld.el.style.left = sx + 'px';
-    ld.el.style.top = sy + 'px';
-    ld.el.style.opacity = (_labelVec.z < 1) ? '1' : '0';
-  }
-}
-
-// ===== STL EXPORT =====
-function exportFigureSTL(figIdx) {
-  var figNames = ['Jeremy', 'Ray', 'Glenn'];
-  var name = figNames[figIdx];
-  var btn = document.querySelectorAll('.dl-btn')[figIdx];
-  if (btn) { btn.textContent = '⏳ Exporting…'; btn.disabled = true; }
-
-  setTimeout(function() {
-    try {
-      var figure = figures[figIdx];
-      var geometries = [];
-      figure.updateMatrixWorld(true);
-
-      var worldOffset = new THREE.Vector3();
-      figure.getWorldPosition(worldOffset);
-
-      // Add a neck connector cone for support-free printing
-      // (bridges gap between torso top ~y=2.1 and head bottom ~y=2.48)
-      var neckGeo = new THREE.CylinderGeometry(0.38, 0.44, 0.55, 16);
-      neckGeo.translate(0, 2.25, 0);
-      geometries.push(neckGeo);
-
-      // Add a brim/base extension for better bed adhesion
-      var brimGeo = new THREE.CylinderGeometry(1.28, 1.28, 0.04, 48);
-      brimGeo.translate(0, 0.00, 0); // Flush with print bed
-      geometries.push(brimGeo);
-
-      // Collect all printable mesh geometries
-      figure.traverse(function(obj) {
-        if (obj.isMesh && obj.geometry && obj.geometry.attributes.position && !obj.userData.noPrint) {
-          var geo = obj.geometry.clone();
-          // Convert to non-indexed for clean merging
-          if (geo.index) geo = geo.toNonIndexed();
-          // Strip all non-position attributes for uniform merging
-          var keys = Object.keys(geo.attributes);
-          for (var k = 0; k < keys.length; k++) {
-            if (keys[k] !== 'position') geo.deleteAttribute(keys[k]);
-          }
-          // Apply world transform
-          geo.applyMatrix4(obj.matrixWorld);
-          // Center the figure at origin (remove X offset from scene placement)
-          geo.translate(-worldOffset.x, 0, 0);
-          geometries.push(geo);
-        }
-      });
-
-      if (geometries.length < 2) {
-        throw new Error('No printable geometry collected');
-      }
-
-      // Merge all geometries into one watertight-ish mesh
-      var merged = BufferGeometryUtils.mergeGeometries(geometries, false);
-      if (!merged) {
-        throw new Error('Geometry merge returned null (incompatible attributes)');
-      }
-
-      // Build a temporary mesh and export as binary STL
-      var mesh = new THREE.Mesh(merged, new THREE.MeshStandardMaterial());
-      var exporter = new STLExporter();
-      var result = exporter.parse(mesh, { binary: true });
-
-      // Handle both DataView (binary) and string (ascii) outputs
-      var blob;
-      if (result && result.buffer instanceof ArrayBuffer) {
-        blob = new Blob([result.buffer], { type: 'model/stl' });
-      } else if (result instanceof ArrayBuffer) {
-        blob = new Blob([result], { type: 'model/stl' });
-      } else {
-        blob = new Blob([result], { type: 'model/stl' });
-      }
-
-      // Trigger download
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = name + '-funko.stl';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch(e) {
-      console.error('STL export error:', e);
-      alert('STL export failed: ' + e.message);
-    } finally {
-      if (btn) { btn.textContent = name; btn.disabled = false; }
-    }
-  }, 60);
-}
-
-// Wire up download buttons
-document.querySelectorAll('.dl-btn').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    exportFigureSTL(parseInt(btn.dataset.fig, 10));
+// ===== LOAD & BUILD =====
+try {
+  const imgs = await Promise.all(FIGS.map(d=>loadImage(d.tex)));
+  imgs.forEach((img,i)=>{
+    const processed = processImage(img);
+    const fig = buildFigure(FIGS[i], processed);
+    scene.add(fig);
+    figures.push(fig);
+    const lbl = document.getElementById('lbl'+i);
+    if(lbl) lbl.style.opacity = '1';
   });
-});
+
+  // Hide loader
+  const ld = document.getElementById('ld');
+  ld.style.opacity = '0';
+  setTimeout(()=>{ld.style.display='none';}, 500);
+} catch(err){
+  document.getElementById('ldErr').textContent = err.message;
+  console.error(err);
+}
+
+// ===== LABELS =====
+const labelEls = [document.getElementById('lbl0'),document.getElementById('lbl1'),document.getElementById('lbl2')];
+const lv = new THREE.Vector3();
+function updateLabels(){
+  for(let i=0;i<FIGS.length;i++){
+    lv.set(FIGS[i].x, -0.15, 0).project(camera);
+    const sx = (lv.x*0.5+0.5)*innerWidth;
+    const sy = (-lv.y*0.5+0.5)*innerHeight;
+    labelEls[i].style.left = sx+'px';
+    labelEls[i].style.top = sy+'px';
+    labelEls[i].style.opacity = lv.z < 1 ? '1' : '0';
+  }
+}
 
 // ===== CONTROLS =====
-var controls = new OrbitControls(camera, canvas);
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.06;
-controls.minDistance = 5;
+controls.minDistance = 4;
 controls.maxDistance = 25;
 controls.maxPolarAngle = Math.PI * 0.52;
-controls.target.set(0, 2.8, 0);
+controls.target.set(0, 2.5, 0);
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.6;
+controls.autoRotateSpeed = 0.5;
 
 // Click to focus
-var raycaster = new THREE.Raycaster();
-var mouseV = new THREE.Vector2();
-var mouseDownPos = null;
+const raycaster = new THREE.Raycaster();
+const mv = new THREE.Vector2();
+let downPos = null;
 
-canvas.addEventListener('pointerdown', function(e) {
-  if (e.button !== 0) return;
-  mouseDownPos = { x: e.clientX, y: e.clientY };
+renderer.domElement.addEventListener('pointerdown', e=>{
+  if(e.button!==0) return;
+  downPos = {x:e.clientX, y:e.clientY};
 });
-
-canvas.addEventListener('pointerup', function(e) {
-  if (e.button !== 0 || !mouseDownPos) return;
-  var dx = e.clientX - mouseDownPos.x;
-  var dy = e.clientY - mouseDownPos.y;
-  if (Math.sqrt(dx*dx + dy*dy) > 5) { mouseDownPos = null; return; }
-  mouseV.x = (e.clientX / window.innerWidth) * 2 - 1;
-  mouseV.y = -(e.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouseV, camera);
-  var hits = raycaster.intersectObjects(figures, true);
-  if (hits.length > 0) {
-    var obj = hits[0].object;
-    while (obj.parent && figures.indexOf(obj) === -1) obj = obj.parent;
-    if (figures.indexOf(obj) !== -1) {
-      animateCameraTo(obj.position.x);
+renderer.domElement.addEventListener('pointerup', e=>{
+  if(e.button!==0 || !downPos) return;
+  const dx=e.clientX-downPos.x, dy=e.clientY-downPos.y;
+  if(Math.hypot(dx,dy)>6){downPos=null; return;}
+  mv.x = (e.clientX/innerWidth)*2-1;
+  mv.y = -(e.clientY/innerHeight)*2+1;
+  raycaster.setFromCamera(mv, camera);
+  const hits = raycaster.intersectObjects(figures, true);
+  if(hits.length>0){
+    let o = hits[0].object;
+    while(o.parent && figures.indexOf(o)===-1) o = o.parent;
+    if(figures.indexOf(o)!==-1){
+      camTween(o.position.x, 3, 7, o.position.x, 2.5, 0);
       controls.autoRotate = false;
-      document.getElementById('ba').classList.remove('on');
+      document.getElementById('btnAuto').classList.remove('on');
     }
   }
-  mouseDownPos = null;
+  downPos = null;
 });
 
-function animateCameraTo(figX) {
-  var targetPos = new THREE.Vector3(figX, 3.2, 7);
-  var targetLook = new THREE.Vector3(figX, 2.8, 0);
-  var startPos = camera.position.clone();
-  var startTarget = controls.target.clone();
-  var t0 = performance.now();
-  function tween() {
-    var t = Math.min(1, (performance.now() - t0) / 800);
-    var ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
-    camera.position.lerpVectors(startPos, targetPos, ease);
-    controls.target.lerpVectors(startTarget, targetLook, ease);
-    if (t < 1) requestAnimationFrame(tween);
-  }
-  tween();
+function camTween(px,py,pz,tx,ty,tz){
+  const sp = camera.position.clone(), st = controls.target.clone();
+  const tp = new THREE.Vector3(px,py,pz), tt = new THREE.Vector3(tx,ty,tz);
+  const t0 = performance.now();
+  (function step(){
+    const t = Math.min(1,(performance.now()-t0)/800);
+    const e = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+    camera.position.lerpVectors(sp,tp,e);
+    controls.target.lerpVectors(st,tt,e);
+    if(t<1) requestAnimationFrame(step);
+  })();
 }
 
-document.getElementById('br').addEventListener('click', function() {
-  var startPos = camera.position.clone();
-  var startTarget = controls.target.clone();
-  var t0 = performance.now();
-  function tween() {
-    var t = Math.min(1, (performance.now() - t0) / 800);
-    var ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
-    camera.position.lerpVectors(startPos, defaultCamPos, ease);
-    controls.target.lerpVectors(startTarget, new THREE.Vector3(0,2.8,0), ease);
-    if (t < 1) requestAnimationFrame(tween);
-  }
-  tween();
+document.getElementById('btnReset').addEventListener('click',()=>{
+  camTween(defaultCam.x, defaultCam.y, defaultCam.z, 0, 2.5, 0);
 });
 
-var btnAuto = document.getElementById('ba');
-btnAuto.addEventListener('click', function() {
+const btnA = document.getElementById('btnAuto');
+btnA.addEventListener('click',()=>{
   controls.autoRotate = !controls.autoRotate;
-  btnAuto.classList.toggle('on', controls.autoRotate);
+  btnA.classList.toggle('on', controls.autoRotate);
 });
 
-window.addEventListener('resize', function() {
-  W = window.innerWidth; H = window.innerHeight;
-  camera.aspect = W / H;
+// ===== STL EXPORT =====
+function exportSTL(idx){
+  const name = FIGS[idx].name;
+  const btn = document.querySelectorAll('[data-fig]')[idx];
+  if(btn){btn.textContent='⏳';btn.disabled=true;}
+
+  setTimeout(()=>{
+    try {
+      // Build a simple 3D-printable blank Funko approximation
+      const g = new THREE.Group();
+      const base = new THREE.CylinderGeometry(1.15,1.3,0.14,48); base.translate(0,0.07,0);
+      g.add(new THREE.Mesh(base));
+      const base2 = new THREE.CylinderGeometry(1.0,1.15,0.06,48); base2.translate(0,0.17,0);
+      g.add(new THREE.Mesh(base2));
+      const neck = new THREE.CylinderGeometry(0.36,0.42,0.5,16); neck.translate(0,2.3,0);
+      g.add(new THREE.Mesh(neck));
+      const body = new THREE.CapsuleGeometry(0.7,1.2,8,20); body.translate(0,1.7,0);
+      g.add(new THREE.Mesh(body));
+      const head = new THREE.SphereGeometry(1.0,32,28); head.scale(0.92,1.0,0.92); head.translate(0,3.4,0);
+      g.add(new THREE.Mesh(head));
+
+      const exporter = new STLExporter();
+      const result = exporter.parse(g, {binary:true});
+      let blob;
+      if(result && result.buffer instanceof ArrayBuffer) blob = new Blob([result.buffer],{type:'model/stl'});
+      else if(result instanceof ArrayBuffer) blob = new Blob([result],{type:'model/stl'});
+      else blob = new Blob([result],{type:'model/stl'});
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = name+'-funko.stl';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch(e){
+      console.error('STL error:',e);
+      alert('STL export failed: '+e.message);
+    } finally {
+      if(btn){btn.textContent=name;btn.disabled=false;}
+    }
+  },60);
+}
+document.querySelectorAll('[data-fig]').forEach(b=>{
+  b.addEventListener('click',()=>exportSTL(parseInt(b.dataset.fig,10)));
+});
+
+// ===== RESIZE =====
+addEventListener('resize',()=>{
+  camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(W, H);
+  renderer.setSize(innerWidth, innerHeight);
 });
 
-// Render loop
-function animate() {
+// ===== RENDER LOOP =====
+const clock = new THREE.Clock();
+function animate(){
   requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+  // Subtle floating bob
+  figures.forEach((f,i)=>{
+    if(f.userData.figure)
+      f.userData.figure.position.y = 0.2 + FIG_H/2 + Math.sin(t*0.8 + i*1.7)*0.025;
+  });
   controls.update();
   updateLabels();
   renderer.render(scene, camera);
 }
 animate();
-
-// Hide loader
-var loader = document.getElementById('ld');
-loader.style.opacity = '0';
-setTimeout(function() { loader.style.display = 'none'; }, 500);
-
-} catch(err) {
-  var errEl = document.getElementById('err');
-  errEl.textContent = err.message + ' (line ' + (err.lineNumber || err.line || '?') + ')';
-  console.error(err);
-}
 </script>
 </body>
 </html>
