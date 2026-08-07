@@ -458,8 +458,13 @@ const clock = new THREE.Clock();
 function animate(){
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
-  // Subtle floating bob
+  // Billboard: rotate figures to face camera (Y-axis only, keep upright)
+  // 3D bases are radially symmetric so they look fine rotating
   figures.forEach((f,i)=>{
+    const dx = camera.position.x - f.position.x;
+    const dz = camera.position.z - f.position.z;
+    f.rotation.y = Math.atan2(dx, dz);
+    // Subtle floating bob on the figure plane
     if(f.userData.figure)
       f.userData.figure.position.y = 0.2 + FIG_H/2 + Math.sin(t*0.8 + i*1.7)*0.025;
   });
