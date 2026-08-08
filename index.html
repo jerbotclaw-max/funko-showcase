@@ -438,24 +438,33 @@ function createFunkoPop(config) {
 async function init() {
   let jeremyFace, rayFace, glennFace;
   
-  try {
-    [jeremyFace, rayFace, glennFace] = await Promise.all([
-      loadFaceTexture('images/v5/jeremy.png'),
-      loadFaceTexture('images/v5/ray.png'),
-      loadFaceTexture('images/v5/glenn.png')
-    ]);
-  } catch (e) {
-    console.warn('V5 textures failed, trying textures/ folder', e);
-    try {
-      [jeremyFace, rayFace, glennFace] = await Promise.all([
-        loadFaceTexture('textures/jeremy.png'),
-        loadFaceTexture('textures/ray.png'),
-        loadFaceTexture('textures/glenn.png')
-      ]);
-    } catch (e2) {
-      console.warn('All face textures failed', e2);
-    }
+  // Load textures with a timeout fallback
+  function loadWithFallback(primary, fallback) {
+    return new Promise(resolve => {
+      let resolved = false;
+      const timer = setTimeout(() => {
+        if (!resolved) { resolved = true; console.warn('Texture timeout:', primary); resolve(null); }
+      }, 8000);
+      
+      loadFaceTexture(primary)
+        .then(tex => { if (!resolved) { resolved = true; clearTimeout(timer); resolve(tex); } })
+        .catch(() => {
+          if (fallback) {
+            loadFaceTexture(fallback)
+              .then(tex => { if (!resolved) { resolved = true; clearTimeout(timer); resolve(tex); } })
+              .catch(() => { if (!resolved) { resolved = true; clearTimeout(timer); resolve(null); } });
+          } else {
+            if (!resolved) { resolved = true; clearTimeout(timer); resolve(null); } }
+          }
+        });
+    });
   }
+  
+  [jeremyFace, rayFace, glennFace] = await Promise.all([
+    loadWithFallback('images/v5/jeremy.png', 'textures/jeremy.png'),
+    loadWithFallback('images/v5/ray.png', 'textures/ray.png'),
+    loadWithFallback('images/v5/glenn.png', 'textures/glenn.png')
+  ]);
   
   // Jeremy — blue theme
   const jeremy = createFunkoPop({
@@ -556,7 +565,7 @@ function onResize() {
   renderer.setSize(w, h);
   labelRenderer.setSize(w, h);
 }
-window.addEventListener('resize, onResize');
+window.addEventListener('resize', onResize);
 
 // Handle container resize (mobile orientation change, etc.)
 if (window.ResizeObserver) {
@@ -565,7 +574,11 @@ if (window.ResizeObserver) {
 }
 
 // ===== START =====
-init();
+init().catch(err => {
+  console.error('init() failed:', err);
+  const loadingEl = document.getElementById('loading');
+  if (loadingEl) loadingEl.textContent = 'Error loading scene: ' + err.message;
+});
 </script>
 
 </body>
