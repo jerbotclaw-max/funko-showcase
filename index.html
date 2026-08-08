@@ -5,138 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JC Dream Funko Pop Collection</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #0d1117; --surface: #161b22; --border: #30363d;
-  --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
-  --gold: #d29922; --pink: #f778ba;
-}
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.6; overflow-x: hidden;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--gold:#d29922;--pink:#f778ba}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6;overflow-x:hidden}
+
 /* HERO */
-.hero {
-  position: relative; width: 100%; height: 100vh; min-height: 600px;
-  background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d1117 70%);
-  overflow: hidden;
-}
-.hero canvas { display: block; }
-.hero-overlay {
-  position: absolute; top: 0; left: 0; right: 0;
-  padding: 24px 20px 10px; text-align: center; z-index: 10; pointer-events: none;
-}
-.hero-overlay h1 {
-  font-size: clamp(24px, 5vw, 42px); font-weight: 800;
-  background: linear-gradient(90deg, var(--pink), var(--accent), var(--gold));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; letter-spacing: -1px;
-}
-.hero-overlay p { font-size: 14px; color: var(--muted); margin-top: 6px; }
-.hero-hint {
-  position: absolute; bottom: 16px; left: 0; right: 0; text-align: center;
-  font-size: 12px; color: var(--muted); z-index: 10; pointer-events: none;
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
-#loading-3d {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  font-size: 16px; color: var(--accent); z-index: 100;
-}
+.hero{position:relative;width:100%;height:100vh;min-height:600px;background:radial-gradient(ellipse at center,#1a1a3e 0%,#0d1117 70%);overflow:hidden}
+.hero canvas{display:block}
+.hero-overlay{position:absolute;top:0;left:0;right:0;padding:24px 20px 10px;text-align:center;z-index:10;pointer-events:none}
+.hero-overlay h1{font-size:clamp(24px,5vw,42px);font-weight:800;background:linear-gradient(90deg,var(--pink),var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1px}
+.hero-overlay p{font-size:14px;color:var(--muted);margin-top:6px}
+.hero-hint{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:12px;color:var(--muted);z-index:10;pointer-events:none;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+#loading-3d{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;color:var(--accent);z-index:100}
+
 /* NAV */
-nav {
-  position: sticky; top: 0; z-index: 50;
-  background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  display: flex; justify-content: center; gap: 8px; padding: 10px 16px;
-}
-nav a {
-  color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600;
-  padding: 6px 14px; border-radius: 8px; transition: all 0.2s;
-}
-nav a:hover, nav a.active { color: var(--text); background: var(--surface); }
+nav{position:sticky;top:0;z-index:50;background:rgba(13,17,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;justify-content:center;gap:8px;padding:10px 16px}
+nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;padding:6px 14px;border-radius:8px;transition:all .2s}
+nav a:hover,nav a.active{color:var(--text);background:var(--surface)}
+
 /* SECTIONS */
-.section {
-  max-width: 1000px; margin: 0 auto; padding: 48px 20px;
-}
-.section-title {
-  font-size: clamp(22px, 4vw, 32px); font-weight: 800; margin-bottom: 8px;
-}
-.section-title .role { font-size: 16px; font-weight: 400; color: var(--accent); }
-.section-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+.section{max-width:1000px;margin:0 auto;padding:48px 20px}
+.section-title{font-size:clamp(22px,4vw,32px);font-weight:800;margin-bottom:8px}
+.section-title .role{font-size:16px;font-weight:400;color:var(--accent)}
+.section-subtitle{color:var(--muted);font-size:14px;margin-bottom:28px}
+
 /* COMPARISON */
-.compare-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
-}
-.compare-item {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; overflow: hidden;
-}
-.compare-item .label {
-  padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--muted);
-  border-bottom: 1px solid var(--border);
-}
-.compare-item img { width: 100%; display: block; aspect-ratio: 1; object-fit: cover; }
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.compare-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.compare-item .label{padding:8px 14px;font-size:13px;font-weight:600;color:var(--muted);border-bottom:1px solid var(--border)}
+.compare-item img{width:100%;display:block;aspect-ratio:1;object-fit:cover}
+
 /* LIKENESS BAR */
-.likeness {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
-  font-size: 15px;
-}
-.likeness-bar-bg {
-  flex: 1; height: 10px; background: var(--surface);
-  border-radius: 5px; overflow: hidden; border: 1px solid var(--border);
-}
-.likeness-bar-fill {
-  height: 100%; border-radius: 5px;
-  background: linear-gradient(90deg, var(--gold), #4fd1c5);
-  transition: width 1s ease;
-}
-.likeness-score { font-weight: 700; color: var(--gold); min-width: 40px; }
-/* VERSION GALLERY */
-.version-gallery {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 14px;
-}
-.version-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; overflow: hidden; transition: transform 0.2s;
-  cursor: pointer;
-}
-.version-card:hover { transform: translateY(-3px); border-color: var(--accent); }
-.version-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
-.version-card .vtag {
-  padding: 8px 12px; font-size: 12px; font-weight: 600;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.version-card .vtag .ver { color: var(--accent); }
-.version-card .vtag .stl { color: var(--muted); font-size: 11px; text-decoration: none; }
-.version-card .vtag .stl:hover { color: var(--gold); }
+.likeness{display:flex;align-items:center;gap:12px;margin-bottom:28px;font-size:15px}
+.likeness-bar-bg{flex:1;height:10px;background:var(--surface);border-radius:5px;overflow:hidden;border:1px solid var(--border)}
+.likeness-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--gold),#4fd1c5);transition:width 1s ease}
+.likeness-score{font-weight:700;color:var(--gold);min-width:40px}
+
 /* MINI 3D VIEWER */
-.mini-3d {
-  width: 100%; height: 350px; background: #111827;
-  border-radius: 12px; border: 1px solid var(--border);
-  overflow: hidden; position: relative; margin-bottom: 28px;
-}
-.mini-3d canvas { display: block; width: 100%; height: 100%; }
-.mini-3d .hint {
-  position: absolute; bottom: 8px; right: 12px; font-size: 11px; color: #4b5563;
-}
+.mini-3d{width:100%;height:400px;background:#111827;border-radius:12px;border:1px solid var(--border);overflow:hidden;position:relative;margin-bottom:16px}
+.mini-3d canvas{display:block;width:100%;height:100%}
+.mini-3d .hint{position:absolute;bottom:8px;right:12px;font-size:11px;color:#4b5563}
+.mini-3d .mode-badge{position:absolute;top:10px;left:14px;font-size:12px;color:#6b7280;background:rgba(0,0,0,.5);padding:3px 10px;border-radius:6px}
+
+/* VERSION GALLERY */
+.version-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.version-card{background:var(--surface);border:2px solid var(--border);border-radius:12px;overflow:hidden;transition:all .2s;cursor:pointer;position:relative}
+.version-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.version-card.active{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 4px 20px rgba(210,153,34,.2)}
+.version-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.version-card .vtag{padding:8px 12px;font-size:12px;font-weight:600;display:flex;justify-content:space-between;align-items:center}
+.version-card .vtag .ver{color:var(--accent)}
+.version-card.active .vtag .ver{color:var(--gold)}
+.version-card .vtag .stl{color:var(--muted);font-size:11px;text-decoration:none}
+.version-card .vtag .stl:hover{color:var(--gold)}
+
 /* FOOTER */
-footer {
-  text-align: center; padding: 40px 20px; border-top: 1px solid var(--border);
-  color: var(--muted); font-size: 13px;
-}
+footer{text-align:center;padding:40px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+
 /* MOBILE */
-@media (max-width: 640px) {
-  .compare-grid { grid-template-columns: 1fr; }
-  .hero-overlay h1 { font-size: 22px; }
-  nav { gap: 4px; padding: 8px; }
-  nav a { font-size: 12px; padding: 4px 10px; }
-  .version-gallery { grid-template-columns: 1fr 1fr; }
-  .section { padding: 32px 16px; }
-  .mini-3d { height: 280px; }
+@media(max-width:640px){
+  .compare-grid{grid-template-columns:1fr}
+  .hero-overlay h1{font-size:22px}
+  nav{gap:4px;padding:8px}
+  nav a{font-size:12px;padding:4px 10px}
+  .version-gallery{grid-template-columns:1fr 1fr}
+  .section{padding:32px 16px}
+  .mini-3d{height:320px}
 }
 </style>
 </head>
@@ -144,7 +80,7 @@ footer {
 
 <!-- HERO 3D SCENE -->
 <div class="hero" id="hero">
-  <div id="loading-3d">Loading 3D models...</div>
+  <div id="loading-3d">Building 3D Funko Figures...</div>
   <div class="hero-overlay">
     <h1>JC Dream Funko Pop Collection</h1>
     <p>Interactive 3D vinyl figures • Drag to rotate • Scroll to zoom</p>
@@ -154,24 +90,24 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <a href="#hero">Top</a>
-  <a href="#jeremy">Jeremy</a>
-  <a href="#ray">Ray</a>
-  <a href="#glenn">Glenn</a>
+  <a href="#hero" data-target="hero">Top</a>
+  <a href="#jeremy" data-target="jeremy">Jeremy</a>
+  <a href="#ray" data-target="ray">Ray</a>
+  <a href="#glenn" data-target="glenn">Glenn</a>
 </nav>
 
 <!-- JEREMY -->
 <div class="section" id="jeremy">
   <div class="section-title">Jeremy Payne <span class="role">— The Architect</span></div>
-  <div class="section-subtitle">White male, brown hair, short style • Navy polo</div>
+  <div class="section-subtitle">Brown hair, full beard • Navy polo</div>
   <div class="likeness">
     <span>Likeness</span>
-    <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:70%"></div></div>
-    <span class="likeness-score">7/10</span>
+    <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:72%"></div></div>
+    <span class="likeness-score">7.2/10</span>
   </div>
   <div class="mini-3d" id="mini-jeremy">
-    <span style="position:absolute;top:12px;left:14px;font-size:12px;color:#6b7280;">3D Model — Drag to rotate</span>
-    <span class="hint">Scroll to zoom</span>
+    <span class="mode-badge" id="badge-jeremy">3D Procedural Model</span>
+    <span class="hint">Drag to rotate • Scroll to zoom</span>
   </div>
   <div class="compare-grid">
     <div class="compare-item">
@@ -179,30 +115,30 @@ footer {
       <img src="images/reference/jeremy.png" alt="Jeremy reference">
     </div>
     <div class="compare-item">
-      <div class="label">Funko Pop V5</div>
+      <div class="label">Funko Pop V5 Concept</div>
       <img src="images/v5/jeremy.png" alt="Jeremy Funko Pop V5">
     </div>
   </div>
-  <div class="version-gallery">
-    <div class="version-card"><img src="images/v1/jeremy.png" alt="V1"><div class="vtag"><span class="ver">V1</span><a class="stl" href="https://jerbotclaw-max.github.io/funko-showcase/">Initial</a></div></div>
-    <div class="version-card"><img src="images/v2/jeremy.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="stl">Refined</span></div></div>
-    <div class="version-card"><img src="images/v3/jeremy.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="stl">Polished</span></div></div>
-    <div class="version-card"><img src="images/v5/jeremy.png" alt="V5"><div class="vtag"><span class="ver">V5 ★</span><a class="stl" href="stl/funko-pop-jeremy-v5.stl" download>↓ STL</a></div></div>
+  <div class="version-gallery" data-person="jeremy">
+    <div class="version-card" data-version="v1"><img src="images/v1/jeremy.png" alt="V1"><div class="vtag"><span class="ver">V1</span><span class="vlabel">Initial</span></div></div>
+    <div class="version-card" data-version="v2"><img src="images/v2/jeremy.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="vlabel">Refined</span></div></div>
+    <div class="version-card" data-version="v3"><img src="images/v3/jeremy.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="vlabel">Polished</span></div></div>
+    <div class="version-card active" data-version="v5"><img src="images/v5/jeremy.png" alt="V5"><div class="vtag"><span class="ver">V5 ★ 3D</span><a class="stl" href="stl/funko-pop-jeremy-v5.stl" download>↓ STL</a></div></div>
   </div>
 </div>
 
 <!-- RAY -->
 <div class="section" id="ray">
   <div class="section-title">Ray He <span class="role">— The Engineer</span></div>
-  <div class="section-subtitle">Asian male • Glasses • Dark casual</div>
+  <div class="section-subtitle">Asian male • Glasses • All-black outfit</div>
   <div class="likeness">
     <span>Likeness</span>
     <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:70%"></div></div>
     <span class="likeness-score">7/10</span>
   </div>
   <div class="mini-3d" id="mini-ray">
-    <span style="position:absolute;top:12px;left:14px;font-size:12px;color:#6b7280;">3D Model — Drag to rotate</span>
-    <span class="hint">Scroll to zoom</span>
+    <span class="mode-badge" id="badge-ray">3D Procedural Model</span>
+    <span class="hint">Drag to rotate • Scroll to zoom</span>
   </div>
   <div class="compare-grid">
     <div class="compare-item">
@@ -210,30 +146,30 @@ footer {
       <img src="images/reference/ray.png" alt="Ray reference">
     </div>
     <div class="compare-item">
-      <div class="label">Funko Pop V5</div>
+      <div class="label">Funko Pop V5 Concept</div>
       <img src="images/v5/ray.png" alt="Ray Funko Pop V5">
     </div>
   </div>
-  <div class="version-gallery">
-    <div class="version-card"><img src="images/v1/ray.png" alt="V1"><div class="vtag"><span class="ver">V1</span><span class="stl">Initial</span></div></div>
-    <div class="version-card"><img src="images/v2/ray.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="stl">Refined</span></div></div>
-    <div class="version-card"><img src="images/v3/ray.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="stl">Polished</span></div></div>
-    <div class="version-card"><img src="images/v5/ray.png" alt="V5"><div class="vtag"><span class="ver">V5 ★</span><a class="stl" href="stl/funko-pop-ray-v5.stl" download>↓ STL</a></div></div>
+  <div class="version-gallery" data-person="ray">
+    <div class="version-card" data-version="v1"><img src="images/v1/ray.png" alt="V1"><div class="vtag"><span class="ver">V1</span><span class="vlabel">Initial</span></div></div>
+    <div class="version-card" data-version="v2"><img src="images/v2/ray.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="vlabel">Refined</span></div></div>
+    <div class="version-card" data-version="v3"><img src="images/v3/ray.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="vlabel">Polished</span></div></div>
+    <div class="version-card active" data-version="v5"><img src="images/v5/ray.png" alt="V5"><div class="vtag"><span class="ver">V5 ★ 3D</span><a class="stl" href="stl/funko-pop-ray-v5.stl" download>↓ STL</a></div></div>
   </div>
 </div>
 
 <!-- GLENN -->
 <div class="section" id="glenn">
   <div class="section-title">Glenn <span class="role">— The Strategist</span></div>
-  <div class="section-subtitle">Black hair, short upward style • Blazer look</div>
+  <div class="section-subtitle">Dark skin, short textured hair • Navy blazer</div>
   <div class="likeness">
     <span>Likeness</span>
-    <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:70%"></div></div>
-    <span class="likeness-score">7/10</span>
+    <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:68%"></div></div>
+    <span class="likeness-score">6.8/10</span>
   </div>
   <div class="mini-3d" id="mini-glenn">
-    <span style="position:absolute;top:12px;left:14px;font-size:12px;color:#6b7280;">3D Model — Drag to rotate</span>
-    <span class="hint">Scroll to zoom</span>
+    <span class="mode-badge" id="badge-glenn">3D Procedural Model</span>
+    <span class="hint">Drag to rotate • Scroll to zoom</span>
   </div>
   <div class="compare-grid">
     <div class="compare-item">
@@ -241,20 +177,20 @@ footer {
       <img src="images/reference/glenn.png" alt="Glenn reference">
     </div>
     <div class="compare-item">
-      <div class="label">Funko Pop V5</div>
+      <div class="label">Funko Pop V5 Concept</div>
       <img src="images/v5/glenn.png" alt="Glenn Funko Pop V5">
     </div>
   </div>
-  <div class="version-gallery">
-    <div class="version-card"><img src="images/v1/glenn.png" alt="V1"><div class="vtag"><span class="ver">V1</span><span class="stl">Initial</span></div></div>
-    <div class="version-card"><img src="images/v2/glenn.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="stl">Refined</span></div></div>
-    <div class="version-card"><img src="images/v3/glenn.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="stl">Polished</span></div></div>
-    <div class="version-card"><img src="images/v5/glenn.png" alt="V5"><div class="vtag"><span class="ver">V5 ★</span><a class="stl" href="stl/funko-pop-glenn-v5.stl" download>↓ STL</a></div></div>
+  <div class="version-gallery" data-person="glenn">
+    <div class="version-card" data-version="v1"><img src="images/v1/glenn.png" alt="V1"><div class="vtag"><span class="ver">V1</span><span class="vlabel">Initial</span></div></div>
+    <div class="version-card" data-version="v2"><img src="images/v2/glenn.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="vlabel">Refined</span></div></div>
+    <div class="version-card" data-version="v3"><img src="images/v3/glenn.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="vlabel">Polished</span></div></div>
+    <div class="version-card active" data-version="v5"><img src="images/v5/glenn.png" alt="V5"><div class="vtag"><span class="ver">V5 ★ 3D</span><a class="stl" href="stl/funko-pop-glenn-v5.stl" download>↓ STL</a></div></div>
   </div>
 </div>
 
 <footer>
-  JC Dream Funko Pop Collection • 3D models generated with parametric geometry + TripoSR<br>
+  JC Dream Funko Pop Collection • Procedural 3D figures built with Three.js<br>
   Concept art via AI image generation • <a href="https://github.com/jerbotclaw-max/funko-showcase" style="color:var(--accent);text-decoration:none;">GitHub Repo</a>
 </footer>
 
@@ -270,20 +206,748 @@ footer {
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// ─── HERO SCENE: All three models ───
+// ═══════════════════════════════════════════════════════
+// CHARACTER CONFIGURATIONS
+// ═══════════════════════════════════════════════════════
+const CONFIGS = {
+  jeremy: {
+    name: 'Jeremy', role: 'The Architect',
+    skinColor: '#e8c098', skinHex: 0xe8c098,
+    hairColor: 0x4a3220, hairColorStr: '#4a3220',
+    hairType: 'short',
+    shirtColor: 0x1a2849, shirtColorStr: '#1a2849',
+    pantsColor: 0x1a1a1a,
+    shoeColor: 0x111111,
+    hasBeard: true, beardColor: 0x4a3220,
+    hasGlasses: false,
+    smileType: 'neutral'
+  },
+  ray: {
+    name: 'Ray', role: 'The Engineer',
+    skinColor: '#ddc4a0', skinHex: 0xddc4a0,
+    hairColor: 0x1a1208, hairColorStr: '#1a1208',
+    hairType: 'spiky',
+    shirtColor: 0x1a1a1a, shirtColorStr: '#1a1a1a',
+    pantsColor: 0x1a1a1a,
+    shoeColor: 0x111111,
+    hasBeard: false,
+    hasGlasses: true,
+    smileType: 'neutral'
+  },
+  glenn: {
+    name: 'Glenn', role: 'The Strategist',
+    skinColor: '#6B4423', skinHex: 0x6B4423,
+    hairColor: 0x0a0a0a, hairColorStr: '#0a0a0a',
+    hairType: 'textured',
+    shirtColor: 0x1a2849, shirtColorStr: '#1a2849',
+    pantsColor: 0x1a2849,
+    shoeColor: 0x111111,
+    hasBeard: false,
+    hasGlasses: false,
+    smileType: 'smile'
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// FACE TEXTURE GENERATOR (Canvas → THREE.CanvasTexture)
+// Draws a Funko-style face: big eyes, minimal features
+// ═══════════════════════════════════════════════════════
+function createFaceTexture(config) {
+  const S = 512;
+  const canvas = document.createElement('canvas');
+  canvas.width = S; canvas.height = S;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, S, S);
+
+  const cx = S / 2;
+  const faceCY = 275;
+  const faceRX = 155;
+  const faceRY = 175;
+
+  // ── Skin base ──
+  const skinGrad = ctx.createRadialGradient(cx, faceCY - 20, 50, cx, faceCY, faceRX);
+  skinGrad.addColorStop(0, lightenColor(config.skinColor, 8));
+  skinGrad.addColorStop(1, config.skinColor);
+  ctx.fillStyle = skinGrad;
+  ctx.beginPath();
+  ctx.ellipse(cx, faceCY, faceRX, faceRY, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ── Ears (small circles on sides) ──
+  ctx.fillStyle = config.skinColor;
+  ctx.beginPath();
+  ctx.ellipse(cx - faceRX + 8, faceCY - 10, 18, 28, -0.1, 0, Math.PI * 2);
+  ctx.ellipse(cx + faceRX - 8, faceCY - 10, 18, 28, 0.1, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ── Eye area (whites) ──
+  const eyeY = faceCY - 25;
+  const eyeDX = 60;
+  const eyeR = 30;
+
+  // Eye whites
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(cx - eyeDX, eyeY, eyeR + 2, 0, Math.PI * 2);
+  ctx.arc(cx + eyeDX, eyeY, eyeR + 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Iris/Pupil (solid black — Funko style)
+  ctx.fillStyle = '#1a1a1a';
+  ctx.beginPath();
+  ctx.arc(cx - eyeDX, eyeY, eyeR, 0, Math.PI * 2);
+  ctx.arc(cx + eyeDX, eyeY, eyeR, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eye shine (white reflection)
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.beginPath();
+  ctx.arc(cx - eyeDX + 9, eyeY - 10, 9, 0, Math.PI * 2);
+  ctx.arc(cx + eyeDX + 9, eyeY - 10, 9, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Smaller secondary shine
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.beginPath();
+  ctx.arc(cx - eyeDX - 8, eyeY + 8, 4, 0, Math.PI * 2);
+  ctx.arc(cx + eyeDX - 8, eyeY + 8, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ── Eyebrows ──
+  ctx.fillStyle = config.hairColorStr;
+  ctx.beginPath();
+  ctx.ellipse(cx - eyeDX, eyeY - 45, 32, 7, -0.05, 0, Math.PI * 2);
+  ctx.ellipse(cx + eyeDX, eyeY - 45, 32, 7, 0.05, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ── Nose (subtle shadow) ──
+  ctx.fillStyle = darkenColor(config.skinColor, 12);
+  ctx.beginPath();
+  ctx.ellipse(cx, faceCY + 20, 8, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Nostrils
+  ctx.fillStyle = darkenColor(config.skinColor, 25);
+  ctx.beginPath();
+  ctx.ellipse(cx - 7, faceCY + 28, 3, 4, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx + 7, faceCY + 28, 3, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ── Mouth ──
+  const mouthY = faceCY + 60;
+  if (config.smileType === 'smile') {
+    // Smiling mouth (open, showing teeth)
+    ctx.fillStyle = '#3a1a1a';
+    ctx.beginPath();
+    ctx.ellipse(cx, mouthY, 35, 16, 0, 0, Math.PI);
+    ctx.fill();
+    // Teeth
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(cx, mouthY - 1, 30, 12, 0, 0.05 * Math.PI, 0.95 * Math.PI);
+    ctx.fill();
+    // Upper lip line
+    ctx.strokeStyle = darkenColor(config.skinColor, 20);
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, mouthY, 35, 0.05 * Math.PI, 0.95 * Math.PI);
+    ctx.stroke();
+  } else {
+    // Neutral/slight smirk
+    ctx.strokeStyle = darkenColor(config.skinColor, 30);
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx - 22, mouthY);
+    ctx.quadraticCurveTo(cx, mouthY + 5, cx + 22, mouthY - 3);
+    ctx.stroke();
+  }
+
+  // ── Beard (Jeremy) ──
+  if (config.hasBeard) {
+    ctx.fillStyle = config.hairColorStr;
+    // Beard covers chin and jawline
+    ctx.beginPath();
+    // Start from left side of face
+    ctx.moveTo(cx - faceRX * 0.75, faceCY + 20);
+    // Left jaw curve
+    ctx.quadraticCurveTo(cx - faceRX * 0.85, faceCY + 70, cx - 55, faceCY + faceRY - 15);
+    // Chin bottom
+    ctx.quadraticCurveTo(cx, faceCY + faceRY - 5, cx + 55, faceCY + faceRY - 15);
+    // Right jaw curve
+    ctx.quadraticCurveTo(cx + faceRX * 0.85, faceCY + 70, cx + faceRX * 0.75, faceCY + 20);
+    // Mustache area (upper lip)
+    ctx.quadraticCurveTo(cx + 40, mouthY - 2, cx + 25, mouthY - 3);
+    ctx.quadraticCurveTo(cx + 18, mouthY + 2, cx, mouthY);
+    ctx.quadraticCurveTo(cx - 18, mouthY + 2, cx - 25, mouthY - 3);
+    ctx.quadraticCurveTo(cx - 40, mouthY - 2, cx - faceRX * 0.75, faceCY + 20);
+    ctx.fill();
+
+    // Mustache
+    ctx.fillStyle = config.hairColorStr;
+    ctx.beginPath();
+    ctx.moveTo(cx - 38, mouthY - 10);
+    ctx.quadraticCurveTo(cx - 20, mouthY - 18, cx, mouthY - 8);
+    ctx.quadraticCurveTo(cx + 20, mouthY - 18, cx + 38, mouthY - 10);
+    ctx.quadraticCurveTo(cx + 28, mouthY - 2, cx + 20, mouthY - 5);
+    ctx.quadraticCurveTo(cx, mouthY + 2, cx - 20, mouthY - 5);
+    ctx.quadraticCurveTo(cx - 28, mouthY - 2, cx - 38, mouthY - 10);
+    ctx.fill();
+  }
+
+  // ── Glasses (Ray) ──
+  if (config.hasGlasses) {
+    ctx.strokeStyle = '#1a1a1a';
+    ctx.lineWidth = 5;
+    // Left lens (rounded rect)
+    drawRoundRect(ctx, cx - eyeDX - 38, eyeY - 32, 76, 64, 10);
+    ctx.stroke();
+    // Right lens
+    drawRoundRect(ctx, cx + eyeDX - 38, eyeY - 32, 76, 64, 10);
+    ctx.stroke();
+    // Bridge
+    ctx.beginPath();
+    ctx.moveTo(cx - eyeDX + 38, eyeY - 5);
+    ctx.lineTo(cx + eyeDX - 38, eyeY - 5);
+    ctx.stroke();
+    // Temple arms
+    ctx.beginPath();
+    ctx.moveTo(cx - eyeDX - 38, eyeY - 10);
+    ctx.lineTo(cx - faceRX + 5, eyeY - 20);
+    ctx.moveTo(cx + eyeDX + 38, eyeY - 10);
+    ctx.lineTo(cx + faceRX - 5, eyeY - 20);
+    ctx.stroke();
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// ═══════════════════════════════════════════════════════
+// NAME PLATE TEXTURE
+// ═══════════════════════════════════════════════════════
+function createNamePlateTexture(name, role, color) {
+  const W = 512, H = 140;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background with gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#222234');
+  grad.addColorStop(1, '#111120');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Border
+  ctx.strokeStyle = color || '#d29922';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(4, 4, W - 8, H - 8);
+
+  // Name
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 44px Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(name, W / 2, 50);
+
+  // Role
+  ctx.fillStyle = color || '#d29922';
+  ctx.font = 'italic 24px Arial, sans-serif';
+  ctx.fillText(role, W / 2, 98);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// ═══════════════════════════════════════════════════════
+// FLOATING NAME LABEL (for hero scene)
+// ═══════════════════════════════════════════════════════
+function createNameLabel(name) {
+  const W = 256, H = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Pill background
+  const r = 28;
+  ctx.fillStyle = 'rgba(20,20,40,0.85)';
+  ctx.beginPath();
+  ctx.roundRect ? ctx.roundRect(0, 0, W, H, r) : drawRoundRect(ctx, 0, 0, W, H, r);
+  ctx.fill();
+
+  // Border
+  ctx.strokeStyle = 'rgba(88,166,255,0.6)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect ? ctx.roundRect(1, 1, W - 2, H - 2, r) : drawRoundRect(ctx, 1, 1, W - 2, H - 2, r);
+  ctx.stroke();
+
+  // Text
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 28px Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(name, W / 2, H / 2);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// ═══════════════════════════════════════════════════════
+// FUNKO BUILDER — constructs a complete figure from primitives
+// ═══════════════════════════════════════════════════════
+function buildFunko(config) {
+  const group = new THREE.Group();
+  group.name = config.name;
+
+  // ─── Materials ───
+  const skinMat = new THREE.MeshStandardMaterial({ color: config.skinHex, roughness: 0.7, metalness: 0.05 });
+  const hairMat = new THREE.MeshStandardMaterial({ color: config.hairColor, roughness: 0.85, metalness: 0.05 });
+  const shirtMat = new THREE.MeshStandardMaterial({ color: config.shirtColor, roughness: 0.65, metalness: 0.1 });
+  const pantsMat = new THREE.MeshStandardMaterial({ color: config.pantsColor, roughness: 0.7, metalness: 0.1 });
+  const shoeMat = new THREE.MeshStandardMaterial({ color: config.shoeColor, roughness: 0.5, metalness: 0.2 });
+  const baseMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, roughness: 0.3, metalness: 0.5 });
+
+  // ─── Display Base (black disc) ───
+  const baseBottom = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.48, 0.5, 0.06, 32),
+    baseMat
+  );
+  baseBottom.position.y = -0.03;
+  baseBottom.castShadow = true;
+  baseBottom.receiveShadow = true;
+  group.add(baseBottom);
+
+  // ─── Body (tapered using LatheGeometry) ───
+  const bodyPoints = [
+    new THREE.Vector2(0.02, 0.03),
+    new THREE.Vector2(0.38, 0.03),
+    new THREE.Vector2(0.42, 0.06),   // slight flare at bottom
+    new THREE.Vector2(0.40, 0.15),
+    new THREE.Vector2(0.36, 0.25),   // waist narrowing
+    new THREE.Vector2(0.37, 0.35),   // lower body
+    new THREE.Vector2(0.42, 0.48),   // chest (widest)
+    new THREE.Vector2(0.40, 0.56),   // shoulder taper
+    new THREE.Vector2(0.14, 0.62),   // neck base
+    new THREE.Vector2(0.02, 0.62),   // center top
+  ];
+  const bodyGeo = new THREE.LatheGeometry(bodyPoints, 40);
+  const body = new THREE.Mesh(bodyGeo, shirtMat);
+  body.castShadow = true;
+  body.receiveShadow = true;
+  group.add(body);
+
+  // ─── Arms (small capsules at sides) ───
+  const armGeo = new THREE.CapsuleGeometry(0.085, 0.22, 6, 12);
+  const leftArm = new THREE.Mesh(armGeo, shirtMat);
+  leftArm.position.set(-0.42, 0.45, 0);
+  leftArm.rotation.z = 0.12;
+  leftArm.castShadow = true;
+  group.add(leftArm);
+
+  const rightArm = new THREE.Mesh(armGeo, shirtMat);
+  rightArm.position.set(0.42, 0.45, 0);
+  rightArm.rotation.z = -0.12;
+  rightArm.castShadow = true;
+  group.add(rightArm);
+
+  // Hands (small skin spheres at end of arms)
+  const handGeo = new THREE.SphereGeometry(0.09, 16, 12);
+  const leftHand = new THREE.Mesh(handGeo, skinMat);
+  leftHand.position.set(-0.48, 0.28, 0.02);
+  leftHand.castShadow = true;
+  group.add(leftHand);
+
+  const rightHand = new THREE.Mesh(handGeo, skinMat);
+  rightHand.position.set(0.48, 0.28, 0.02);
+  rightHand.castShadow = true;
+  group.add(rightHand);
+
+  // ─── Head Group ───
+  const headGroup = new THREE.Group();
+  headGroup.position.y = 1.12;
+
+  // Head sphere (skin colored)
+  const headGeo = new THREE.SphereGeometry(0.5, 40, 32);
+  // Slightly squish for Funko look (wider than tall)
+  headGeo.scale(1.0, 0.95, 0.95);
+  const head = new THREE.Mesh(headGeo, skinMat);
+  head.castShadow = true;
+  head.receiveShadow = true;
+  headGroup.add(head);
+
+  // Face plane (canvas texture at front of head)
+  const faceTex = createFaceTexture(config);
+  const faceMat = new THREE.MeshBasicMaterial({
+    map: faceTex,
+    transparent: true,
+    depthWrite: false
+  });
+  const faceGeo = new THREE.PlaneGeometry(0.72, 0.72);
+  const face = new THREE.Mesh(faceGeo, faceMat);
+  face.position.z = 0.46;
+  face.position.y = -0.02;
+  headGroup.add(face);
+
+  // ─── Hair ───
+  buildHair(headGroup, config, hairMat);
+
+  // ─── 3D Glasses (Ray) ───
+  if (config.hasGlasses) {
+    buildGlasses(headGroup);
+  }
+
+  // ─── 3D Beard (Jeremy) ───
+  if (config.hasBeard) {
+    // The beard is already drawn on the face texture,
+    // but add 3D volume to the lower face
+    const beardGeo = new THREE.SphereGeometry(0.52, 32, 16,
+      Math.PI * 0.3, Math.PI * 0.4,   // phi: front portion
+      Math.PI * 0.52, Math.PI * 0.38  // theta: lower portion
+    );
+    const beardMat = new THREE.MeshStandardMaterial({
+      color: config.beardColor,
+      roughness: 0.9,
+      metalness: 0.0
+    });
+    const beard3d = new THREE.Mesh(beardGeo, beardMat);
+    beard3d.position.y = -0.08;
+    beard3d.castShadow = true;
+    headGroup.add(beard3d);
+  }
+
+  group.add(headGroup);
+
+  // ─── Name Plate (3D text plane on base) ───
+  const plateTex = createNamePlateTexture(config.name, config.role);
+  const plateMat = new THREE.MeshBasicMaterial({ map: plateTex, transparent: true });
+  const plateGeo = new THREE.PlaneGeometry(0.65, 0.18);
+  const namePlate = new THREE.Mesh(plateGeo, plateMat);
+  namePlate.position.set(0, 0.005, 0.5);
+  namePlate.rotation.x = -Math.PI / 2 + 0.1; // nearly flat, tilted slightly toward viewer
+  group.add(namePlate);
+
+  return group;
+}
+
+// ─── Hair Builder ───
+function buildHair(parent, config, hairMat) {
+  if (config.hairType === 'short') {
+    // Jeremy: Short tousled hair — half sphere with slight modifications
+    const hairGeo = new THREE.SphereGeometry(0.54, 32, 16,
+      0, Math.PI * 2,          // full phi
+      0, Math.PI * 0.45        // top ~45% of sphere
+    );
+    const hair = new THREE.Mesh(hairGeo, hairMat);
+    hair.position.y = 0.05;
+    hair.scale.set(1.05, 0.85, 1.05);
+    hair.castShadow = true;
+    parent.add(hair);
+
+    // Add some texture bumps for tousled look
+    for (let i = 0; i < 5; i++) {
+      const bump = new THREE.Mesh(
+        new THREE.SphereGeometry(0.08, 12, 8),
+        hairMat
+      );
+      const angle = (i / 5) * Math.PI - Math.PI / 2;
+      bump.position.set(
+        Math.cos(angle) * 0.38,
+        0.32 + Math.sin(i) * 0.05,
+        Math.sin(angle) * 0.38
+      );
+      bump.castShadow = true;
+      parent.add(bump);
+    }
+  } else if (config.hairType === 'spiky') {
+    // Ray: Spiky upward hair
+    // Base cap
+    const baseGeo = new THREE.SphereGeometry(0.52, 32, 16,
+      0, Math.PI * 2,
+      0, Math.PI * 0.38
+    );
+    const base = new THREE.Mesh(baseGeo, hairMat);
+    base.position.y = 0.08;
+    base.scale.set(1.02, 0.7, 1.02);
+    base.castShadow = true;
+    parent.add(base);
+
+    // Spikes (cones pointing upward/outward)
+    const spikePositions = [
+      [0, 0.42, 0.15],
+      [-0.18, 0.40, 0.12],
+      [0.18, 0.40, 0.12],
+      [-0.25, 0.36, -0.05],
+      [0.25, 0.36, -0.05],
+      [0, 0.38, -0.18],
+      [-0.12, 0.35, 0.25],
+      [0.12, 0.35, 0.25],
+      [-0.30, 0.30, 0.10],
+      [0.30, 0.30, 0.10],
+    ];
+    spikePositions.forEach((pos, i) => {
+      const coneGeo = new THREE.ConeGeometry(0.07, 0.18 + (i % 3) * 0.04, 8);
+      const cone = new THREE.Mesh(coneGeo, hairMat);
+      cone.position.set(pos[0], pos[1], pos[2]);
+      cone.rotation.x = -0.2 + (i % 2) * 0.15;
+      cone.rotation.z = (Math.random() - 0.5) * 0.2;
+      cone.castShadow = true;
+      parent.add(cone);
+    });
+  } else if (config.hairType === 'textured') {
+    // Glenn: Short textured hair with volume at top
+    const hairGeo = new THREE.SphereGeometry(0.54, 32, 16,
+      0, Math.PI * 2,
+      0, Math.PI * 0.42
+    );
+    const hair = new THREE.Mesh(hairGeo, hairMat);
+    hair.position.y = 0.08;
+    hair.scale.set(1.0, 0.90, 1.0);
+    hair.castShadow = true;
+    parent.add(hair);
+
+    // Volume bumps at the top-front
+    for (let i = 0; i < 4; i++) {
+      const bump = new THREE.Mesh(
+        new THREE.SphereGeometry(0.1 + (i % 2) * 0.03, 12, 8),
+        hairMat
+      );
+      bump.position.set(
+        (i - 1.5) * 0.12,
+        0.35 + Math.abs(i - 1.5) * 0.03,
+        0.15 + (i % 2) * 0.08
+      );
+      bump.castShadow = true;
+      parent.add(bump);
+    }
+  }
+}
+
+// ─── 3D Glasses Builder ───
+function buildGlasses(parent) {
+  const frameMat = new THREE.MeshStandardMaterial({
+    color: 0x1a1a1a, roughness: 0.3, metalness: 0.7
+  });
+  const eyeY = 0.04;
+  const eyeDX = 0.17;
+  const z = 0.50;
+
+  // Lens frames (torus)
+  const lensGeo = new THREE.TorusGeometry(0.085, 0.012, 8, 20);
+  const leftLens = new THREE.Mesh(lensGeo, frameMat);
+  leftLens.position.set(-eyeDX, eyeY, z);
+  parent.add(leftLens);
+
+  const rightLens = new THREE.Mesh(lensGeo, frameMat);
+  rightLens.position.set(eyeDX, eyeY, z);
+  parent.add(rightLens);
+
+  // Bridge
+  const bridgeGeo = new THREE.BoxGeometry(0.08, 0.015, 0.012);
+  const bridge = new THREE.Mesh(bridgeGeo, frameMat);
+  bridge.position.set(0, eyeY, z);
+  parent.add(bridge);
+
+  // Temple arms (going back along the head)
+  const armGeo = new THREE.BoxGeometry(0.12, 0.012, 0.008);
+  const leftArm = new THREE.Mesh(armGeo, frameMat);
+  leftArm.position.set(-0.35, eyeY - 0.01, 0.38);
+  leftArm.rotation.y = 0.6;
+  parent.add(leftArm);
+
+  const rightArm = new THREE.Mesh(armGeo, frameMat);
+  rightArm.position.set(0.35, eyeY - 0.01, 0.38);
+  rightArm.rotation.y = -0.6;
+  parent.add(rightArm);
+}
+
+// ═══════════════════════════════════════════════════════
+// HERO SCENE — All 3 figures on pedestals with labels
+// ═══════════════════════════════════════════════════════
 function initHero() {
   const container = document.getElementById('hero');
   const w = container.clientWidth, h = container.clientHeight;
 
   const scene = new THREE.Scene();
   scene.background = null;
+  scene.fog = new THREE.Fog(0x0d1117, 8, 20);
 
-  const camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 100);
-  camera.position.set(0, 1.8, 7);
+  const camera = new THREE.PerspectiveCamera(42, w/h, 0.1, 100);
+  camera.position.set(0, 1.5, 6.5);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+  container.appendChild(renderer.domElement);
+
+  // ── Lighting ──
+  const ambient = new THREE.AmbientLight(0x404060, 0.6);
+  scene.add(ambient);
+
+  const key = new THREE.DirectionalLight(0xffffff, 2.0);
+  key.position.set(4, 8, 5);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.left = -8; key.shadow.camera.right = 8;
+  key.shadow.camera.top = 8; key.shadow.camera.bottom = -8;
+  key.shadow.bias = -0.0001;
+  scene.add(key);
+
+  const fill = new THREE.DirectionalLight(0x6688ff, 0.4);
+  fill.position.set(-5, 4, -3);
+  scene.add(fill);
+
+  const rim = new THREE.DirectionalLight(0xff66aa, 0.6);
+  rim.position.set(0, 5, -8);
+  scene.add(rim);
+
+  // Spotlights on each figure
+  const spot1 = new THREE.SpotLight(0x58a6ff, 1.5, 6, 0.5, 0.5);
+  spot1.position.set(-2.4, 4, 2); spot1.target.position.set(-2.4, 0.8, 0);
+  scene.add(spot1); scene.add(spot1.target);
+  const spot2 = new THREE.SpotLight(0xf778ba, 1.5, 6, 0.5, 0.5);
+  spot2.position.set(0, 4, 2); spot2.target.position.set(0, 0.8, 0);
+  scene.add(spot2); scene.add(spot2.target);
+  const spot3 = new THREE.SpotLight(0xd29922, 1.5, 6, 0.5, 0.5);
+  spot3.position.set(2.4, 4, 2); spot3.target.position.set(2.4, 0.8, 0);
+  scene.add(spot3); scene.add(spot3.target);
+
+  // ── Ground ──
+  const ground = new THREE.Mesh(
+    new THREE.CircleGeometry(20, 64),
+    new THREE.MeshStandardMaterial({ color: 0x0f0f1e, roughness: 0.6, metalness: 0.3 })
+  );
+  ground.rotation.x = -Math.PI/2; ground.position.y = -0.08;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  // ── Pedestals ──
+  const pedPositions = [-2.4, 0, 2.4];
+  const pedColors = [0x1a3a5c, 0x3a1a5c, 0x5c3a1a];
+  const accentColors = ['#58a6ff', '#f778ba', '#d29922'];
+
+  pedPositions.forEach((x, i) => {
+    // Pedestal cylinder
+    const ped = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.95, 1.05, 0.35, 32),
+      new THREE.MeshStandardMaterial({ color: pedColors[i], roughness: 0.3, metalness: 0.7 })
+    );
+    ped.position.set(x, -0.08, 0);
+    ped.receiveShadow = true; ped.castShadow = true;
+    scene.add(ped);
+
+    // Glowing ring on pedestal top
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.93, 0.025, 8, 32),
+      new THREE.MeshBasicMaterial({ color: i === 0 ? 0x58a6ff : i === 1 ? 0xf778ba : 0xd29922 })
+    );
+    ring.position.set(x, 0.10, 0);
+    ring.rotation.x = Math.PI / 2;
+    scene.add(ring);
+  });
+
+  // ── Build Figures ──
+  const people = ['jeremy', 'ray', 'glenn'];
+  const figs = [];
+  let loadedCount = 0;
+
+  people.forEach((key, i) => {
+    const fig = buildFunko(CONFIGS[key]);
+    fig.position.x = pedPositions[i];
+    // Center the figure on the pedestal
+    // Bounding box to figure out offset
+    const box = new THREE.Box3().setFromObject(fig);
+    const center = box.getCenter(new THREE.Vector3());
+    fig.position.x = pedPositions[i] - center.x;
+    fig.position.y = 0.10 - box.min.y; // sit on pedestal
+    fig.position.z = -center.z;
+    scene.add(fig);
+    figs.push(fig);
+
+    // Floating name label
+    const labelTex = createNameLabel(CONFIGS[key].name);
+    const labelMat = new THREE.MeshBasicMaterial({ map: labelTex, transparent: true, depthTest: false });
+    const labelGeo = new THREE.PlaneGeometry(0.9, 0.22);
+    const label = new THREE.Mesh(labelGeo, labelMat);
+    label.position.set(pedPositions[i], 2.2, 0);
+    label.renderOrder = 999;
+    scene.add(label);
+    // Store for billboard update
+    label.userData.isLabel = true;
+
+    loadedCount++;
+  });
+
+  // Hide loading text
+  document.getElementById('loading-3d').style.display = 'none';
+
+  // ── Orbit Controls ──
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.minDistance = 3;
+  controls.maxDistance = 12;
+  controls.maxPolarAngle = Math.PI/2 + 0.15;
+  controls.target.set(0, 0.7, 0);
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.35;
+
+  // ── Resize ──
+  window.addEventListener('resize', () => {
+    const nw = container.clientWidth, nh = container.clientHeight;
+    camera.aspect = nw/nh;
+    camera.updateProjectionMatrix();
+    renderer.setSize(nw, nh);
+  });
+
+  // ── Animation ──
+  const labels = scene.children.filter(c => c.userData.isLabel);
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    // Billboard labels (always face camera)
+    labels.forEach(l => l.lookAt(camera.position));
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+
+// ═══════════════════════════════════════════════════════
+// MINI VIEWER — Individual 3D viewer with version switching
+// ═══════════════════════════════════════════════════════
+function initMiniViewer(containerId, personKey, badgeId) {
+  const container = document.getElementById(containerId);
+  const badge = document.getElementById(badgeId);
+  if (!container) return null;
+
+  const config = CONFIGS[personKey];
+  const versionImages = {
+    v1: `images/v1/${personKey}.png`,
+    v2: `images/v2/${personKey}.png`,
+    v3: `images/v3/${personKey}.png`,
+    v5: `images/v5/${personKey}.png`,
+  };
+
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x111827);
+
+  const camera = new THREE.PerspectiveCamera(38, w/h, 0.1, 100);
+  camera.position.set(0, 1.0, 4.5);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
   renderer.setSize(w, h);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
@@ -292,174 +956,239 @@ function initHero() {
   renderer.toneMappingExposure = 1.1;
   container.appendChild(renderer.domElement);
 
-  // Lights
+  // ── Lighting ──
+  scene.add(new THREE.AmbientLight(0x404060, 0.5));
+
   const key = new THREE.DirectionalLight(0xffffff, 2.2);
-  key.position.set(5, 10, 5); key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.position.set(3, 6, 4);
+  key.castShadow = true;
+  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.bias = -0.0001;
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0x6688ff, 0.5);
-  fill.position.set(-5, 5, -5); scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xff66aa, 0.8);
-  rim.position.set(0, 5, -10); scene.add(rim);
 
-  // Ground
-  const ground = new THREE.Mesh(
-    new THREE.CircleGeometry(15, 64),
-    new THREE.MeshStandardMaterial({ color: 0x0f0f1e, roughness: 0.8, metalness: 0.2 })
-  );
-  ground.rotation.x = -Math.PI/2; ground.position.y = -0.5;
-  ground.receiveShadow = true; scene.add(ground);
-
-  // Pedestals
-  const pedestalPositions = [-2.4, 0, 2.4];
-  const pedestalColors = [0x1a3a5c, 0x3a1a5c, 0x5c3a1a];
-  pedestalPositions.forEach((x, i) => {
-    const ped = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.9, 1.0, 0.3, 32),
-      new THREE.MeshStandardMaterial({ color: pedestalColors[i], roughness: 0.4, metalness: 0.6 })
-    );
-    ped.position.set(x, -0.35, 0); ped.receiveShadow = true; ped.castShadow = true;
-    scene.add(ped);
-  });
-
-  // Orbit controls
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true; controls.dampingFactor = 0.05;
-  controls.minDistance = 3; controls.maxDistance = 15;
-  controls.maxPolarAngle = Math.PI/2 + 0.2;
-  controls.target.set(0, 0.8, 0);
-  controls.autoRotate = true; controls.autoRotateSpeed = 0.4;
-
-  // Load models
-  const loader = new GLTFLoader();
-  const modelData = [
-    { file: 'models/jeremy.glb', x: -2.4, name: 'Jeremy' },
-    { file: 'models/ray.glb', x: 0, name: 'Ray' },
-    { file: 'models/glenn.glb', x: 2.4, name: 'Glenn' }
-  ];
-  let loaded = 0;
-  modelData.forEach(m => {
-    loader.load(m.file, (gltf) => {
-      const mesh = gltf.scene;
-      const box = new THREE.Box3().setFromObject(mesh);
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 1.8 / maxDim;
-      mesh.scale.setScalar(scale);
-      const sb = new THREE.Box3().setFromObject(mesh);
-      const sc = sb.getCenter(new THREE.Vector3());
-      mesh.position.set(m.x - sc.x, -sb.min.y - 0.2, -sc.z);
-      mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-      scene.add(mesh);
-      loaded++;
-      if (loaded === 3) document.getElementById('loading-3d').style.display = 'none';
-    }, undefined, () => {
-      loaded++;
-      if (loaded === 3) document.getElementById('loading-3d').style.display = 'none';
-    });
-  });
-
-  // Resize
-  window.addEventListener('resize', () => {
-    const nw = container.clientWidth, nh = container.clientHeight;
-    camera.aspect = nw/nh; camera.updateProjectionMatrix();
-    renderer.setSize(nw, nh);
-  });
-
-  function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
-  animate();
-}
-
-// ─── MINI 3D VIEWERS (one per person) ───
-function initMini(containerId, modelFile) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  const w = container.clientWidth, h = container.clientHeight;
-
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x111827);
-
-  const camera = new THREE.PerspectiveCamera(40, w/h, 0.1, 100);
-  camera.position.set(0, 1.5, 5);
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-  renderer.setSize(w, h);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  container.appendChild(renderer.domElement);
-
-  // Lights
-  const key = new THREE.DirectionalLight(0xffffff, 2.0);
-  key.position.set(4, 8, 4); key.castShadow = true;
-  scene.add(key);
   const fill = new THREE.DirectionalLight(0x6688ff, 0.4);
-  fill.position.set(-4, 4, -4); scene.add(fill);
+  fill.position.set(-3, 3, -2);
+  scene.add(fill);
 
-  // Pedestal
-  const ped = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.8, 0.9, 0.25, 32),
-    new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.5 })
-  );
-  ped.position.y = -0.3; ped.receiveShadow = true; scene.add(ped);
+  const rim = new THREE.DirectionalLight(0xff66aa, 0.5);
+  rim.position.set(0, 3, -4);
+  scene.add(rim);
 
-  // Ground
+  // ── Ground & Pedestal ──
   const ground = new THREE.Mesh(
-    new THREE.CircleGeometry(10, 32),
-    new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 })
+    new THREE.CircleGeometry(8, 32),
+    new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.85 })
   );
-  ground.rotation.x = -Math.PI/2; ground.position.y = -0.43; scene.add(ground);
+  ground.rotation.x = -Math.PI/2; ground.position.y = -0.05;
+  ground.receiveShadow = true;
+  scene.add(ground);
 
+  const ped = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.75, 0.85, 0.22, 32),
+    new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.35, metalness: 0.6 })
+  );
+  ped.position.y = -0.05;
+  ped.receiveShadow = true; ped.castShadow = true;
+  scene.add(ped);
+
+  // Glowing ring
+  const ringColor = personKey === 'jeremy' ? 0x58a6ff : personKey === 'ray' ? 0xf778ba : 0xd29922;
+  const ring = new THREE.Mesh(
+    new THREE.TorusGeometry(0.73, 0.02, 8, 32),
+    new THREE.MeshBasicMaterial({ color: ringColor })
+  );
+  ring.position.y = 0.07;
+  ring.rotation.x = Math.PI / 2;
+  scene.add(ring);
+
+  // ── Build 3D Figure ──
+  const funko = buildFunko(config);
+  const fbox = new THREE.Box3().setFromObject(funko);
+  const fcenter = fbox.getCenter(new THREE.Vector3());
+  funko.position.set(-fcenter.x, 0.07 - fbox.min.y, -fcenter.z);
+  scene.add(funko);
+
+  // ── Billboard for version switching ──
+  const billboards = {};
+  let currentBillboard = null;
+  const texLoader = new THREE.TextureLoader();
+
+  function getBillboard(version) {
+    if (!billboards[version]) {
+      const imgSrc = versionImages[version];
+      const tex = texLoader.load(imgSrc);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const aspect = 1; // will be adjusted on load
+      const geo = new THREE.PlaneGeometry(1.6, 1.6);
+      const mat = new THREE.MeshBasicMaterial({
+        map: tex,
+        transparent: true,
+        side: THREE.DoubleSide
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.visible = false;
+      mesh.position.set(0, 1.1, 0);
+      // Adjust aspect ratio when texture loads
+      tex.onUpdate = () => {
+        if (tex.image && tex.image.width > 0) {
+          const ar = tex.image.width / tex.image.height;
+          mesh.scale.x = ar;
+        }
+      };
+      scene.add(mesh);
+      billboards[version] = mesh;
+    }
+    return billboards[version];
+  }
+
+  // ── Controls ──
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true; controls.dampingFactor = 0.05;
-  controls.minDistance = 2; controls.maxDistance = 10;
-  controls.maxPolarAngle = Math.PI/2 + 0.15;
-  controls.target.set(0, 0.6, 0);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.minDistance = 2;
+  controls.maxDistance = 8;
+  controls.maxPolarAngle = Math.PI/2 + 0.1;
+  controls.target.set(0, 0.8, 0);
 
-  const loader = new GLTFLoader();
-  loader.load(modelFile, (gltf) => {
-    const mesh = gltf.scene;
-    const box = new THREE.Box3().setFromObject(mesh);
-    const size = box.getSize(new THREE.Vector3());
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const scale = 1.6 / maxDim;
-    mesh.scale.setScalar(scale);
-    const sb = new THREE.Box3().setFromObject(mesh);
-    const sc = sb.getCenter(new THREE.Vector3());
-    mesh.position.set(-sc.x, -sb.min.y - 0.15, -sc.z);
-    mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-    scene.add(mesh);
-  });
+  // ── Version Switching ──
+  function showVersion(version) {
+    if (version === 'v5') {
+      // Show 3D model
+      funko.visible = true;
+      Object.values(billboards).forEach(b => b.visible = false);
+      if (badge) badge.textContent = '3D Procedural Model';
+    } else {
+      // Show billboard concept art
+      funko.visible = false;
+      Object.values(billboards).forEach(b => b.visible = false);
+      const bb = getBillboard(version);
+      bb.visible = true;
+      if (badge) badge.textContent = `Concept Art ${version.toUpperCase()}`;
+    }
+  }
 
+  // ── Resize ──
   function resize() {
     const nw = container.clientWidth, nh = container.clientHeight;
-    camera.aspect = nw/nh; camera.updateProjectionMatrix();
+    camera.aspect = nw/nh;
+    camera.updateProjectionMatrix();
     renderer.setSize(nw, nh);
   }
   window.addEventListener('resize', resize);
 
-  function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+  // ── Animation ──
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    // Billboard always faces camera
+    Object.values(billboards).forEach(bb => {
+      if (bb.visible) bb.lookAt(camera.position);
+    });
+    renderer.render(scene, camera);
+  }
   animate();
+
+  return { showVersion };
 }
 
-// Init all scenes
-initHero();
-initMini('mini-jeremy', 'models/jeremy.glb');
-initMini('mini-ray', 'models/ray.glb');
-initMini('mini-glenn', 'models/glenn.glb');
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function lightenColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, ((num >> 16) & 0xFF) + percent);
+  const g = Math.min(255, ((num >> 8) & 0xFF) + percent);
+  const b = Math.min(255, (num & 0xFF) + percent);
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
 
-// Nav active state
+function darkenColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.max(0, ((num >> 16) & 0xFF) - percent);
+  const g = Math.max(0, ((num >> 8) & 0xFF) - percent);
+  const b = Math.max(0, (num & 0xFF) - percent);
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6, '0');
+}
+
+function drawRoundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// ═══════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════
+
+// Start hero scene
+try {
+  initHero();
+} catch(e) {
+  console.error('Hero scene error:', e);
+  document.getElementById('loading-3d').textContent = '3D loading failed: ' + e.message;
+}
+
+// Start mini viewers
+const viewers = {};
+['jeremy', 'ray', 'glenn'].forEach(key => {
+  viewers[key] = initMiniViewer(`mini-${key}`, key, `badge-${key}`);
+});
+
+// ── Version card click handlers ──
+document.querySelectorAll('.version-gallery').forEach(gallery => {
+  const person = gallery.dataset.person;
+  gallery.querySelectorAll('.version-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      // Don't intercept STL download link clicks
+      if (e.target.classList.contains('stl')) return;
+
+      const version = card.dataset.version;
+      // Update active state
+      gallery.querySelectorAll('.version-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      // Switch the viewer
+      if (viewers[person]) {
+        viewers[person].showVersion(version);
+      }
+    });
+  });
+});
+
+// ── Nav scroll handler ──
 const navLinks = document.querySelectorAll('nav a');
-const sections = ['hero', 'jeremy', 'ray', 'glenn'].map(id => document.getElementById(id));
+const sectionIds = ['hero', 'jeremy', 'ray', 'glenn'];
+const sectionEls = sectionIds.map(id => document.getElementById(id));
+
 window.addEventListener('scroll', () => {
   const sy = window.scrollY + 100;
-  sections.forEach((s, i) => {
+  sectionEls.forEach((s, i) => {
     if (s && s.offsetTop <= sy && s.offsetTop + s.offsetHeight > sy) {
       navLinks.forEach(l => l.classList.remove('active'));
       if (navLinks[i]) navLinks[i].classList.add('active');
     }
   });
 });
+
+// Smooth scroll for nav links
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const targetId = link.getAttribute('href').slice(1);
+    const target = document.getElementById(targetId);
+    if (target) {
+      window.scrollTo({ top: target.offsetTop, behavior: 'smooth' });
+    }
+  });
+});
+
 </script>
 </body>
 </html>
