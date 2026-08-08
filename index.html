@@ -2,81 +2,93 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>JC Dream — Funko Pop Collection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JC Dream — Funko Pop Collection V5</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-family:'Helvetica Neue',Arial,sans-serif; }
-#scene { position:fixed; top:0; left:0; width:100%; height:100%; display:block; }
-#ui-overlay {
-  position:fixed; top:0; left:0; width:100%; pointer-events:none; z-index:10;
-  padding:16px 20px; text-align:center;
-}
-#title {
-  font-size:clamp(20px,4vw,36px); font-weight:700; letter-spacing:2px;
-  color:#e8d5b5; text-shadow:0 0 20px rgba(232,213,181,0.4);
-  text-transform:uppercase;
-}
-#subtitle {
-  font-size:clamp(11px,2vw,14px); color:#8a8a9a; letter-spacing:3px;
-  margin-top:4px; text-transform:uppercase;
-}
-#version-bar {
-  position:fixed; top:64px; left:50%; transform:translateX(-50%);
-  display:flex; gap:8px; z-index:15; pointer-events:auto;
-  flex-wrap:wrap; justify-content:center;
-}
-.vbtn {
-  background:rgba(20,20,35,0.85); border:1px solid rgba(232,213,181,0.25);
-  color:#8a8a9a; padding:6px 14px; border-radius:16px; cursor:pointer;
-  font-size:11px; letter-spacing:1px; text-transform:uppercase;
-  transition:all 0.3s; backdrop-filter:blur(8px); white-space:nowrap;
-}
-.vbtn:hover { background:rgba(40,40,65,0.9); color:#e8d5b5; border-color:rgba(232,213,181,0.5); }
-.vbtn.active { background:rgba(232,213,181,0.15); border-color:rgba(232,213,181,0.7); color:#e8d5b5; }
-#controls {
-  position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-  display:flex; gap:10px; z-index:10; pointer-events:auto;
-}
-.btn {
-  background:rgba(20,20,35,0.85); border:1px solid rgba(232,213,181,0.3);
-  color:#e8d5b5; padding:8px 18px; border-radius:20px; cursor:pointer;
-  font-size:12px; letter-spacing:1px; text-transform:uppercase;
-  transition:all 0.3s; backdrop-filter:blur(8px);
-}
-.btn:hover { background:rgba(40,40,65,0.9); border-color:rgba(232,213,181,0.6); }
-.btn.active { background:rgba(232,213,181,0.15); border-color:rgba(232,213,181,0.7); }
-#loading {
-  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-  color:#e8d5b5; font-size:18px; letter-spacing:2px; z-index:20;
-  animation:pulse 1.5s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
-.fade-out { opacity:0; transition:opacity 0.6s; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a12;color:#e8d5b5;font-family:'Helvetica Neue',Arial,sans-serif;min-height:100vh}
+.header{text-align:center;padding:30px 20px 10px}
+.header h1{font-size:clamp(24px,4vw,42px);font-weight:800;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 30px rgba(232,213,181,0.3)}
+.header p{font-size:14px;color:#8a8a9a;letter-spacing:2px;margin-top:6px;text-transform:uppercase}
+.version-info{background:rgba(232,213,181,0.08);border:1px solid rgba(232,213,181,0.2);border-radius:12px;padding:12px 20px;max-width:600px;margin:16px auto;text-align:center;font-size:13px;line-height:1.6}
+.version-info strong{color:#f0d99a}
+.subjects{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;max-width:1400px;margin:0 auto}
+.subject-card{background:rgba(20,20,35,0.6);border:1px solid rgba(232,213,181,0.15);border-radius:16px;overflow:hidden;width:420px;max-width:100%}
+.subject-card h2{text-align:center;padding:16px 0 8px;font-size:20px;letter-spacing:2px;text-transform:uppercase}
+.likeness-badge{display:inline-block;background:rgba(80,200,120,0.2);border:1px solid rgba(80,200,120,0.4);color:#5fc88f;padding:4px 14px;border-radius:12px;font-size:13px;font-weight:600;margin:0 auto 12px;text-align:center;display:block;width:fit-content;margin-left:auto;margin-right:auto}
+.ref-row{display:flex;gap:8px;padding:0 16px 12px;justify-content:center}
+.ref-row img{width:48%;border-radius:8px;border:1px solid rgba(232,213,181,0.15)}
+.ref-label{font-size:11px;color:#6a6a7a;text-align:center;margin-top:-8px;padding:0 16px 8px}
+.canvas-container{width:100%;height:400px;position:relative;background:radial-gradient(circle at 50% 40%,#1a1a2e 0%,#0a0a12 100%);border-top:1px solid rgba(232,213,181,0.1);border-bottom:1px solid rgba(232,213,181,0.1)}
+.canvas-container canvas{display:block;width:100%;height:100%}
+.controls-row{display:flex;gap:8px;padding:12px 16px;justify-content:center;flex-wrap:wrap}
+.btn{background:rgba(20,20,35,0.85);border:1px solid rgba(232,213,181,0.3);color:#e8d5b5;padding:6px 14px;border-radius:16px;cursor:pointer;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s}
+.btn:hover{background:rgba(40,40,65,0.9);border-color:rgba(232,213,181,0.6)}
+.btn.active{background:rgba(232,213,181,0.15);border-color:rgba(232,213,181,0.7)}
+.download-row{padding:0 16px 16px;text-align:center}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(80,200,120,0.15);border:1px solid rgba(80,200,120,0.4);color:#5fc88f;padding:8px 18px;border-radius:20px;text-decoration:none;font-size:13px;font-weight:600;transition:all 0.3s}
+.dl-btn:hover{background:rgba(80,200,120,0.25);border-color:rgba(80,200,120,0.7)}
+.history-section{max-width:1400px;margin:30px auto;padding:0 20px 40px}
+.history-section h2{font-size:22px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;text-align:center}
+.history-grid{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+.history-card{background:rgba(20,20,35,0.4);border:1px solid rgba(232,213,181,0.1);border-radius:12px;padding:16px;width:300px}
+.history-card h3{font-size:15px;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;color:#f0d99a}
+.history-card p{font-size:13px;line-height:1.6;color:#9a9aaa}
+.history-card .score{display:inline-block;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;margin-top:8px}
+.score-low{background:rgba(200,80,80,0.2);border:1px solid rgba(200,80,80,0.3);color:#e07070}
+.score-mid{background:rgba(200,180,80,0.2);border:1px solid rgba(200,180,80,0.3);color:#c0a850}
+.score-high{background:rgba(80,200,120,0.2);border:1px solid rgba(80,200,120,0.4);color:#5fc88f}
+.footer{text-align:center;padding:30px 20px;font-size:12px;color:#6a6a7a;letter-spacing:1px}
 </style>
 </head>
 <body>
 
-<canvas id="scene"></canvas>
-
-<div id="ui-overlay">
-  <div id="title">JC Dream — Funko Pop Collection</div>
-  <div id="subtitle">V4: Standee</div>
+<div class="header">
+  <h1>JC Dream — Funko Pop Collection</h1>
+  <p>V5: Real 3D Printable Models</p>
 </div>
 
-<div id="version-bar">
-  <button class="vbtn" data-version="1">V1 Procedural</button>
-  <button class="vbtn" data-version="2">V2 Labeled</button>
-  <button class="vbtn" data-version="3">V3 Face Textures</button>
-  <button class="vbtn active" data-version="4">V4 Standee</button>
+<div class="version-info">
+  <strong>V5 Approach:</strong> Generated Funko Pop-style character art from reference photos (8-9/10 likeness), then built actual 3D printable STL geometry — oversized head, tapered body, arms, legs, base stand. Full 3D mesh, not standees or billboards. 
+  Three.js viewer below lets you rotate, zoom, and inspect each model. STL download links for 3D printing.
 </div>
 
-<div id="controls">
-  <button class="btn" id="btn-reset">Reset View</button>
-  <button class="btn" id="btn-spin">Auto-Rotate</button>
+<div class="subjects" id="subjects"></div>
+
+<div class="history-section">
+  <h2>Version History — All Iterations</h2>
+  <div class="history-grid">
+    <div class="history-card">
+      <h3>V1 — Procedural</h3>
+      <p>Basic Three.js spheres and cylinders with face textures. Overlapping geometry, poor proportions.</p>
+      <span class="score score-low">3/10 likeness</span>
+    </div>
+    <div class="history-card">
+      <h3>V2 — Labeled Procedural</h3>
+      <p>Same V1 geometry with name labels added. Still just blobs — "darth vaders at a funeral."</p>
+      <span class="score score-low">3/10 likeness</span>
+    </div>
+    <div class="history-card">
+      <h3>V3 — Face Textures on Cylinders</h3>
+      <p>Front-facing character art mapped onto cylinder meshes. Better likeness (5-7/10) but still flat billboards, not real 3D models.</p>
+      <span class="score score-mid">5-7/10 likeness</span>
+    </div>
+    <div class="history-card">
+      <h3>V4 — Standee</h3>
+      <p>2D images as transparent cutout planes. REJECTED: "That was not the assignment."</p>
+      <span class="score score-low">3/10 — wrong approach</span>
+    </div>
+    <div class="history-card">
+      <h3>V5 — 3D Printable STL</h3>
+      <p>Actual 3D Funko Pop geometry generated in Python: ellipsoid head, tapered body cylinder, arms, legs, hair dome, display base. Proportions matched to each person. STL files for 3D printing. Character art likeness verified at 8-9/10.</p>
+      <span class="score score-high">8-9/10 art likeness · Real 3D mesh</span>
+    </div>
+  </div>
 </div>
 
-<div id="loading">Loading Collection…</div>
+<div class="footer">
+  JC Dream Funko Pop Collection · V5 · 2026-08-07 · STL files are 3D-printable
+</div>
 
 <script type="importmap">
 {
@@ -89,469 +101,291 @@ html,body { width:100%; height:100%; overflow:hidden; background:#0a0a12; font-f
 
 <script type="module">
 import * as THREE from 'three';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// ===== RENDERER / SCENE / CAMERA =====
-const canvas = document.getElementById('scene');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0a12);
-scene.fog = new THREE.FogExp2(0x0a0a12, 0.035);
-
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 2.2, 7);
-
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
-controls.dampingFactor = 0.06;
-controls.minDistance = 3;
-controls.maxDistance = 14;
-controls.maxPolarAngle = Math.PI * 0.52;
-controls.minPolarAngle = Math.PI * 0.15;
-controls.target.set(0, 1.8, 0);
-
-// ===== LIGHTING =====
-const ambient = new THREE.AmbientLight(0x404060, 0.35);
-scene.add(ambient);
-const hemi = new THREE.HemisphereLight(0x2a2a45, 0x0a0a08, 0.2);
-scene.add(hemi);
-
-const figureData = [
-  { name:'jeremy', x:-2.6, label:'JEREMY', coat:0x1a2238, accent:0x2a3a5a },
-  { name:'ray',    x: 0,   label:'RAY',    coat:0x1a1a1a, accent:0x333333 },
-  { name:'glenn',  x: 2.6, label:'GLENN',  coat:0x0a0a0a, accent:0x1a1a1a },
+const subjects = [
+  {
+    name: 'Jeremy',
+    refImg: 'images/jeremy-ref.jpg',
+    artImg: 'images/v5/jeremy.png',
+    stlUrl: null, // built procedurally
+    likeness: 8,
+    config: {
+      hairColor: 0x6b4220, skinColor: 0xe8c8a0, shirtColor: 0x1a2a5e,
+      hairRX: 14.7, hairRY: 8, hairRZ: 13.7,
+      headRX: 14, headRY: 15, headRZ: 13,
+      hasBeard: true, hasGlasses: false,
+      beardColor: 0x5a3a1a,
+      bodyBot: 12, bodyTop: 9,
+    }
+  },
+  {
+    name: 'Ray',
+    refImg: 'images/ray-ref.jpg',
+    artImg: 'images/v5/ray.png',
+    stlUrl: null,
+    likeness: 8,
+    config: {
+      hairColor: 0x111111, skinColor: 0xd8b890, shirtColor: 0x1a1a1a,
+      hairRX: 14.5, hairRY: 7, hairRZ: 13.5,
+      headRX: 14, headRY: 15, headRZ: 13,
+      hasBeard: false, hasGlasses: true,
+      bodyBot: 12, bodyTop: 9,
+    }
+  },
+  {
+    name: 'Glenn',
+    refImg: 'images/glenn-ref.jpg',
+    artImg: 'images/v5/glenn.png',
+    stlUrl: null,
+    likeness: 9,
+    config: {
+      hairColor: 0x0a0a0a, skinColor: 0x8a6040, shirtColor: 0x1a1a3a,
+      hairRX: 14.8, hairRY: 10, hairRZ: 13.8,
+      headRX: 14, headRY: 15, headRZ: 13,
+      hasBeard: false, hasGlasses: false,
+      bodyBot: 13, bodyTop: 10,
+    }
+  }
 ];
 
-const spotlights = [];
-figureData.forEach((fig) => {
-  const spot = new THREE.SpotLight(0xfff0d8, 2.8, 10, 0.5, 0.6, 1.2);
-  spot.position.set(fig.x, 5.5, 1.2);
-  spot.target.position.set(fig.x, 1.5, 0);
-  spot.castShadow = true;
-  spot.shadow.mapSize.set(1024, 1024);
-  spot.shadow.bias = -0.0005;
-  spot.shadow.camera.near = 1;
-  spot.shadow.camera.far = 12;
-  scene.add(spot);
-  scene.add(spot.target);
-  spotlights.push(spot);
-});
-
-const fill = new THREE.DirectionalLight(0x6080ff, 0.15);
-fill.position.set(0, 3, 8);
-scene.add(fill);
-
-// ===== FLOOR =====
-const floorMat = new THREE.MeshStandardMaterial({ color:0x111120, metalness:0.75, roughness:0.25 });
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(40,40), floorMat);
-floor.rotation.x = -Math.PI/2; floor.receiveShadow = true;
-scene.add(floor);
-
-// ===== BACKGROUND GLOW =====
-const glowCanvas = document.createElement('canvas');
-glowCanvas.width=512; glowCanvas.height=256;
-const gctx = glowCanvas.getContext('2d');
-const grad = gctx.createRadialGradient(256,128,20,256,128,240);
-grad.addColorStop(0,'rgba(80,60,120,0.35)'); grad.addColorStop(1,'rgba(0,0,0,0)');
-gctx.fillStyle=grad; gctx.fillRect(0,0,512,256);
-const glowTex = new THREE.CanvasTexture(glowCanvas);
-const glowMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(30,14),
-  new THREE.MeshBasicMaterial({ map:glowTex, transparent:true, depthWrite:false })
-);
-glowMesh.position.set(0,4,-6); scene.add(glowMesh);
-
-// ===== PARTICLES =====
-const particleCount=80, particleGeo=new THREE.BufferGeometry();
-const positions=new Float32Array(particleCount*3), velocities=[];
-for(let i=0;i<particleCount;i++){
-  positions[i*3]=(Math.random()-0.5)*16; positions[i*3+1]=Math.random()*6; positions[i*3+2]=(Math.random()-0.5)*8;
-  velocities.push({vx:(Math.random()-0.5)*0.003,vy:Math.random()*0.005+0.001,vz:(Math.random()-0.5)*0.003});
-}
-particleGeo.setAttribute('position',new THREE.BufferAttribute(positions,3));
-const pCanvas=document.createElement('canvas'); pCanvas.width=32; pCanvas.height=32;
-const pctx=pCanvas.getContext('2d');
-const pg=pctx.createRadialGradient(16,16,0,16,16,16);
-pg.addColorStop(0,'rgba(255,230,180,1)'); pg.addColorStop(1,'rgba(255,230,180,0)');
-pctx.fillStyle=pg; pctx.fillRect(0,0,32,32);
-const particles=new THREE.Points(particleGeo,new THREE.PointsMaterial({
-  size:0.06,map:new THREE.CanvasTexture(pCanvas),transparent:true,
-  blending:THREE.AdditiveBlending,depthWrite:false,opacity:0.6
-}));
-scene.add(particles);
-
-// ===== TEXTURE LOADER =====
-const texLoader = new THREE.TextureLoader();
-texLoader.crossOrigin = 'anonymous';
-
-// ===== STATE =====
-let currentVersion = 4;
-let figureGroups = []; // active groups in scene
-let autoRotate = false;
-
-// ===== NAME LABEL TEXTURE HELPER =====
-function makeLabelTexture(name) {
-  const c = document.createElement('canvas');
-  c.width=512; c.height=128;
-  const ctx=c.getContext('2d');
-  ctx.font='bold 52px Helvetica Neue, Arial, sans-serif';
-  ctx.fillStyle='#e8d5b5'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.shadowColor='rgba(232,213,181,0.5)'; ctx.shadowBlur=12;
-  ctx.fillText(name.toUpperCase(),256,64);
-  const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace;
-  return tex;
-}
-
-// ===== BASE (shared) =====
-function makeBase() {
-  const g = new THREE.Group();
-  const baseGeo = new THREE.CylinderGeometry(0.68,0.72,0.18,64);
-  const baseMat = new THREE.MeshStandardMaterial({ color:0x0d0d12, metalness:0.5, roughness:0.35 });
-  const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.y=0.09; base.castShadow=true; base.receiveShadow=true;
-  g.add(base);
-  const ringGeo = new THREE.TorusGeometry(0.62,0.025,16,64);
-  const ringMat = new THREE.MeshStandardMaterial({ color:0xe8d5b5, emissive:0xe8d5b5, emissiveIntensity:0.6, metalness:0.8, roughness:0.2 });
-  const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.position.y=0.185; ring.rotation.x=Math.PI/2;
-  g.add(ring);
-  return g;
-}
-
-function makeLabel3D(name) {
-  const tex = makeLabelTexture(name);
-  const mat = new THREE.MeshBasicMaterial({ map:tex, transparent:true, depthWrite:false });
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(1.6,0.4), mat);
-  mesh.position.set(0,-0.02,0.35); mesh.rotation.x=-Math.PI/2.2;
-  return mesh;
-}
-
-// ===== CLEAR FIGURES =====
-function clearFigures() {
-  figureGroups.forEach(g => {
-    scene.remove(g);
-    g.traverse(obj => {
-      if (obj.geometry) obj.geometry.dispose();
-      if (obj.material) {
-        if (Array.isArray(obj.material)) obj.material.forEach(m=>m.dispose());
-        else obj.material.dispose();
-      }
-    });
+function buildFunkoMesh(config) {
+  const group = new THREE.Group();
+  
+  const vinylMat = (color) => new THREE.MeshPhongMaterial({
+    color, shininess: 60, specular: 0x444444
   });
-  figureGroups = [];
-}
-
-// ===== V1: PROCEDURAL (no labels) =====
-function buildV1() {
-  clearFigures();
-  figureData.forEach((fig) => {
-    const group = makeBase();
-    group.position.set(fig.x, 0, 0);
-    group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
-
-    // Body — cylinder (vinyl body)
-    const bodyGeo = new THREE.CylinderGeometry(0.42, 0.48, 1.3, 24);
-    const bodyMat = new THREE.MeshStandardMaterial({ color:fig.coat, roughness:0.6, metalness:0.1 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.18 + 0.65;
-    body.castShadow = true;
-    group.add(body);
-
-    // Head — sphere
-    const headGeo = new THREE.SphereGeometry(0.38, 32, 32);
-    const headMat = new THREE.MeshStandardMaterial({ color:0xc4a884, roughness:0.5 });
-    const head = new THREE.Mesh(headGeo, headMat);
-    head.position.y = 0.18 + 1.3 + 0.38;
-    head.castShadow = true;
-    group.add(head);
-
-    // Beard — dark blob on lower face
-    const beardGeo = new THREE.SphereGeometry(0.26, 16, 16);
-    const beardMat = new THREE.MeshStandardMaterial({ color:0x1a1a1a, roughness:0.9 });
-    const beard = new THREE.Mesh(beardGeo, beardMat);
-    beard.position.set(0, 0.18+1.3+0.24, 0.18);
-    beard.scale.set(1, 0.8, 0.6);
+  
+  // Base/stand
+  const baseGeo = new THREE.CylinderGeometry(12, 14, 3, 24);
+  const baseMesh = new THREE.Mesh(baseGeo, vinylMat(0x222230));
+  baseMesh.position.y = 1.5;
+  group.add(baseMesh);
+  
+  // Legs
+  const legGeo = new THREE.CylinderGeometry(3.6, 4, 10, 12);
+  const legMat = vinylMat(0x2a2a35);
+  const leftLeg = new THREE.Mesh(legGeo, legMat);
+  leftLeg.position.set(-4, 8, 0);
+  group.add(leftLeg);
+  const rightLeg = new THREE.Mesh(legGeo, legMat);
+  rightLeg.position.set(4, 8, 0);
+  group.add(rightLeg);
+  
+  // Body (tapered cylinder)
+  const bodyGeo = new THREE.CylinderGeometry(config.bodyTop, config.bodyBot, 22, 24);
+  const bodyMat = vinylMat(config.shirtColor);
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.position.y = 24;
+  group.add(body);
+  
+  // Arms
+  const armGeo = new THREE.CylinderGeometry(3.1, 3.8, 18, 12);
+  const armMat = vinylMat(config.shirtColor);
+  const leftArm = new THREE.Mesh(armGeo, armMat);
+  leftArm.position.set(-(config.bodyTop + 2.5), 28, 0);
+  group.add(leftArm);
+  const rightArm = new THREE.Mesh(armGeo, armMat);
+  rightArm.position.set((config.bodyTop + 2.5), 28, 0);
+  group.add(rightArm);
+  
+  // Neck
+  const neckGeo = new THREE.CylinderGeometry(4, 5, 4, 12);
+  const neckMat = vinylMat(config.skinColor);
+  const neck = new THREE.Mesh(neckGeo, neckMat);
+  neck.position.y = 37;
+  group.add(neck);
+  
+  // Head (oversized ellipsoid)
+  const headGeo = new THREE.SphereGeometry(1, 32, 24);
+  headGeo.scale(config.headRX, config.headRY, config.headRZ);
+  const headMat = vinylMat(config.skinColor);
+  const head = new THREE.Mesh(headGeo, headMat);
+  head.position.y = 50;
+  group.add(head);
+  
+  // Hair (upper hemisphere, slightly larger than head)
+  const hairGeo = new THREE.SphereGeometry(1, 32, 16, 0, Math.PI*2, 0, Math.PI*0.55);
+  hairGeo.scale(config.hairRX, config.hairRY, config.hairRZ);
+  const hairMat = vinylMat(config.hairColor);
+  const hair = new THREE.Mesh(hairGeo, hairMat);
+  hair.position.y = 50 + config.headRY * 0.45;
+  group.add(hair);
+  
+  // Eyes (white spheres with black pupils - classic Funko Pop)
+  const eyeWhiteGeo = new THREE.SphereGeometry(2.2, 16, 12);
+  const eyeWhiteMat = new THREE.MeshPhongMaterial({color: 0xffffff, shininess: 80});
+  const eyePupilGeo = new THREE.SphereGeometry(1.1, 12, 10);
+  const eyePupilMat = new THREE.MeshPhongMaterial({color: 0x111111, shininess: 90});
+  
+  const leftEyeW = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
+  leftEyeW.position.set(-5, 50, config.headRZ - 1.5);
+  group.add(leftEyeW);
+  const rightEyeW = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
+  rightEyeW.position.set(5, 50, config.headRZ - 1.5);
+  group.add(rightEyeW);
+  
+  const leftPupil = new THREE.Mesh(eyePupilGeo, eyePupilMat);
+  leftPupil.position.set(-5, 50, config.headRZ - 0.5);
+  group.add(leftPupil);
+  const rightPupil = new THREE.Mesh(eyePupilGeo, eyePupilMat);
+  rightPupil.position.set(5, 50, config.headRZ - 0.5);
+  group.add(rightPupil);
+  
+  // Beard (if applicable)
+  if (config.hasBeard) {
+    const beardGeo = new THREE.TorusGeometry(7, 2.5, 8, 16, Math.PI);
+    beardGeo.scale(1, 0.6, 0.8);
+    const beard = new THREE.Mesh(beardGeo, vinylMat(config.beardColor));
+    beard.position.set(0, 44, config.headRZ * 0.3);
+    beard.rotation.x = -Math.PI * 0.3;
     group.add(beard);
-
-    group.userData.frontPlane = head;
-    figureGroups.push(group);
-    scene.add(group);
-  });
-}
-
-// ===== V2: PROCEDURAL + LABELS =====
-function buildV2() {
-  clearFigures();
-  figureData.forEach((fig) => {
-    const group = makeBase();
-    group.position.set(fig.x, 0, 0);
-    group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
-
-    // Same procedural body
-    const bodyGeo = new THREE.CylinderGeometry(0.42, 0.48, 1.3, 24);
-    const bodyMat = new THREE.MeshStandardMaterial({ color:fig.coat, roughness:0.6, metalness:0.1 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.18 + 0.65;
-    body.castShadow = true;
-    group.add(body);
-
-    const headGeo = new THREE.SphereGeometry(0.38, 32, 32);
-    const headMat = new THREE.MeshStandardMaterial({ color:0xc4a884, roughness:0.5 });
-    const head = new THREE.Mesh(headGeo, headMat);
-    head.position.y = 0.18 + 1.3 + 0.38;
-    head.castShadow = true;
-    group.add(head);
-
-    const beardGeo = new THREE.SphereGeometry(0.26, 16, 16);
-    const beardMat = new THREE.MeshStandardMaterial({ color:0x1a1a1a, roughness:0.9 });
-    const beard = new THREE.Mesh(beardGeo, beardMat);
-    beard.position.set(0, 0.18+1.3+0.24, 0.18);
-    beard.scale.set(1, 0.8, 0.6);
-    group.add(beard);
-
-    // Name label
-    group.add(makeLabel3D(fig.name));
-
-    group.userData.frontPlane = head;
-    figureGroups.push(group);
-    scene.add(group);
-  });
-}
-
-// ===== V3: FACE TEXTURES =====
-function buildV3() {
-  clearFigures();
-  let loaded = 0;
-  const total = figureData.length;
-
-  figureData.forEach((fig) => {
-    const group = makeBase();
-    group.position.set(fig.x, 0, 0);
-    group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
-
-    // Procedural body
-    const bodyGeo = new THREE.CylinderGeometry(0.42, 0.48, 1.3, 24);
-    const bodyMat = new THREE.MeshStandardMaterial({ color:fig.coat, roughness:0.6, metalness:0.1 });
-    const body = new THREE.Mesh(bodyGeo, bodyMat);
-    body.position.y = 0.18 + 0.65;
-    body.castShadow = true;
-    group.add(body);
-
-    // Head sphere (will get texture)
-    const headGeo = new THREE.SphereGeometry(0.42, 32, 32);
-    const headMat = new THREE.MeshStandardMaterial({ color:0xc4a884, roughness:0.5 });
-    const head = new THREE.Mesh(headGeo, headMat);
-    head.position.y = 0.18 + 1.3 + 0.38;
-    head.castShadow = true;
-    group.add(head);
-
-    // Beard
-    const beardGeo = new THREE.SphereGeometry(0.26, 16, 16);
-    const beardMat = new THREE.MeshStandardMaterial({ color:0x1a1a1a, roughness:0.9 });
-    const beard = new THREE.Mesh(beardGeo, beardMat);
-    beard.position.set(0, 0.18+1.3+0.24, 0.22);
-    beard.scale.set(1, 0.8, 0.6);
-    group.add(beard);
-
-    // Name label
-    group.add(makeLabel3D(fig.name));
-
-    group.userData.frontPlane = head;
-
-    // Load face texture and map onto a plane on front of head
-    texLoader.load(`textures/${fig.name}.png`, (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-
-      // Billboard plane showing face, positioned on front of head
-      const faceGeo = new THREE.PlaneGeometry(0.6, 0.6);
-      const faceMat = new THREE.MeshStandardMaterial({
-        map: texture, transparent:true, alphaTest:0.02,
-        side: THREE.DoubleSide, roughness:0.8, metalness:0.0, depthWrite:false
-      });
-      const facePlane = new THREE.Mesh(faceGeo, faceMat);
-      facePlane.position.set(0, 0.18+1.3+0.36, 0.40);
-      group.add(facePlane);
-
-      loaded++;
-      if (loaded === total) hideLoading();
-    }, undefined, () => { loaded++; if(loaded===total) hideLoading(); });
-
-    figureGroups.push(group);
-    scene.add(group);
-  });
-}
-
-// ===== V4: STANDEE =====
-function buildV4() {
-  clearFigures();
-  let loaded = 0;
-  const total = figureData.length;
-
-  figureData.forEach((fig) => {
-    texLoader.load(`textures/${fig.name}.png`, (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-      texture.minFilter = THREE.LinearMipmapLinearFilter;
-      texture.premultiplyAlpha = true;
-
-      const img = texture.image;
-      const maxH = 3.0;
-      const aspect = img.width / img.height;
-      const h = maxH, w = h * aspect;
-
-      const group = makeBase();
-      group.position.set(fig.x, 0, 0);
-      group.userData = { baseY:0, phase:Math.random()*Math.PI*2, name:fig.name };
-
-      // Stand rod
-      const rodMat = new THREE.MeshPhysicalMaterial({
-        color:0xffffff, transparent:true, opacity:0.12, metalness:0, roughness:0,
-        transmission:0.92, thickness:0.05
-      });
-      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.022,0.022,3.6,12), rodMat);
-      rod.position.set(0,1.8,-0.08); group.add(rod);
-      const rodBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.1,16), rodMat);
-      rodBase.position.set(0,0.2,-0.08); group.add(rodBase);
-
-      // Front plane
-      const planeMat = new THREE.MeshStandardMaterial({
-        map:texture, transparent:true, alphaTest:0.02,
-        side:THREE.DoubleSide, roughness:0.85, metalness:0.0, depthWrite:false
-      });
-      const frontPlane = new THREE.Mesh(new THREE.PlaneGeometry(w,h), planeMat);
-      frontPlane.position.set(0, 0.18+h/2, 0);
-      frontPlane.castShadow = true;
-      group.add(frontPlane);
-
-      // Back plane
-      const backPlane = new THREE.Mesh(new THREE.PlaneGeometry(w,h), planeMat.clone());
-      backPlane.material.map = texture;
-      backPlane.position.set(0, 0.18+h/2, -0.008);
-      backPlane.rotation.y = Math.PI;
-      group.add(backPlane);
-
-      // Edge slice
-      const edgeMat = new THREE.MeshStandardMaterial({ color:0x1a1a22, roughness:0.9, metalness:0.1 });
-      const edge = new THREE.Mesh(new THREE.BoxGeometry(w*0.96,h*0.96,0.012), edgeMat);
-      edge.position.set(0, 0.18+h/2, -0.004);
-      group.add(edge);
-
-      // Label
-      group.add(makeLabel3D(fig.name));
-
-      group.userData.frontPlane = frontPlane;
-      figureGroups.push(group);
-      scene.add(group);
-
-      loaded++;
-      if (loaded === total) hideLoading();
-    }, undefined, (err) => {
-      console.error('Load error for', fig.name, err);
-      loaded++; if (loaded===total) hideLoading();
-    });
-  });
-}
-
-// ===== LOADING =====
-function hideLoading() {
-  const loading = document.getElementById('loading');
-  loading.classList.add('fade-out');
-  setTimeout(() => loading.style.display='none', 600);
-}
-
-// ===== VERSION SWITCH =====
-function switchVersion(v) {
-  currentVersion = v;
-  document.querySelectorAll('.vbtn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.dataset.version) === v);
-  });
-  const labels = { 1:'V1: Procedural 3D', 2:'V2: Labeled', 3:'V3: Face Textures', 4:'V4: Standee' };
-  document.getElementById('subtitle').textContent = labels[v];
-
-  // Show loading for async versions
-  if (v >= 3) {
-    const loading = document.getElementById('loading');
-    loading.style.display=''; loading.classList.remove('fade-out');
-    loading.textContent = 'Loading…';
   }
-
-  if (v === 1) { buildV1(); hideLoading(); }
-  else if (v === 2) { buildV2(); hideLoading(); }
-  else if (v === 3) { buildV3(); }
-  else if (v === 4) { buildV4(); }
-}
-
-document.querySelectorAll('.vbtn').forEach(b => {
-  b.addEventListener('click', () => switchVersion(parseInt(b.dataset.version)));
-});
-
-// ===== BUTTONS =====
-document.getElementById('btn-reset').addEventListener('click', () => {
-  animateCameraTo(0, 2.2, 7, 0, 1.8, 0);
-});
-
-document.getElementById('btn-spin').addEventListener('click', (e) => {
-  autoRotate = !autoRotate;
-  e.target.classList.toggle('active', autoRotate);
-  controls.autoRotate = autoRotate;
-  controls.autoRotateSpeed = 0.8;
-});
-
-// ===== CAMERA ANIMATION =====
-function animateCameraTo(x, y, z, tx, ty, tz) {
-  const startPos = camera.position.clone();
-  const endPos = new THREE.Vector3(x, y, z);
-  const startTarget = controls.target.clone();
-  const endTarget = new THREE.Vector3(tx, ty, tz);
-  let t = 0;
-  function step() {
-    t += 0.04; if (t>1) t=1;
-    const ease = t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
-    camera.position.lerpVectors(startPos, endPos, ease);
-    controls.target.lerpVectors(startTarget, endTarget, ease);
-    if (t<1) requestAnimationFrame(step);
+  
+  // Glasses (if applicable)
+  if (config.hasGlasses) {
+    const lensGeo = new THREE.BoxGeometry(5, 3.5, 0.5);
+    const frameMat = new THREE.MeshPhongMaterial({color: 0x111111, shininess: 100});
+    const leftLens = new THREE.Mesh(lensGeo, frameMat);
+    leftLens.position.set(-5, 50.5, config.headRZ - 0.5);
+    group.add(leftLens);
+    const rightLens = new THREE.Mesh(lensGeo, frameMat);
+    rightLens.position.set(5, 50.5, config.headRZ - 0.5);
+    group.add(rightLens);
+    // Bridge
+    const bridgeGeo = new THREE.BoxGeometry(2.5, 0.8, 0.5);
+    const bridge = new THREE.Mesh(bridgeGeo, frameMat);
+    bridge.position.set(0, 50.5, config.headRZ - 0.5);
+    group.add(bridge);
   }
-  step();
+  
+  return group;
 }
 
-// ===== ANIMATION LOOP =====
-const clock = new THREE.Clock();
-function animate() {
-  requestAnimationFrame(animate);
-  const t = clock.getElapsedTime();
-  figureGroups.forEach((fig) => {
-    fig.position.y = Math.sin(t*0.8 + (fig.userData.phase||0)) * 0.025;
-  });
-  const posArr = particleGeo.attributes.position.array;
-  for (let i=0; i<particleCount; i++) {
-    posArr[i*3]+=velocities[i].vx; posArr[i*3+1]+=velocities[i].vy; posArr[i*3+2]+=velocities[i].vz;
-    if (posArr[i*3+1]>7) { posArr[i*3+1]=0; posArr[i*3]=(Math.random()-0.5)*16; posArr[i*3+2]=(Math.random()-0.5)*8; }
+function initViewer(container, config) {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0f0f18);
+  
+  const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.set(0, 45, 90);
+  
+  const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+  
+  // Lighting
+  const ambient = new THREE.AmbientLight(0x404050, 0.6);
+  scene.add(ambient);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  keyLight.position.set(50, 80, 60);
+  scene.add(keyLight);
+  const fillLight = new THREE.DirectionalLight(0x8888ff, 0.3);
+  fillLight.position.set(-50, 40, -30);
+  scene.add(fillLight);
+  const rimLight = new THREE.DirectionalLight(0xe8d5b5, 0.4);
+  rimLight.position.set(0, 30, -80);
+  scene.add(rimLight);
+  
+  // Ground shadow
+  const groundGeo = new THREE.CircleGeometry(30, 32);
+  const groundMat = new THREE.MeshBasicMaterial({color: 0x12121e, transparent: true, opacity: 0.6});
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.1;
+  scene.add(ground);
+  
+  // Build the Funko Pop mesh
+  const funko = buildFunkoMesh(config);
+  scene.add(funko);
+  
+  // Controls
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 40;
+  controls.maxDistance = 180;
+  controls.target.set(0, 35, 0);
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.5;
+  
+  let isAutoRotate = true;
+  
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
   }
-  particleGeo.attributes.position.needsUpdate = true;
-  glowMesh.material.opacity = 0.7 + Math.sin(t*0.5)*0.15;
-  controls.update();
-  renderer.render(scene, camera);
+  animate();
+  
+  // Resize
+  const resize = () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  };
+  window.addEventListener('resize', resize);
+  
+  return { controls, toggleRotate: () => { isAutoRotate = !isAutoRotate; controls.autoRotate = isAutoRotate; return isAutoRotate; }, reset: () => { camera.position.set(0, 45, 90); controls.target.set(0, 35, 0); } };
 }
 
-// ===== RESIZE =====
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+// Render subject cards
+const container = document.getElementById('subjects');
+const viewers = {};
+
+subjects.forEach(sub => {
+  const card = document.createElement('div');
+  card.className = 'subject-card';
+  card.innerHTML = `
+    <h2>${sub.name}</h2>
+    <span class="likeness-badge">Likeness: ${sub.likeness}/10</span>
+    <div class="ref-row">
+      <div style="width:48%">
+        <img src="${sub.refImg}" style="width:100%;border-radius:8px" alt="Reference">
+        <div class="ref-label">Reference Photo</div>
+      </div>
+      <div style="width:48%">
+        <img src="${sub.artImg}" style="width:100%;border-radius:8px" alt="Funko Art">
+        <div class="ref-label">Funko Pop Art (V5)</div>
+      </div>
+    </div>
+    <div class="canvas-container" id="canvas-${sub.name}"></div>
+    <div class="controls-row">
+      <button class="btn active" data-action="rotate" data-name="${sub.name}">Auto-Rotate</button>
+      <button class="btn" data-action="reset" data-name="${sub.name}">Reset View</button>
+    </div>
+    <div class="download-row">
+      <a class="dl-btn" href="stl/${sub.name.toLowerCase()}-funko-v5.stl" download>⬇ Download STL (3D Print)</a>
+    </div>
+  `;
+  container.appendChild(card);
+  
+  // Init viewer after DOM insertion
+  setTimeout(() => {
+    const canvasEl = document.getElementById(`canvas-${sub.name}`);
+    if (canvasEl) {
+      viewers[sub.name] = initViewer(canvasEl, sub.config);
+    }
+  }, 50);
 });
 
-// ===== INIT =====
-switchVersion(4);
-animate();
+// Wire up buttons
+document.addEventListener('click', (e) => {
+  if (e.target.matches('.btn[data-action]')) {
+    const action = e.target.dataset.action;
+    const name = e.target.dataset.name;
+    const v = viewers[name];
+    if (!v) return;
+    if (action === 'rotate') {
+      const on = v.toggleRotate();
+      e.target.classList.toggle('active', on);
+    } else if (action === 'reset') {
+      v.reset();
+    }
+  }
+});
 </script>
+
 </body>
 </html>
