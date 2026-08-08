@@ -259,6 +259,7 @@ scene.add(ground);
 
 // ===== TEXTURE LOADING =====
 const textureLoader = new THREE.TextureLoader();
+textureLoader.crossOrigin = 'anonymous';
 
 function loadFaceTexture(url) {
   return new Promise((resolve, reject) => {
@@ -270,13 +271,16 @@ function loadFaceTexture(url) {
 }
 
 // ===== FUNKO POP BUILDER =====
+// Store face meshes so we can swap textures in later
+const faceMeshes = {};
+
 function createFunkoPop(config) {
   const group = new THREE.Group();
   
   // --- HEAD (large sphere, slightly squished) ---
   const headGeo = new THREE.SphereGeometry(1.0, 48, 48);
   const headMat = new THREE.MeshStandardMaterial({
-    color: 0xf5e6d3, // skin tone base
+    color: 0xf5e6d3,
     roughness: 0.5,
     metalness: 0.05
   });
@@ -288,34 +292,34 @@ function createFunkoPop(config) {
   group.add(head);
   
   // --- FACE TEXTURE on front of head ---
-  // Use a slightly curved plane positioned just in front of the head sphere
-  if (config.faceTexture) {
-    const faceGeo = new THREE.PlaneGeometry(1.3, 1.3, 16, 16);
-    // Curve the plane to match sphere curvature
-    const posAttr = faceGeo.attributes.position;
-    for (let i = 0; i < posAttr.count; i++) {
-      const x = posAttr.getX(i);
-      const y = posAttr.getY(i);
-      const dist = Math.sqrt(x * x + y * y);
-      const maxDist = Math.sqrt(0.65 * 0.65 + 0.65 * 0.65);
-      if (dist < 0.85) {
-        const z = Math.sqrt(Math.max(0, 1.05 * 1.05 - x * x - y * y)) - 1.02;
-        posAttr.setZ(i, Math.max(z, -0.1));
-      }
+  const faceGeo = new THREE.PlaneGeometry(1.3, 1.3, 16, 16);
+  // Curve the plane to match sphere curvature
+  const posAttr = faceGeo.attributes.position;
+  for (let i = 0; i < posAttr.count; i++) {
+    const x = posAttr.getX(i);
+    const y = posAttr.getY(i);
+    if (x * x + y * y < 1.1) {
+      const z = Math.sqrt(Math.max(0, 1.05 * 1.05 - x * x - y * y)) - 1.02;
+      posAttr.setZ(i, Math.max(z, -0.1));
     }
-    faceGeo.computeVertexNormals();
-    
-    const faceMat = new THREE.MeshStandardMaterial({
-      map: config.faceTexture,
-      transparent: true,
-      roughness: 0.4,
-      metalness: 0.0,
-      side: THREE.FrontSide
-    });
-    const face = new THREE.Mesh(faceGeo, faceMat);
-    face.position.set(0, 3.2, 1.0);
-    face.castShadow = true;
-    group.add(face);
+  }
+  faceGeo.computeVertexNormals();
+  
+  const faceMat = new THREE.MeshStandardMaterial({
+    map: config.faceTexture || null,
+    transparent: true,
+    roughness: 0.4,
+    metalness: 0.0,
+    side: THREE.FrontSide
+  });
+  const face = new THREE.Mesh(faceGeo, faceMat);
+  face.position.set(0, 3.2, 1.0);
+  face.castShadow = true;
+  group.add(face);
+  
+  // Store for texture swapping
+  if (config.id) {
+    faceMeshes[config.id] = face;
   }
   
   // --- HAIR (simple dark cap on top-back of head) ---
@@ -355,7 +359,7 @@ function createFunkoPop(config) {
   neck.castShadow = true;
   group.add(neck);
   
-  // --- ARMS (small cylinders on sides) ---
+  // --- ARMS (small capsules on sides) ---
   const armGeo = new THREE.CapsuleGeometry(0.12, 0.5, 8, 16);
   const armMat = new THREE.MeshStandardMaterial({
     color: config.shirtColor,
@@ -422,8 +426,8 @@ function createFunkoPop(config) {
   const labelDiv = document.createElement('div');
   labelDiv.className = 'label2d';
   labelDiv.textContent = config.name;
-  labelDiv.style.background = `rgba(${config.labelRgb}, 0.5)`;
-  labelDiv.style.border = `1px solid rgba(${config.labelRgb}, 0.6)`;
+  labelDiv.style.background = 'rgba(' + config.labelRgb + ', 0.5)';
+  labelDiv.style.border = '1px solid rgba(' + config.labelRgb + ', 0.6)';
   const label = new CSS2DObject(labelDiv);
   label.position.set(0, 4.5, 0);
   group.add(label);
@@ -434,95 +438,79 @@ function createFunkoPop(config) {
   return group;
 }
 
-// ===== BUILD FIGURES =====
-async function init() {
-  let jeremyFace, rayFace, glennFace;
-  
-  // Load textures with a timeout fallback
-  function loadWithFallback(primary, fallback) {
-    return new Promise(resolve => {
-      let resolved = false;
-      const timer = setTimeout(() => {
-        if (!resolved) { resolved = true; console.warn('Texture timeout:', primary); resolve(null); }
-      }, 8000);
-      
-      loadFaceTexture(primary)
-        .then(tex => { if (!resolved) { resolved = true; clearTimeout(timer); resolve(tex); } })
-        .catch(() => {
-          if (fallback) {
-            loadFaceTexture(fallback)
-              .then(tex => { if (!resolved) { resolved = true; clearTimeout(timer); resolve(tex); } })
-              .catch(() => { if (!resolved) { resolved = true; clearTimeout(timer); resolve(null); } });
-          } else {
-            if (!resolved) { resolved = true; clearTimeout(timer); resolve(null); } }
-          }
-        });
-    });
-  }
-  
-  [jeremyFace, rayFace, glennFace] = await Promise.all([
-    loadWithFallback('images/v5/jeremy.png', 'textures/jeremy.png'),
-    loadWithFallback('images/v5/ray.png', 'textures/ray.png'),
-    loadWithFallback('images/v5/glenn.png', 'textures/glenn.png')
-  ]);
-  
-  // Jeremy — blue theme
-  const jeremy = createFunkoPop({
-    name: 'Jeremy',
-    x: -2.6,
-    faceTexture: jeremyFace,
-    baseColor: 0x2563eb,
-    shirtColor: 0x3b82f6,
-    hairColor: 0x2a1810,
-    labelRgb: '59, 130, 246'
-  });
-  scene.add(jeremy);
-  
-  // Ray — purple theme
-  const ray = createFunkoPop({
-    name: 'Ray',
-    x: 0,
-    faceTexture: rayFace,
-    baseColor: 0x7c3aed,
-    shirtColor: 0xa78bfa,
-    hairColor: 0x1a1a1a,
-    labelRgb: '167, 139, 250'
-  });
-  scene.add(ray);
-  
-  // Glenn — green theme
-  const glenn = createFunkoPop({
-    name: 'Glenn',
-    x: 2.6,
-    faceTexture: glennFace,
-    baseColor: 0x059669,
-    shirtColor: 0x34d399,
-    hairColor: 0x3a2010,
-    labelRgb: '52, 211, 153'
-  });
-  scene.add(glenn);
-  
-  // Remove loading text
-  const loadingEl = document.getElementById('loading');
-  if (loadingEl) loadingEl.remove();
-  
-  // Start render loop
-  animate();
+// ===== BUILD FIGURES IMMEDIATELY (no texture wait) =====
+const figs = {};
+
+figs.jeremy = createFunkoPop({
+  id: 'jeremy', name: 'Jeremy', x: -2.6, faceTexture: null,
+  baseColor: 0x2563eb, shirtColor: 0x3b82f6, hairColor: 0x2a1810,
+  labelRgb: '59, 130, 246'
+});
+scene.add(figs.jeremy);
+
+figs.ray = createFunkoPop({
+  id: 'ray', name: 'Ray', x: 0, faceTexture: null,
+  baseColor: 0x7c3aed, shirtColor: 0xa78bfa, hairColor: 0x1a1a1a,
+  labelRgb: '167, 139, 250'
+});
+scene.add(figs.ray);
+
+figs.glenn = createFunkoPop({
+  id: 'glenn', name: 'Glenn', x: 2.6, faceTexture: null,
+  baseColor: 0x059669, shirtColor: 0x34d399, hairColor: 0x3a2010,
+  labelRgb: '52, 211, 153'
+});
+scene.add(figs.glenn);
+
+// Remove loading and start rendering right away
+const loadingEl = document.getElementById('loading');
+if (loadingEl) loadingEl.remove();
+
+// ===== ANIMATION LOOP =====
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
 }
+animate();
+
+// ===== LOAD FACE TEXTURES ASYNC (swap in when ready) =====
+const faceUrls = {
+  jeremy: ['images/v5/jeremy.png', 'textures/jeremy.png'],
+  ray: ['images/v5/ray.png', 'textures/ray.png'],
+  glenn: ['images/v5/glenn.png', 'textures/glenn.png']
+};
+
+Object.entries(faceUrls).forEach(([name, urls]) => {
+  urls.forEach(url => {
+    textureLoader.load(url, (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      const mesh = faceMeshes[name];
+      if (mesh && !mesh.material.map) {
+        mesh.material.map = texture;
+        mesh.material.needsUpdate = true;
+        console.log('Face loaded:', name, 'from', url);
+      }
+    }, undefined, (err) => {
+      console.warn('Face load failed:', url, err.message?.substring(0, 80));
+    });
+  });
+});
 
 // ===== GALLERY =====
 function buildGallery() {
   const people = ['jeremy', 'ray', 'glenn'];
   people.forEach(person => {
-    const container = document.getElementById(`gallery-${person}`);
+    const container = document.getElementById('gallery-' + person);
     if (!container) return;
     
     const versions = [
-      { ver: 'V1', path: `images/v1/${person}.png` },
-      { ver: 'V2', path: `images/v2/${person}.png` },
-      { ver: 'V3', path: `images/v3/${person}.png` },
-      { ver: 'V5', path: `images/v5/${person}.png` },
-      { ver: 'Photo', path: `images/reference/${person}.png` },
+      { ver: 'V1', path: 'images/v1/' + person + '.png' },
+      { ver: 'V2', path: 'images/v2/' + person + '.png' },
+      { ver: 'V3', path: 'images/v3/' + person + '.png' },
+      { ver: 'V5', path: 'images/v5/' + person + '.png' },
+      { ver: 'Photo', path: 'images/reference/' + person + '.png' },
     ];
     
     versions.forEach(v => {
@@ -531,9 +519,9 @@ function buildGallery() {
       
       const img = document.createElement('img');
       img.src = v.path;
-      img.alt = `${person} ${v.ver}`;
+      img.alt = person + ' ' + v.ver;
       img.loading = 'lazy';
-      img.onerror = () => { wrap.style.display = 'none'; };
+      img.onerror = function() { wrap.style.display = 'none'; };
       
       const label = document.createElement('div');
       label.className = 'thumb-label';
@@ -548,14 +536,6 @@ function buildGallery() {
 
 buildGallery();
 
-// ===== ANIMATION LOOP =====
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-  labelRenderer.render(scene, camera);
-}
-
 // ===== RESIZE =====
 function onResize() {
   const w = container.clientWidth;
@@ -567,18 +547,10 @@ function onResize() {
 }
 window.addEventListener('resize', onResize);
 
-// Handle container resize (mobile orientation change, etc.)
 if (window.ResizeObserver) {
-  const ro = new ResizeObserver(() => onResize());
+  const ro = new ResizeObserver(function() { onResize(); });
   ro.observe(container);
 }
-
-// ===== START =====
-init().catch(err => {
-  console.error('init() failed:', err);
-  const loadingEl = document.getElementById('loading');
-  if (loadingEl) loadingEl.textContent = 'Error loading scene: ' + err.message;
-});
 </script>
 
 </body>
