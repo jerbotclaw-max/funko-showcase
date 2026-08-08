@@ -325,8 +325,11 @@ function createFunkoPop(config) {
     faceMeshes[config.id] = face;
   }
   
-  // --- HAIR (simple dark cap on top-back of head) ---
-  const hairGeo = new THREE.SphereGeometry(1.02, 32, 32, 0, Math.PI * 2, 0, Math.PI * 0.55);
+  // --- HAIR (dark cap on back/top of head, doesn't cover face front) ---
+  // Covers from ~45deg around the right, across the back, to ~45deg around the left
+  // phiStart at ~0.15π (just past right side), phiLength ~1.7π (wraps around back)
+  // This leaves the front ~0.3π (54 degrees) open for the face
+  const hairGeo = new THREE.SphereGeometry(1.03, 32, 32, Math.PI * 0.17, Math.PI * 1.66, 0, Math.PI * 0.52);
   const hairMat = new THREE.MeshStandardMaterial({
     color: config.hairColor || 0x3a2010,
     roughness: 0.7,
@@ -571,6 +574,11 @@ function buildGallery() {
 }
 
 buildGallery();
+
+// Expose for debugging
+window.__scene = scene;
+window.__camera = camera;
+window.__faceMeshes = faceMeshes;
 
 // ===== RESIZE =====
 function onResize() {
