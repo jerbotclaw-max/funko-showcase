@@ -475,27 +475,60 @@ function animate() {
 }
 animate();
 
-// ===== LOAD FACE TEXTURES ASYNC (swap in when ready) =====
+// ===== LOAD FACE TEXTURES ASYNC (crop face from full-body renders) =====
+// V5 images are full-body Funko renders — crop just the face/head region
+function cropFaceFromImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      // Face is typically in the top ~25% of the full-body image
+      // Funko head is disproportionately large, so it's roughly top 20-28%
+      const cropTop = img.height * 0.04;
+      const cropSize = img.height * 0.26;
+      const cropLeft = (img.width - cropSize) / 2;
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, cropLeft, cropTop, cropSize, cropSize, 0, 0, 256, 256);
+      
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      resolve(tex);
+    };
+    img.onerror = function() { reject(new Error('Failed to load ' + url)); };
+    img.src = url;
+  });
+}
+
 const faceUrls = {
   jeremy: ['images/v5/jeremy.png', 'textures/jeremy.png'],
   ray: ['images/v5/ray.png', 'textures/ray.png'],
   glenn: ['images/v5/glenn.png', 'textures/glenn.png']
 };
 
-Object.entries(faceUrls).forEach(([name, urls]) => {
-  urls.forEach(url => {
-    textureLoader.load(url, (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      const mesh = faceMeshes[name];
+Object.entries(faceUrls).forEach(function(entry) {
+  const name = entry[0];
+  var urls = entry[1];
+  var tried = 0;
+  function tryNext() {
+    if (tried >= urls.length) return;
+    var url = urls[tried++];
+    cropFaceFromImage(url).then(function(tex) {
+      var mesh = faceMeshes[name];
       if (mesh && !mesh.material.map) {
-        mesh.material.map = texture;
+        mesh.material.map = tex;
         mesh.material.needsUpdate = true;
         console.log('Face loaded:', name, 'from', url);
       }
-    }, undefined, (err) => {
-      console.warn('Face load failed:', url, err.message?.substring(0, 80));
+    }).catch(function(err) {
+      console.warn('Face load failed:', url, err.message);
+      tryNext();
     });
-  });
+  }
+  tryNext();
 });
 
 // ===== GALLERY =====
