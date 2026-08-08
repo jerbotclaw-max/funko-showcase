@@ -310,10 +310,13 @@ function createFunkoPop(config) {
     transparent: true,
     roughness: 0.4,
     metalness: 0.0,
-    side: THREE.FrontSide
+    side: THREE.FrontSide,
+    polygonOffset: true,
+    polygonOffsetFactor: -2,
+    polygonOffsetUnits: -2
   });
   const face = new THREE.Mesh(faceGeo, faceMat);
-  face.position.set(0, 3.2, 1.0);
+  face.position.set(0, 3.2, 1.1);
   face.castShadow = true;
   group.add(face);
   
