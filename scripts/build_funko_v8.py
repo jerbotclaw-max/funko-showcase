@@ -225,8 +225,14 @@ def build(person):
         pass
 
     scene = trimesh.Scene(base_frame=person)
+    # STL/CAD convention is Z-up; glTF/model-viewer convention is Y-up.
+    # Rotate the browser copy so former +Z becomes +Y and former -Y face
+    # becomes +Z (the model-viewer default front camera).
+    gltf_up = rotation_matrix(-math.pi / 2, [1, 0, 0])
     for name, mesh in parts.items():
-        scene.add_geometry(mesh, geom_name=name, node_name=name)
+        browser_mesh = mesh.copy()
+        browser_mesh.apply_transform(gltf_up)
+        scene.add_geometry(browser_mesh, geom_name=name, node_name=name)
     glb_path = MODELS / f"{person}_funko_v8.glb"
     scene.export(glb_path)
 
