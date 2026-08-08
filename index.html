@@ -3,93 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JC Dream — Funko Pop Collection V5</title>
+<title>JC Dream Funko Pop Collection</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a12;color:#e8d5b5;font-family:'Helvetica Neue',Arial,sans-serif;min-height:100vh}
-.header{text-align:center;padding:30px 20px 10px}
-.header h1{font-size:clamp(24px,4vw,42px);font-weight:800;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 30px rgba(232,213,181,0.3)}
-.header p{font-size:14px;color:#8a8a9a;letter-spacing:2px;margin-top:6px;text-transform:uppercase}
-.version-info{background:rgba(232,213,181,0.08);border:1px solid rgba(232,213,181,0.2);border-radius:12px;padding:12px 20px;max-width:600px;margin:16px auto;text-align:center;font-size:13px;line-height:1.6}
-.version-info strong{color:#f0d99a}
-.subjects{display:flex;flex-wrap:wrap;justify-content:center;gap:20px;padding:20px;max-width:1400px;margin:0 auto}
-.subject-card{background:rgba(20,20,35,0.6);border:1px solid rgba(232,213,181,0.15);border-radius:16px;overflow:hidden;width:420px;max-width:100%}
-.subject-card h2{text-align:center;padding:16px 0 8px;font-size:20px;letter-spacing:2px;text-transform:uppercase}
-.likeness-badge{display:inline-block;background:rgba(80,200,120,0.2);border:1px solid rgba(80,200,120,0.4);color:#5fc88f;padding:4px 14px;border-radius:12px;font-size:13px;font-weight:600;margin:0 auto 12px;text-align:center;display:block;width:fit-content;margin-left:auto;margin-right:auto}
-.ref-row{display:flex;gap:8px;padding:0 16px 12px;justify-content:center}
-.ref-row img{width:48%;border-radius:8px;border:1px solid rgba(232,213,181,0.15)}
-.ref-label{font-size:11px;color:#6a6a7a;text-align:center;margin-top:-8px;padding:0 16px 8px}
-.canvas-container{width:100%;height:400px;position:relative;background:radial-gradient(circle at 50% 40%,#1a1a2e 0%,#0a0a12 100%);border-top:1px solid rgba(232,213,181,0.1);border-bottom:1px solid rgba(232,213,181,0.1)}
-.canvas-container canvas{display:block;width:100%;height:100%}
-.controls-row{display:flex;gap:8px;padding:12px 16px;justify-content:center;flex-wrap:wrap}
-.btn{background:rgba(20,20,35,0.85);border:1px solid rgba(232,213,181,0.3);color:#e8d5b5;padding:6px 14px;border-radius:16px;cursor:pointer;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s}
-.btn:hover{background:rgba(40,40,65,0.9);border-color:rgba(232,213,181,0.6)}
-.btn.active{background:rgba(232,213,181,0.15);border-color:rgba(232,213,181,0.7)}
-.download-row{padding:0 16px 16px;text-align:center}
-.dl-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(80,200,120,0.15);border:1px solid rgba(80,200,120,0.4);color:#5fc88f;padding:8px 18px;border-radius:20px;text-decoration:none;font-size:13px;font-weight:600;transition:all 0.3s}
-.dl-btn:hover{background:rgba(80,200,120,0.25);border-color:rgba(80,200,120,0.7)}
-.history-section{max-width:1400px;margin:30px auto;padding:0 20px 40px}
-.history-section h2{font-size:22px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;text-align:center}
-.history-grid{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
-.history-card{background:rgba(20,20,35,0.4);border:1px solid rgba(232,213,181,0.1);border-radius:12px;padding:16px;width:300px}
-.history-card h3{font-size:15px;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase;color:#f0d99a}
-.history-card p{font-size:13px;line-height:1.6;color:#9a9aaa}
-.history-card .score{display:inline-block;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:700;margin-top:8px}
-.score-low{background:rgba(200,80,80,0.2);border:1px solid rgba(200,80,80,0.3);color:#e07070}
-.score-mid{background:rgba(200,180,80,0.2);border:1px solid rgba(200,180,80,0.3);color:#c0a850}
-.score-high{background:rgba(80,200,120,0.2);border:1px solid rgba(80,200,120,0.4);color:#5fc88f}
-.footer{text-align:center;padding:30px 20px;font-size:12px;color:#6a6a7a;letter-spacing:1px}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+  --gold: #d29922; --pink: #f778ba;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6; overflow-x: hidden;
+}
+/* HERO */
+.hero {
+  position: relative; width: 100%; height: 100vh; min-height: 600px;
+  background: radial-gradient(ellipse at center, #1a1a3e 0%, #0d1117 70%);
+  overflow: hidden;
+}
+.hero canvas { display: block; }
+.hero-overlay {
+  position: absolute; top: 0; left: 0; right: 0;
+  padding: 24px 20px 10px; text-align: center; z-index: 10; pointer-events: none;
+}
+.hero-overlay h1 {
+  font-size: clamp(24px, 5vw, 42px); font-weight: 800;
+  background: linear-gradient(90deg, var(--pink), var(--accent), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -1px;
+}
+.hero-overlay p { font-size: 14px; color: var(--muted); margin-top: 6px; }
+.hero-hint {
+  position: absolute; bottom: 16px; left: 0; right: 0; text-align: center;
+  font-size: 12px; color: var(--muted); z-index: 10; pointer-events: none;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+#loading-3d {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 16px; color: var(--accent); z-index: 100;
+}
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: center; gap: 8px; padding: 10px 16px;
+}
+nav a {
+  color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600;
+  padding: 6px 14px; border-radius: 8px; transition: all 0.2s;
+}
+nav a:hover, nav a.active { color: var(--text); background: var(--surface); }
+/* SECTIONS */
+.section {
+  max-width: 1000px; margin: 0 auto; padding: 48px 20px;
+}
+.section-title {
+  font-size: clamp(22px, 4vw, 32px); font-weight: 800; margin-bottom: 8px;
+}
+.section-title .role { font-size: 16px; font-weight: 400; color: var(--accent); }
+.section-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+/* COMPARISON */
+.compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
+}
+.compare-item {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.compare-item .label {
+  padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-item img { width: 100%; display: block; aspect-ratio: 1; object-fit: cover; }
+/* LIKENESS BAR */
+.likeness {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+  font-size: 15px;
+}
+.likeness-bar-bg {
+  flex: 1; height: 10px; background: var(--surface);
+  border-radius: 5px; overflow: hidden; border: 1px solid var(--border);
+}
+.likeness-bar-fill {
+  height: 100%; border-radius: 5px;
+  background: linear-gradient(90deg, var(--gold), #4fd1c5);
+  transition: width 1s ease;
+}
+.likeness-score { font-weight: 700; color: var(--gold); min-width: 40px; }
+/* VERSION GALLERY */
+.version-gallery {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+.version-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; transition: transform 0.2s;
+  cursor: pointer;
+}
+.version-card:hover { transform: translateY(-3px); border-color: var(--accent); }
+.version-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.version-card .vtag {
+  padding: 8px 12px; font-size: 12px; font-weight: 600;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.version-card .vtag .ver { color: var(--accent); }
+.version-card .vtag .stl { color: var(--muted); font-size: 11px; text-decoration: none; }
+.version-card .vtag .stl:hover { color: var(--gold); }
+/* MINI 3D VIEWER */
+.mini-3d {
+  width: 100%; height: 350px; background: #111827;
+  border-radius: 12px; border: 1px solid var(--border);
+  overflow: hidden; position: relative; margin-bottom: 28px;
+}
+.mini-3d canvas { display: block; width: 100%; height: 100%; }
+.mini-3d .hint {
+  position: absolute; bottom: 8px; right: 12px; font-size: 11px; color: #4b5563;
+}
+/* FOOTER */
+footer {
+  text-align: center; padding: 40px 20px; border-top: 1px solid var(--border);
+  color: var(--muted); font-size: 13px;
+}
+/* MOBILE */
+@media (max-width: 640px) {
+  .compare-grid { grid-template-columns: 1fr; }
+  .hero-overlay h1 { font-size: 22px; }
+  nav { gap: 4px; padding: 8px; }
+  nav a { font-size: 12px; padding: 4px 10px; }
+  .version-gallery { grid-template-columns: 1fr 1fr; }
+  .section { padding: 32px 16px; }
+  .mini-3d { height: 280px; }
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>JC Dream — Funko Pop Collection</h1>
-  <p>V5: Real 3D Printable Models</p>
+<!-- HERO 3D SCENE -->
+<div class="hero" id="hero">
+  <div id="loading-3d">Loading 3D models...</div>
+  <div class="hero-overlay">
+    <h1>JC Dream Funko Pop Collection</h1>
+    <p>Interactive 3D vinyl figures • Drag to rotate • Scroll to zoom</p>
+  </div>
+  <div class="hero-hint">↓ Scroll for per-person galleries ↓</div>
 </div>
 
-<div class="version-info">
-  <strong>V5 Approach:</strong> Generated Funko Pop-style character art from reference photos (8-9/10 likeness), then built actual 3D printable STL geometry — oversized head, tapered body, arms, legs, base stand. Full 3D mesh, not standees or billboards. 
-  Three.js viewer below lets you rotate, zoom, and inspect each model. STL download links for 3D printing.
-</div>
+<!-- NAV -->
+<nav>
+  <a href="#hero">Top</a>
+  <a href="#jeremy">Jeremy</a>
+  <a href="#ray">Ray</a>
+  <a href="#glenn">Glenn</a>
+</nav>
 
-<div class="subjects" id="subjects"></div>
-
-<div class="history-section">
-  <h2>Version History — All Iterations</h2>
-  <div class="history-grid">
-    <div class="history-card">
-      <h3>V1 — Procedural</h3>
-      <p>Basic Three.js spheres and cylinders with face textures. Overlapping geometry, poor proportions.</p>
-      <span class="score score-low">3/10 likeness</span>
+<!-- JEREMY -->
+<div class="section" id="jeremy">
+  <div class="section-title">Jeremy Payne <span class="role">— The Architect</span></div>
+  <div class="section-subtitle">White male, brown hair, short style • Navy polo</div>
+  <div class="likeness">
+    <span>Likeness</span>
+    <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:70%"></div></div>
+    <span class="likeness-score">7/10</span>
+  </div>
+  <div class="mini-3d" id="mini-jeremy">
+    <span style="position:absolute;top:12px;left:14px;font-size:12px;color:#6b7280;">3D Model — Drag to rotate</span>
+    <span class="hint">Scroll to zoom</span>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-item">
+      <div class="label">Reference Photo</div>
+      <img src="images/reference/jeremy.png" alt="Jeremy reference">
     </div>
-    <div class="history-card">
-      <h3>V2 — Labeled Procedural</h3>
-      <p>Same V1 geometry with name labels added. Still just blobs — "darth vaders at a funeral."</p>
-      <span class="score score-low">3/10 likeness</span>
+    <div class="compare-item">
+      <div class="label">Funko Pop V5</div>
+      <img src="images/v5/jeremy.png" alt="Jeremy Funko Pop V5">
     </div>
-    <div class="history-card">
-      <h3>V3 — Face Textures on Cylinders</h3>
-      <p>Front-facing character art mapped onto cylinder meshes. Better likeness (5-7/10) but still flat billboards, not real 3D models.</p>
-      <span class="score score-mid">5-7/10 likeness</span>
-    </div>
-    <div class="history-card">
-      <h3>V4 — Standee</h3>
-      <p>2D images as transparent cutout planes. REJECTED: "That was not the assignment."</p>
-      <span class="score score-low">3/10 — wrong approach</span>
-    </div>
-    <div class="history-card">
-      <h3>V5 — 3D Printable STL</h3>
-      <p>Actual 3D Funko Pop geometry generated in Python: ellipsoid head, tapered body cylinder, arms, legs, hair dome, display base. Proportions matched to each person. STL files for 3D printing. Character art likeness verified at 8-9/10.</p>
-      <span class="score score-high">8-9/10 art likeness · Real 3D mesh</span>
-    </div>
+  </div>
+  <div class="version-gallery">
+    <div class="version-card"><img src="images/v1/jeremy.png" alt="V1"><div class="vtag"><span class="ver">V1</span><a class="stl" href="https://jerbotclaw-max.github.io/funko-showcase/">Initial</a></div></div>
+    <div class="version-card"><img src="images/v2/jeremy.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="stl">Refined</span></div></div>
+    <div class="version-card"><img src="images/v3/jeremy.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="stl">Polished</span></div></div>
+    <div class="version-card"><img src="images/v5/jeremy.png" alt="V5"><div class="vtag"><span class="ver">V5 ★</span><a class="stl" href="stl/funko-pop-jeremy-v5.stl" download>↓ STL</a></div></div>
   </div>
 </div>
 
-<div class="footer">
-  JC Dream Funko Pop Collection · V5 · 2026-08-07 · STL files are 3D-printable
+<!-- RAY -->
+<div class="section" id="ray">
+  <div class="section-title">Ray He <span class="role">— The Engineer</span></div>
+  <div class="section-subtitle">Asian male • Glasses • Dark casual</div>
+  <div class="likeness">
+    <span>Likeness</span>
+    <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:70%"></div></div>
+    <span class="likeness-score">7/10</span>
+  </div>
+  <div class="mini-3d" id="mini-ray">
+    <span style="position:absolute;top:12px;left:14px;font-size:12px;color:#6b7280;">3D Model — Drag to rotate</span>
+    <span class="hint">Scroll to zoom</span>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-item">
+      <div class="label">Reference Photo</div>
+      <img src="images/reference/ray.png" alt="Ray reference">
+    </div>
+    <div class="compare-item">
+      <div class="label">Funko Pop V5</div>
+      <img src="images/v5/ray.png" alt="Ray Funko Pop V5">
+    </div>
+  </div>
+  <div class="version-gallery">
+    <div class="version-card"><img src="images/v1/ray.png" alt="V1"><div class="vtag"><span class="ver">V1</span><span class="stl">Initial</span></div></div>
+    <div class="version-card"><img src="images/v2/ray.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="stl">Refined</span></div></div>
+    <div class="version-card"><img src="images/v3/ray.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="stl">Polished</span></div></div>
+    <div class="version-card"><img src="images/v5/ray.png" alt="V5"><div class="vtag"><span class="ver">V5 ★</span><a class="stl" href="stl/funko-pop-ray-v5.stl" download>↓ STL</a></div></div>
+  </div>
 </div>
 
+<!-- GLENN -->
+<div class="section" id="glenn">
+  <div class="section-title">Glenn <span class="role">— The Strategist</span></div>
+  <div class="section-subtitle">Black hair, short upward style • Blazer look</div>
+  <div class="likeness">
+    <span>Likeness</span>
+    <div class="likeness-bar-bg"><div class="likeness-bar-fill" style="width:70%"></div></div>
+    <span class="likeness-score">7/10</span>
+  </div>
+  <div class="mini-3d" id="mini-glenn">
+    <span style="position:absolute;top:12px;left:14px;font-size:12px;color:#6b7280;">3D Model — Drag to rotate</span>
+    <span class="hint">Scroll to zoom</span>
+  </div>
+  <div class="compare-grid">
+    <div class="compare-item">
+      <div class="label">Reference Photo</div>
+      <img src="images/reference/glenn.png" alt="Glenn reference">
+    </div>
+    <div class="compare-item">
+      <div class="label">Funko Pop V5</div>
+      <img src="images/v5/glenn.png" alt="Glenn Funko Pop V5">
+    </div>
+  </div>
+  <div class="version-gallery">
+    <div class="version-card"><img src="images/v1/glenn.png" alt="V1"><div class="vtag"><span class="ver">V1</span><span class="stl">Initial</span></div></div>
+    <div class="version-card"><img src="images/v2/glenn.png" alt="V2"><div class="vtag"><span class="ver">V2</span><span class="stl">Refined</span></div></div>
+    <div class="version-card"><img src="images/v3/glenn.png" alt="V3"><div class="vtag"><span class="ver">V3</span><span class="stl">Polished</span></div></div>
+    <div class="version-card"><img src="images/v5/glenn.png" alt="V5"><div class="vtag"><span class="ver">V5 ★</span><a class="stl" href="stl/funko-pop-glenn-v5.stl" download>↓ STL</a></div></div>
+  </div>
+</div>
+
+<footer>
+  JC Dream Funko Pop Collection • 3D models generated with parametric geometry + TripoSR<br>
+  Concept art via AI image generation • <a href="https://github.com/jerbotclaw-max/funko-showcase" style="color:var(--accent);text-decoration:none;">GitHub Repo</a>
+</footer>
+
+<!-- THREE.JS -->
 <script type="importmap">
 {
   "imports": {
@@ -98,294 +267,199 @@ body{background:#0a0a12;color:#e8d5b5;font-family:'Helvetica Neue',Arial,sans-se
   }
 }
 </script>
-
 <script type="module">
 import * as THREE from 'three';
-import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const subjects = [
-  {
-    name: 'Jeremy',
-    refImg: 'images/jeremy-ref.jpg',
-    artImg: 'images/v5/jeremy.png',
-    stlUrl: null, // built procedurally
-    likeness: 8,
-    config: {
-      hairColor: 0x6b4220, skinColor: 0xe8c8a0, shirtColor: 0x1a2a5e,
-      hairRX: 14.7, hairRY: 8, hairRZ: 13.7,
-      headRX: 14, headRY: 15, headRZ: 13,
-      hasBeard: true, hasGlasses: false,
-      beardColor: 0x5a3a1a,
-      bodyBot: 12, bodyTop: 9,
-    }
-  },
-  {
-    name: 'Ray',
-    refImg: 'images/ray-ref.jpg',
-    artImg: 'images/v5/ray.png',
-    stlUrl: null,
-    likeness: 8,
-    config: {
-      hairColor: 0x111111, skinColor: 0xd8b890, shirtColor: 0x1a1a1a,
-      hairRX: 14.5, hairRY: 7, hairRZ: 13.5,
-      headRX: 14, headRY: 15, headRZ: 13,
-      hasBeard: false, hasGlasses: true,
-      bodyBot: 12, bodyTop: 9,
-    }
-  },
-  {
-    name: 'Glenn',
-    refImg: 'images/glenn-ref.jpg',
-    artImg: 'images/v5/glenn.png',
-    stlUrl: null,
-    likeness: 9,
-    config: {
-      hairColor: 0x0a0a0a, skinColor: 0x8a6040, shirtColor: 0x1a1a3a,
-      hairRX: 14.8, hairRY: 10, hairRZ: 13.8,
-      headRX: 14, headRY: 15, headRZ: 13,
-      hasBeard: false, hasGlasses: false,
-      bodyBot: 13, bodyTop: 10,
-    }
-  }
-];
+// ─── HERO SCENE: All three models ───
+function initHero() {
+  const container = document.getElementById('hero');
+  const w = container.clientWidth, h = container.clientHeight;
 
-function buildFunkoMesh(config) {
-  const group = new THREE.Group();
-  
-  const vinylMat = (color) => new THREE.MeshPhongMaterial({
-    color, shininess: 60, specular: 0x444444
-  });
-  
-  // Base/stand
-  const baseGeo = new THREE.CylinderGeometry(12, 14, 3, 24);
-  const baseMesh = new THREE.Mesh(baseGeo, vinylMat(0x222230));
-  baseMesh.position.y = 1.5;
-  group.add(baseMesh);
-  
-  // Legs
-  const legGeo = new THREE.CylinderGeometry(3.6, 4, 10, 12);
-  const legMat = vinylMat(0x2a2a35);
-  const leftLeg = new THREE.Mesh(legGeo, legMat);
-  leftLeg.position.set(-4, 8, 0);
-  group.add(leftLeg);
-  const rightLeg = new THREE.Mesh(legGeo, legMat);
-  rightLeg.position.set(4, 8, 0);
-  group.add(rightLeg);
-  
-  // Body (tapered cylinder)
-  const bodyGeo = new THREE.CylinderGeometry(config.bodyTop, config.bodyBot, 22, 24);
-  const bodyMat = vinylMat(config.shirtColor);
-  const body = new THREE.Mesh(bodyGeo, bodyMat);
-  body.position.y = 24;
-  group.add(body);
-  
-  // Arms
-  const armGeo = new THREE.CylinderGeometry(3.1, 3.8, 18, 12);
-  const armMat = vinylMat(config.shirtColor);
-  const leftArm = new THREE.Mesh(armGeo, armMat);
-  leftArm.position.set(-(config.bodyTop + 2.5), 28, 0);
-  group.add(leftArm);
-  const rightArm = new THREE.Mesh(armGeo, armMat);
-  rightArm.position.set((config.bodyTop + 2.5), 28, 0);
-  group.add(rightArm);
-  
-  // Neck
-  const neckGeo = new THREE.CylinderGeometry(4, 5, 4, 12);
-  const neckMat = vinylMat(config.skinColor);
-  const neck = new THREE.Mesh(neckGeo, neckMat);
-  neck.position.y = 37;
-  group.add(neck);
-  
-  // Head (oversized ellipsoid)
-  const headGeo = new THREE.SphereGeometry(1, 32, 24);
-  headGeo.scale(config.headRX, config.headRY, config.headRZ);
-  const headMat = vinylMat(config.skinColor);
-  const head = new THREE.Mesh(headGeo, headMat);
-  head.position.y = 50;
-  group.add(head);
-  
-  // Hair (upper hemisphere, slightly larger than head)
-  const hairGeo = new THREE.SphereGeometry(1, 32, 16, 0, Math.PI*2, 0, Math.PI*0.55);
-  hairGeo.scale(config.hairRX, config.hairRY, config.hairRZ);
-  const hairMat = vinylMat(config.hairColor);
-  const hair = new THREE.Mesh(hairGeo, hairMat);
-  hair.position.y = 50 + config.headRY * 0.45;
-  group.add(hair);
-  
-  // Eyes (white spheres with black pupils - classic Funko Pop)
-  const eyeWhiteGeo = new THREE.SphereGeometry(2.2, 16, 12);
-  const eyeWhiteMat = new THREE.MeshPhongMaterial({color: 0xffffff, shininess: 80});
-  const eyePupilGeo = new THREE.SphereGeometry(1.1, 12, 10);
-  const eyePupilMat = new THREE.MeshPhongMaterial({color: 0x111111, shininess: 90});
-  
-  const leftEyeW = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
-  leftEyeW.position.set(-5, 50, config.headRZ - 1.5);
-  group.add(leftEyeW);
-  const rightEyeW = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
-  rightEyeW.position.set(5, 50, config.headRZ - 1.5);
-  group.add(rightEyeW);
-  
-  const leftPupil = new THREE.Mesh(eyePupilGeo, eyePupilMat);
-  leftPupil.position.set(-5, 50, config.headRZ - 0.5);
-  group.add(leftPupil);
-  const rightPupil = new THREE.Mesh(eyePupilGeo, eyePupilMat);
-  rightPupil.position.set(5, 50, config.headRZ - 0.5);
-  group.add(rightPupil);
-  
-  // Beard (if applicable)
-  if (config.hasBeard) {
-    const beardGeo = new THREE.TorusGeometry(7, 2.5, 8, 16, Math.PI);
-    beardGeo.scale(1, 0.6, 0.8);
-    const beard = new THREE.Mesh(beardGeo, vinylMat(config.beardColor));
-    beard.position.set(0, 44, config.headRZ * 0.3);
-    beard.rotation.x = -Math.PI * 0.3;
-    group.add(beard);
-  }
-  
-  // Glasses (if applicable)
-  if (config.hasGlasses) {
-    const lensGeo = new THREE.BoxGeometry(5, 3.5, 0.5);
-    const frameMat = new THREE.MeshPhongMaterial({color: 0x111111, shininess: 100});
-    const leftLens = new THREE.Mesh(lensGeo, frameMat);
-    leftLens.position.set(-5, 50.5, config.headRZ - 0.5);
-    group.add(leftLens);
-    const rightLens = new THREE.Mesh(lensGeo, frameMat);
-    rightLens.position.set(5, 50.5, config.headRZ - 0.5);
-    group.add(rightLens);
-    // Bridge
-    const bridgeGeo = new THREE.BoxGeometry(2.5, 0.8, 0.5);
-    const bridge = new THREE.Mesh(bridgeGeo, frameMat);
-    bridge.position.set(0, 50.5, config.headRZ - 0.5);
-    group.add(bridge);
-  }
-  
-  return group;
-}
-
-function initViewer(container, config) {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x0f0f18);
-  
-  const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
-  camera.position.set(0, 45, 90);
-  
-  const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
-  renderer.setSize(container.clientWidth, container.clientHeight);
+  scene.background = null;
+
+  const camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 100);
+  camera.position.set(0, 1.8, 7);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setSize(w, h);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
   container.appendChild(renderer.domElement);
-  
-  // Lighting
-  const ambient = new THREE.AmbientLight(0x404050, 0.6);
-  scene.add(ambient);
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
-  keyLight.position.set(50, 80, 60);
-  scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0x8888ff, 0.3);
-  fillLight.position.set(-50, 40, -30);
-  scene.add(fillLight);
-  const rimLight = new THREE.DirectionalLight(0xe8d5b5, 0.4);
-  rimLight.position.set(0, 30, -80);
-  scene.add(rimLight);
-  
-  // Ground shadow
-  const groundGeo = new THREE.CircleGeometry(30, 32);
-  const groundMat = new THREE.MeshBasicMaterial({color: 0x12121e, transparent: true, opacity: 0.6});
-  const ground = new THREE.Mesh(groundGeo, groundMat);
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -0.1;
-  scene.add(ground);
-  
-  // Build the Funko Pop mesh
-  const funko = buildFunkoMesh(config);
-  scene.add(funko);
-  
-  // Controls
+
+  // Lights
+  const key = new THREE.DirectionalLight(0xffffff, 2.2);
+  key.position.set(5, 10, 5); key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0x6688ff, 0.5);
+  fill.position.set(-5, 5, -5); scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xff66aa, 0.8);
+  rim.position.set(0, 5, -10); scene.add(rim);
+
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.CircleGeometry(15, 64),
+    new THREE.MeshStandardMaterial({ color: 0x0f0f1e, roughness: 0.8, metalness: 0.2 })
+  );
+  ground.rotation.x = -Math.PI/2; ground.position.y = -0.5;
+  ground.receiveShadow = true; scene.add(ground);
+
+  // Pedestals
+  const pedestalPositions = [-2.4, 0, 2.4];
+  const pedestalColors = [0x1a3a5c, 0x3a1a5c, 0x5c3a1a];
+  pedestalPositions.forEach((x, i) => {
+    const ped = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.9, 1.0, 0.3, 32),
+      new THREE.MeshStandardMaterial({ color: pedestalColors[i], roughness: 0.4, metalness: 0.6 })
+    );
+    ped.position.set(x, -0.35, 0); ped.receiveShadow = true; ped.castShadow = true;
+    scene.add(ped);
+  });
+
+  // Orbit controls
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.minDistance = 40;
-  controls.maxDistance = 180;
-  controls.target.set(0, 35, 0);
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 1.5;
-  
-  let isAutoRotate = true;
-  
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  }
-  animate();
-  
+  controls.enableDamping = true; controls.dampingFactor = 0.05;
+  controls.minDistance = 3; controls.maxDistance = 15;
+  controls.maxPolarAngle = Math.PI/2 + 0.2;
+  controls.target.set(0, 0.8, 0);
+  controls.autoRotate = true; controls.autoRotateSpeed = 0.4;
+
+  // Load models
+  const loader = new GLTFLoader();
+  const modelData = [
+    { file: 'models/jeremy.glb', x: -2.4, name: 'Jeremy' },
+    { file: 'models/ray.glb', x: 0, name: 'Ray' },
+    { file: 'models/glenn.glb', x: 2.4, name: 'Glenn' }
+  ];
+  let loaded = 0;
+  modelData.forEach(m => {
+    loader.load(m.file, (gltf) => {
+      const mesh = gltf.scene;
+      const box = new THREE.Box3().setFromObject(mesh);
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const scale = 1.8 / maxDim;
+      mesh.scale.setScalar(scale);
+      const sb = new THREE.Box3().setFromObject(mesh);
+      const sc = sb.getCenter(new THREE.Vector3());
+      mesh.position.set(m.x - sc.x, -sb.min.y - 0.2, -sc.z);
+      mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+      scene.add(mesh);
+      loaded++;
+      if (loaded === 3) document.getElementById('loading-3d').style.display = 'none';
+    }, undefined, () => {
+      loaded++;
+      if (loaded === 3) document.getElementById('loading-3d').style.display = 'none';
+    });
+  });
+
   // Resize
-  const resize = () => {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
-  };
-  window.addEventListener('resize', resize);
-  
-  return { controls, toggleRotate: () => { isAutoRotate = !isAutoRotate; controls.autoRotate = isAutoRotate; return isAutoRotate; }, reset: () => { camera.position.set(0, 45, 90); controls.target.set(0, 35, 0); } };
+  window.addEventListener('resize', () => {
+    const nw = container.clientWidth, nh = container.clientHeight;
+    camera.aspect = nw/nh; camera.updateProjectionMatrix();
+    renderer.setSize(nw, nh);
+  });
+
+  function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+  animate();
 }
 
-// Render subject cards
-const container = document.getElementById('subjects');
-const viewers = {};
+// ─── MINI 3D VIEWERS (one per person) ───
+function initMini(containerId, modelFile) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const w = container.clientWidth, h = container.clientHeight;
 
-subjects.forEach(sub => {
-  const card = document.createElement('div');
-  card.className = 'subject-card';
-  card.innerHTML = `
-    <h2>${sub.name}</h2>
-    <span class="likeness-badge">Likeness: ${sub.likeness}/10</span>
-    <div class="ref-row">
-      <div style="width:48%">
-        <img src="${sub.refImg}" style="width:100%;border-radius:8px" alt="Reference">
-        <div class="ref-label">Reference Photo</div>
-      </div>
-      <div style="width:48%">
-        <img src="${sub.artImg}" style="width:100%;border-radius:8px" alt="Funko Art">
-        <div class="ref-label">Funko Pop Art (V5)</div>
-      </div>
-    </div>
-    <div class="canvas-container" id="canvas-${sub.name}"></div>
-    <div class="controls-row">
-      <button class="btn active" data-action="rotate" data-name="${sub.name}">Auto-Rotate</button>
-      <button class="btn" data-action="reset" data-name="${sub.name}">Reset View</button>
-    </div>
-    <div class="download-row">
-      <a class="dl-btn" href="stl/${sub.name.toLowerCase()}-funko-v5.stl" download>⬇ Download STL (3D Print)</a>
-    </div>
-  `;
-  container.appendChild(card);
-  
-  // Init viewer after DOM insertion
-  setTimeout(() => {
-    const canvasEl = document.getElementById(`canvas-${sub.name}`);
-    if (canvasEl) {
-      viewers[sub.name] = initViewer(canvasEl, sub.config);
-    }
-  }, 50);
-});
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x111827);
 
-// Wire up buttons
-document.addEventListener('click', (e) => {
-  if (e.target.matches('.btn[data-action]')) {
-    const action = e.target.dataset.action;
-    const name = e.target.dataset.name;
-    const v = viewers[name];
-    if (!v) return;
-    if (action === 'rotate') {
-      const on = v.toggleRotate();
-      e.target.classList.toggle('active', on);
-    } else if (action === 'reset') {
-      v.reset();
-    }
+  const camera = new THREE.PerspectiveCamera(40, w/h, 0.1, 100);
+  camera.position.set(0, 1.5, 5);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  container.appendChild(renderer.domElement);
+
+  // Lights
+  const key = new THREE.DirectionalLight(0xffffff, 2.0);
+  key.position.set(4, 8, 4); key.castShadow = true;
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0x6688ff, 0.4);
+  fill.position.set(-4, 4, -4); scene.add(fill);
+
+  // Pedestal
+  const ped = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.8, 0.9, 0.25, 32),
+    new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.4, metalness: 0.5 })
+  );
+  ped.position.y = -0.3; ped.receiveShadow = true; scene.add(ped);
+
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.CircleGeometry(10, 32),
+    new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.9 })
+  );
+  ground.rotation.x = -Math.PI/2; ground.position.y = -0.43; scene.add(ground);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true; controls.dampingFactor = 0.05;
+  controls.minDistance = 2; controls.maxDistance = 10;
+  controls.maxPolarAngle = Math.PI/2 + 0.15;
+  controls.target.set(0, 0.6, 0);
+
+  const loader = new GLTFLoader();
+  loader.load(modelFile, (gltf) => {
+    const mesh = gltf.scene;
+    const box = new THREE.Box3().setFromObject(mesh);
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 1.6 / maxDim;
+    mesh.scale.setScalar(scale);
+    const sb = new THREE.Box3().setFromObject(mesh);
+    const sc = sb.getCenter(new THREE.Vector3());
+    mesh.position.set(-sc.x, -sb.min.y - 0.15, -sc.z);
+    mesh.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+    scene.add(mesh);
+  });
+
+  function resize() {
+    const nw = container.clientWidth, nh = container.clientHeight;
+    camera.aspect = nw/nh; camera.updateProjectionMatrix();
+    renderer.setSize(nw, nh);
   }
+  window.addEventListener('resize', resize);
+
+  function animate() { requestAnimationFrame(animate); controls.update(); renderer.render(scene, camera); }
+  animate();
+}
+
+// Init all scenes
+initHero();
+initMini('mini-jeremy', 'models/jeremy.glb');
+initMini('mini-ray', 'models/ray.glb');
+initMini('mini-glenn', 'models/glenn.glb');
+
+// Nav active state
+const navLinks = document.querySelectorAll('nav a');
+const sections = ['hero', 'jeremy', 'ray', 'glenn'].map(id => document.getElementById(id));
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY + 100;
+  sections.forEach((s, i) => {
+    if (s && s.offsetTop <= sy && s.offsetTop + s.offsetHeight > sy) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      if (navLinks[i]) navLinks[i].classList.add('active');
+    }
+  });
 });
 </script>
-
 </body>
 </html>
