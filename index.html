@@ -2,585 +2,129 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>Funko Pop Showcase — Jeremy, Ray & Glenn</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JC Dream — Funko Pop Collection V7</title>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; overflow-x: hidden; background: #0a0a0f; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-  
-  #scene-container {
-    width: 100%;
-    height: 70vh;
-    min-height: 400px;
-    position: relative;
-    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0f 100%);
-  }
-  
-  #scene-container canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    touch-action: none;
-  }
-  
-  .label2d {
-    color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    text-shadow: 0 0 8px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.7);
-    pointer-events: none;
-    padding: 4px 10px;
-    border-radius: 6px;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(4px);
-    white-space: nowrap;
-  }
-  
-  #header {
-    text-align: center;
-    padding: 20px 15px 10px;
-  }
-  #header h1 {
-    font-size: clamp(1.3rem, 4vw, 2rem);
-    background: linear-gradient(135deg, #60a5fa, #a78bfa, #34d399);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  #header p {
-    color: #888;
-    font-size: clamp(0.75rem, 2.5vw, 0.95rem);
-    margin-top: 6px;
-  }
-  
-  #gallery {
-    padding: 20px 15px 40px;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  #gallery h2 {
-    text-align: center;
-    font-size: clamp(1rem, 3vw, 1.4rem);
-    margin-bottom: 18px;
-    color: #ccc;
-  }
-  .gallery-row {
-    margin-bottom: 20px;
-  }
-  .gallery-row h3 {
-    font-size: clamp(0.85rem, 2.5vw, 1.05rem);
-    margin-bottom: 10px;
-    padding-left: 5px;
-    border-left: 3px solid;
-  }
-  .gallery-jeremy h3 { border-color: #3b82f6; color: #93c5fd; }
-  .gallery-ray h3 { border-color: #a78bfa; color: #c4b5fd; }
-  .gallery-glenn h3 { border-color: #34d399; color: #6ee7b7; }
-  
-  .gallery-thumbs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    -webkit-overflow-scrolling: touch;
-  }
-  .gallery-thumbs img {
-    width: 120px;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 2px solid #333;
-    flex-shrink: 0;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .gallery-thumbs img:hover {
-    border-color: #666;
-    transform: scale(1.05);
-  }
-  .gallery-thumbs .thumb-wrap {
-    position: relative;
-    flex-shrink: 0;
-  }
-  .gallery-thumbs .thumb-label {
-    position: absolute;
-    bottom: 4px;
-    left: 4px;
-    right: 4px;
-    text-align: center;
-    font-size: 0.65rem;
-    font-weight: 600;
-    color: #fff;
-    background: rgba(0,0,0,0.6);
-    border-radius: 4px;
-    padding: 2px;
-  }
-  
-  #loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #888;
-    font-size: 1.1rem;
-  }
-  
-  #hint {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #555;
-    font-size: 0.75rem;
-    pointer-events: none;
-  }
+  :root { --bg:#0e0e11; --card:#17171c; --accent:#7c5cff; --text:#eee; --muted:#999; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; padding:24px 16px 64px; }
+  h1 { text-align:center; font-size:1.6rem; margin-bottom:4px; }
+  .sub { text-align:center; color:var(--muted); margin-bottom:8px; font-size:.95rem; }
+  .ver-badge { text-align:center; margin-bottom:24px; }
+  .ver-badge span { background:var(--accent); color:#fff; padding:3px 12px; border-radius:12px; font-size:.8rem; font-weight:600; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; max-width:1100px; margin:0 auto; }
+  .card { background:var(--card); border-radius:16px; padding:16px; text-align:center; }
+  .card h2 { font-size:1.15rem; margin-bottom:10px; }
+  .card model-viewer { width:100%; height:340px; background:radial-gradient(circle at 50% 35%, #2a2a33, #101014); border-radius:12px; }
+  .ref { display:flex; gap:10px; margin-top:12px; align-items:center; justify-content:center; }
+  .ref img { width:84px; height:84px; object-fit:cover; border-radius:10px; border:1px solid #333; }
+  .ref .lbl { color:var(--muted); font-size:.75rem; }
+  .downloads { margin-top:12px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .downloads a { background:#26262e; color:#cfc6ff; text-decoration:none; padding:6px 14px; border-radius:8px; font-size:.8rem; }
+  .downloads a:hover { background:var(--accent); color:#fff; }
+  .lineup { max-width:1100px; margin:36px auto 0; background:var(--card); border-radius:16px; padding:16px; text-align:center; }
+  .lineup model-viewer { width:100%; height:420px; background:radial-gradient(circle at 50% 35%, #2a2a33, #101014); border-radius:12px; }
+  .versions { max-width:1100px; margin:36px auto 0; }
+  .versions h3 { margin-bottom:12px; }
+  .vnav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .vnav button { background:#26262e; color:var(--text); border:1px solid #333; padding:8px 16px; border-radius:10px; cursor:pointer; font-size:.85rem; }
+  .vnav button.active { background:var(--accent); border-color:var(--accent); }
+  .vgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+  .vgrid img { width:100%; border-radius:8px; border:1px solid #2c2c34; background:#141418; }
+  .vgrid .caption { color:var(--muted); font-size:.72rem; text-align:center; margin-top:4px; }
+  .note { color:var(--muted); font-size:.8rem; text-align:center; margin-top:24px; }
 </style>
 </head>
 <body>
+<h1>🧸 JC Dream Funko Pop Collection</h1>
+<div class="sub">3D-printable figures — interactive 3D, drag to rotate</div>
+<div class="ver-badge"><span>V7 — baked textures + model-viewer</span></div>
 
-<div id="header">
-  <h1>🎨 Funko Pop Showcase</h1>
-  <p>Jeremy · Ray · Glenn — Drag to rotate, pinch to zoom</p>
+<div class="grid">
+  <div class="card">
+    <h2>Jeremy</h2>
+    <model-viewer src="models/jeremy_funko_v7.glb" camera-controls auto-rotate interaction-prompt="none" shadow-intensity="1"></model-viewer>
+    <div class="ref">
+      <img src="textures/jeremy.png" alt="Jeremy reference">
+      <span class="lbl">reference → funko</span>
+      <img src="images/v5/jeremy.png" alt="Jeremy V5 design" onerror="this.style.display='none'">
+    </div>
+    <div class="downloads">
+      <a href="stl/jeremy-funko-v5.stl" download>⬇ STL (print)</a>
+      <a href="models/jeremy_funko_v7.glb" download>⬇ GLB</a>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Ray</h2>
+    <model-viewer src="models/ray_funko_v7.glb" camera-controls auto-rotate interaction-prompt="none" shadow-intensity="1"></model-viewer>
+    <div class="ref">
+      <img src="textures/ray.png" alt="Ray reference">
+      <span class="lbl">reference → funko</span>
+      <img src="images/v5/ray.png" alt="Ray V5 design" onerror="this.style.display='none'">
+    </div>
+    <div class="downloads">
+      <a href="stl/ray-funko-v5.stl" download>⬇ STL (print)</a>
+      <a href="models/ray_funko_v7.glb" download>⬇ GLB</a>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Glenn</h2>
+    <model-viewer src="models/glenn_funko_v7.glb" camera-controls auto-rotate interaction-prompt="none" shadow-intensity="1"></model-viewer>
+    <div class="ref">
+      <img src="textures/glenn.png" alt="Glenn reference">
+      <span class="lbl">reference → funko</span>
+      <img src="images/v5/glenn.png" alt="Glenn V5 design" onerror="this.style.display='none'">
+    </div>
+    <div class="downloads">
+      <a href="stl/glenn-funko-v5.stl" download>⬇ STL (print)</a>
+      <a href="models/glenn_funko_v7.glb" download>⬇ GLB</a>
+    </div>
+  </div>
 </div>
 
-<div id="scene-container">
-  <div id="loading">Loading 3D scene…</div>
-  <div id="hint">👆 Drag · Pinch · Scroll</div>
+<div class="lineup">
+  <h2 style="margin-bottom:10px">The Lineup</h2>
+  <model-viewer src="models/lineup_v7.glb" camera-controls auto-rotate interaction-prompt="none" shadow-intensity="1"></model-viewer>
 </div>
 
-<div id="gallery">
-  <h2>📸 Evolution Gallery</h2>
-  
-  <div class="gallery-row gallery-jeremy">
-    <h3>Jeremy</h3>
-    <div class="gallery-thumbs" id="gallery-jeremy"></div>
+<div class="versions">
+  <h3>Version history (every attempt, judged honestly)</h3>
+  <div class="vnav">
+    <button class="active" onclick="showVer(this,'v7')">V7 ✓ current</button>
+    <button onclick="showVer(this,'v5')">V5</button>
+    <button onclick="showVer(this,'v3')">V3</button>
+    <button onclick="showVer(this,'v1')">V1</button>
   </div>
-  
-  <div class="gallery-row gallery-ray">
-    <h3>Ray</h3>
-    <div class="gallery-thumbs" id="gallery-ray"></div>
+  <div id="ver-v7" class="vgrid">
+    <div><img src="textures/jeremy.png"><div class="caption">Jeremy — baked-texture GLB (face on front)</div></div>
+    <div><img src="textures/ray.png"><div class="caption">Ray — baked-texture GLB (face on front)</div></div>
+    <div><img src="textures/glenn.png"><div class="caption">Glenn — baked-texture GLB (face on front)</div></div>
   </div>
-  
-  <div class="gallery-row gallery-glenn">
-    <h3>Glenn</h3>
-    <div class="gallery-thumbs" id="gallery-glenn"></div>
+  <div id="ver-v5" class="vgrid" style="display:none">
+    <div><img src="images/v5/jeremy.png"><div class="caption">Jeremy V5 — GLB, sideways + blank faces</div></div>
+    <div><img src="images/v5/ray.png"><div class="caption">Ray V5 — GLB, sideways + blank faces</div></div>
+    <div><img src="images/v5/glenn.png"><div class="caption">Glenn V5 — GLB, sideways + blank faces</div></div>
+  </div>
+  <div id="ver-v3" class="vgrid" style="display:none">
+    <div><img src="images/v3/jeremy.png"><div class="caption">Jeremy V3 — billboard face textures</div></div>
+    <div><img src="images/v3/ray.png"><div class="caption">Ray V3 — billboard face textures</div></div>
+    <div><img src="images/v3/glenn.png"><div class="caption">Glenn V3 — billboard face textures</div></div>
+  </div>
+  <div id="ver-v1" class="vgrid" style="display:none">
+    <div><img src="images/jeremy-ref.jpg" onerror="this.style.display='none'"><div class="caption">V1/V2 — procedural blobs ("Darth Vaders at a funeral")</div></div>
   </div>
 </div>
 
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-  }
+<div class="note">V7: face textures baked into the GLB at build time (trimesh + equirect UVs), rendered by Google's model-viewer — no runtime texture loading. STLs are geometry-only (print, then paint or decal the face).</div>
+
+<script>
+function showVer(btn, v) {
+  document.querySelectorAll('.vnav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.versions .vgrid').forEach(g => g.style.display = 'none');
+  document.getElementById('ver-' + v).style.display = 'grid';
 }
 </script>
-
-<script type="module">
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-
-// ===== SCENE SETUP =====
-const container = document.getElementById('scene-container');
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0a0f);
-scene.fog = new THREE.Fog(0x0a0a0f, 12, 30);
-
-const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
-camera.position.set(0, 3, 9);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(container.clientWidth, container.clientHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
-container.appendChild(renderer.domElement);
-
-// CSS2D renderer for labels
-const labelRenderer = new CSS2DRenderer();
-labelRenderer.setSize(container.clientWidth, container.clientHeight);
-labelRenderer.domElement.style.position = 'absolute';
-labelRenderer.domElement.style.top = '0';
-labelRenderer.domElement.style.pointerEvents = 'none';
-container.appendChild(labelRenderer.domElement);
-
-// Controls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.minDistance = 4;
-controls.maxDistance = 18;
-controls.maxPolarAngle = Math.PI * 0.52;
-controls.target.set(0, 1.8, 0);
-controls.update();
-
-// ===== LIGHTING =====
-const ambient = new THREE.AmbientLight(0xffffff, 0.45);
-scene.add(ambient);
-
-const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
-keyLight.position.set(5, 10, 7);
-keyLight.castShadow = true;
-keyLight.shadow.mapSize.width = 2048;
-keyLight.shadow.mapSize.height = 2048;
-keyLight.shadow.camera.near = 0.5;
-keyLight.shadow.camera.far = 30;
-keyLight.shadow.camera.left = -8;
-keyLight.shadow.camera.right = 8;
-keyLight.shadow.camera.top = 8;
-keyLight.shadow.camera.bottom = -8;
-keyLight.shadow.bias = -0.0005;
-scene.add(keyLight);
-
-const fillLight = new THREE.DirectionalLight(0xb0c4ff, 0.4);
-fillLight.position.set(-5, 6, -3);
-scene.add(fillLight);
-
-const rimLight = new THREE.DirectionalLight(0xffd700, 0.3);
-rimLight.position.set(0, 5, -8);
-scene.add(rimLight);
-
-// Ground (subtle reflective floor)
-const groundGeo = new THREE.CircleGeometry(15, 64);
-const groundMat = new THREE.MeshStandardMaterial({
-  color: 0x111118,
-  roughness: 0.6,
-  metalness: 0.2
-});
-const ground = new THREE.Mesh(groundGeo, groundMat);
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = 0;
-ground.receiveShadow = true;
-scene.add(ground);
-
-// ===== TEXTURE LOADING =====
-const textureLoader = new THREE.TextureLoader();
-textureLoader.crossOrigin = 'anonymous';
-
-function loadFaceTexture(url) {
-  return new Promise((resolve, reject) => {
-    textureLoader.load(url, (texture) => {
-      texture.colorSpace = THREE.SRGBColorSpace;
-      resolve(texture);
-    }, undefined, reject);
-  });
-}
-
-// ===== FUNKO POP BUILDER =====
-// Store face meshes so we can swap textures in later
-const faceMeshes = {};
-
-function createFunkoPop(config) {
-  const group = new THREE.Group();
-  
-  // --- HEAD (large sphere, slightly squished) ---
-  const headGeo = new THREE.SphereGeometry(1.0, 48, 48);
-  const headMat = new THREE.MeshStandardMaterial({
-    color: 0xf5e6d3,
-    roughness: 0.5,
-    metalness: 0.05
-  });
-  const head = new THREE.Mesh(headGeo, headMat);
-  head.scale.set(1.05, 0.98, 1.05);
-  head.position.y = 3.2;
-  head.castShadow = true;
-  head.receiveShadow = true;
-  group.add(head);
-  
-  // --- FACE TEXTURE on front of head ---
-  // Use a simple flat plane — no curving, keep it simple and reliable
-  const faceGeo = new THREE.PlaneGeometry(1.3, 1.3);
-  
-  const faceMat = new THREE.MeshBasicMaterial({
-    map: config.faceTexture || null,
-    transparent: true,
-    side: THREE.DoubleSide
-  });
-  const face = new THREE.Mesh(faceGeo, faceMat);
-  face.position.set(0, 3.2, 1.15);
-  face.castShadow = true;
-  group.add(face);
-  
-  // Store for texture swapping
-  if (config.id) {
-    faceMeshes[config.id] = face;
-  }
-  
-  // --- HAIR (dark cap on back/top of head, doesn't cover face front) ---
-  // Covers from ~45deg around the right, across the back, to ~45deg around the left
-  // phiStart at ~0.15π (just past right side), phiLength ~1.7π (wraps around back)
-  // This leaves the front ~0.3π (54 degrees) open for the face
-  const hairGeo = new THREE.SphereGeometry(1.03, 32, 32, Math.PI * 0.17, Math.PI * 1.66, 0, Math.PI * 0.52);
-  const hairMat = new THREE.MeshStandardMaterial({
-    color: config.hairColor || 0x3a2010,
-    roughness: 0.7,
-    metalness: 0.0
-  });
-  const hair = new THREE.Mesh(hairGeo, hairMat);
-  hair.position.y = 3.2;
-  hair.castShadow = true;
-  group.add(hair);
-  
-  // --- BODY (tapered cylinder) ---
-  const bodyGeo = new THREE.CylinderGeometry(0.55, 0.75, 1.5, 32);
-  const bodyMat = new THREE.MeshStandardMaterial({
-    color: config.shirtColor,
-    roughness: 0.35,
-    metalness: 0.1
-  });
-  const body = new THREE.Mesh(bodyGeo, bodyMat);
-  body.position.y = 1.65;
-  body.castShadow = true;
-  body.receiveShadow = true;
-  group.add(body);
-  
-  // --- NECK (small cylinder connecting head to body) ---
-  const neckGeo = new THREE.CylinderGeometry(0.22, 0.25, 0.35, 16);
-  const neckMat = new THREE.MeshStandardMaterial({
-    color: 0xf5e6d3,
-    roughness: 0.5,
-    metalness: 0.05
-  });
-  const neck = new THREE.Mesh(neckGeo, neckMat);
-  neck.position.y = 2.5;
-  neck.castShadow = true;
-  group.add(neck);
-  
-  // --- ARMS (small capsules on sides) ---
-  const armGeo = new THREE.CapsuleGeometry(0.12, 0.5, 8, 16);
-  const armMat = new THREE.MeshStandardMaterial({
-    color: config.shirtColor,
-    roughness: 0.35,
-    metalness: 0.1
-  });
-  
-  const leftArm = new THREE.Mesh(armGeo, armMat);
-  leftArm.position.set(-0.68, 1.75, 0);
-  leftArm.rotation.z = 0.15;
-  leftArm.castShadow = true;
-  group.add(leftArm);
-  
-  const rightArm = new THREE.Mesh(armGeo, armMat);
-  rightArm.position.set(0.68, 1.75, 0);
-  rightArm.rotation.z = -0.15;
-  rightArm.castShadow = true;
-  group.add(rightArm);
-  
-  // --- HANDS (small spheres at end of arms) ---
-  const handGeo = new THREE.SphereGeometry(0.14, 16, 16);
-  const handMat = new THREE.MeshStandardMaterial({
-    color: 0xf5e6d3,
-    roughness: 0.5
-  });
-  
-  const leftHand = new THREE.Mesh(handGeo, handMat);
-  leftHand.position.set(-0.75, 1.42, 0);
-  leftHand.castShadow = true;
-  group.add(leftHand);
-  
-  const rightHand = new THREE.Mesh(handGeo, handMat);
-  rightHand.position.set(0.75, 1.42, 0);
-  rightHand.castShadow = true;
-  group.add(rightHand);
-  
-  // --- BASE (pedestal disc) ---
-  const baseGeo = new THREE.CylinderGeometry(0.9, 0.95, 0.2, 48);
-  const baseMat = new THREE.MeshStandardMaterial({
-    color: config.baseColor,
-    roughness: 0.3,
-    metalness: 0.3
-  });
-  const base = new THREE.Mesh(baseGeo, baseMat);
-  base.position.y = 0.1;
-  base.castShadow = true;
-  base.receiveShadow = true;
-  group.add(base);
-  
-  // --- BASE TOP (slightly lighter disc for name area) ---
-  const baseTopGeo = new THREE.CylinderGeometry(0.88, 0.88, 0.02, 48);
-  const baseTopMat = new THREE.MeshStandardMaterial({
-    color: config.baseColor,
-    roughness: 0.2,
-    metalness: 0.4,
-    emissive: config.baseColor,
-    emissiveIntensity: 0.15
-  });
-  const baseTop = new THREE.Mesh(baseTopGeo, baseTopMat);
-  baseTop.position.y = 0.21;
-  group.add(baseTop);
-  
-  // --- NAME LABEL (CSS2D) ---
-  const labelDiv = document.createElement('div');
-  labelDiv.className = 'label2d';
-  labelDiv.textContent = config.name;
-  labelDiv.style.background = 'rgba(' + config.labelRgb + ', 0.5)';
-  labelDiv.style.border = '1px solid rgba(' + config.labelRgb + ', 0.6)';
-  const label = new CSS2DObject(labelDiv);
-  label.position.set(0, 4.5, 0);
-  group.add(label);
-  
-  // Position the whole figure
-  group.position.x = config.x;
-  
-  return group;
-}
-
-// ===== BUILD FIGURES IMMEDIATELY (no texture wait) =====
-const figs = {};
-
-figs.jeremy = createFunkoPop({
-  id: 'jeremy', name: 'Jeremy', x: -2.6, faceTexture: null,
-  baseColor: 0x2563eb, shirtColor: 0x3b82f6, hairColor: 0x2a1810,
-  labelRgb: '59, 130, 246'
-});
-scene.add(figs.jeremy);
-
-figs.ray = createFunkoPop({
-  id: 'ray', name: 'Ray', x: 0, faceTexture: null,
-  baseColor: 0x7c3aed, shirtColor: 0xa78bfa, hairColor: 0x1a1a1a,
-  labelRgb: '167, 139, 250'
-});
-scene.add(figs.ray);
-
-figs.glenn = createFunkoPop({
-  id: 'glenn', name: 'Glenn', x: 2.6, faceTexture: null,
-  baseColor: 0x059669, shirtColor: 0x34d399, hairColor: 0x3a2010,
-  labelRgb: '52, 211, 153'
-});
-scene.add(figs.glenn);
-
-// Remove loading and start rendering right away
-const loadingEl = document.getElementById('loading');
-if (loadingEl) loadingEl.remove();
-
-// ===== ANIMATION LOOP =====
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-  labelRenderer.render(scene, camera);
-}
-animate();
-
-// ===== LOAD FACE TEXTURES ASYNC (crop face from full-body renders) =====
-// V5 images are full-body Funko renders — crop just the face/head region
-function cropFaceFromImage(url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = function() {
-      // Face is typically in the top ~25% of the full-body image
-      // Funko head is disproportionately large, so it's roughly top 20-28%
-      const cropTop = img.height * 0.04;
-      const cropSize = img.height * 0.26;
-      const cropLeft = (img.width - cropSize) / 2;
-      
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 256;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, cropLeft, cropTop, cropSize, cropSize, 0, 0, 256, 256);
-      
-      const tex = new THREE.CanvasTexture(canvas);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      resolve(tex);
-    };
-    img.onerror = function() { reject(new Error('Failed to load ' + url)); };
-    img.src = url;
-  });
-}
-
-const faceUrls = {
-  jeremy: ['images/v5/jeremy.png', 'textures/jeremy.png'],
-  ray: ['images/v5/ray.png', 'textures/ray.png'],
-  glenn: ['images/v5/glenn.png', 'textures/glenn.png']
-};
-
-Object.entries(faceUrls).forEach(function(entry) {
-  const name = entry[0];
-  var urls = entry[1];
-  var tried = 0;
-  function tryNext() {
-    if (tried >= urls.length) return;
-    var url = urls[tried++];
-    cropFaceFromImage(url).then(function(tex) {
-      var mesh = faceMeshes[name];
-      if (mesh && !mesh.material.map) {
-        mesh.material.map = tex;
-        mesh.material.needsUpdate = true;
-        console.log('Face loaded:', name, 'from', url);
-      }
-    }).catch(function(err) {
-      console.warn('Face load failed:', url, err.message);
-      tryNext();
-    });
-  }
-  tryNext();
-});
-
-// ===== GALLERY =====
-function buildGallery() {
-  const people = ['jeremy', 'ray', 'glenn'];
-  people.forEach(person => {
-    const container = document.getElementById('gallery-' + person);
-    if (!container) return;
-    
-    const versions = [
-      { ver: 'V1', path: 'images/v1/' + person + '.png' },
-      { ver: 'V2', path: 'images/v2/' + person + '.png' },
-      { ver: 'V3', path: 'images/v3/' + person + '.png' },
-      { ver: 'V5', path: 'images/v5/' + person + '.png' },
-      { ver: 'Photo', path: 'images/reference/' + person + '.png' },
-    ];
-    
-    versions.forEach(v => {
-      const wrap = document.createElement('div');
-      wrap.className = 'thumb-wrap';
-      
-      const img = document.createElement('img');
-      img.src = v.path;
-      img.alt = person + ' ' + v.ver;
-      img.loading = 'lazy';
-      img.onerror = function() { wrap.style.display = 'none'; };
-      
-      const label = document.createElement('div');
-      label.className = 'thumb-label';
-      label.textContent = v.ver;
-      
-      wrap.appendChild(img);
-      wrap.appendChild(label);
-      container.appendChild(wrap);
-    });
-  });
-}
-
-buildGallery();
-
-// Expose for debugging
-window.__scene = scene;
-window.__camera = camera;
-window.__faceMeshes = faceMeshes;
-
-// ===== RESIZE =====
-function onResize() {
-  const w = container.clientWidth;
-  const h = container.clientHeight;
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-  labelRenderer.setSize(w, h);
-}
-window.addEventListener('resize', onResize);
-
-if (window.ResizeObserver) {
-  const ro = new ResizeObserver(function() { onResize(); });
-  ro.observe(container);
-}
-</script>
-
 </body>
 </html>
